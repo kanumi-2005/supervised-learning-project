@@ -15,7 +15,6 @@ class CaliforniaHousingDataset:
     df : pandas.DataFrame
         Full dataset as a pandas DataFrame.
     """
-
     def __init__(self):
         """
         Load the California Housing dataset into memory.
@@ -35,6 +34,66 @@ class CaliforniaHousingDataset:
             Number of samples.
         """
         return len(self.X)
+
+    def train_size(self) -> int:
+        """
+        Return the number of samples in the training set.
+
+        Returns
+        -------
+        int
+            Number of samples in the training set.
+
+        Raises
+        ------
+        AttributeError
+            If the dataset has not been split yet.
+
+        Notes
+        -----
+        This method is available only after calling `split()`.
+        """
+        return len(self.X_train)
+
+    def val_size(self) -> int:
+        """
+        Return the number of samples in the validation set.
+
+        Returns
+        -------
+        int
+            Number of samples in the validation set.
+
+        Raises
+        ------
+        AttributeError
+            If the dataset has not been split yet.
+
+        Notes
+        -----
+        This method is available only after calling `split()`.
+        """
+        return len(self.X_val)
+
+    def test_size(self) -> int:
+        """
+        Return the number of samples in the test set.
+
+        Returns
+        -------
+        int
+            Number of samples in the test set.
+
+        Raises
+        ------
+        AttributeError
+            If the dataset has not been split yet.
+
+        Notes
+        -----
+        This method is available only after calling `split()`.
+        """
+        return len(self.X_test)
 
     def split(
         self,
