@@ -67,6 +67,7 @@ class IRLS(RegressorMixin, BaseEstimator):
 if __name__ == "__main__":
     from ..dataset import CaliforniaHousingDataset as Dataset
     from ..pipeline import get_pipeline
+    from sklearn.metrics import mean_squared_error
 
     d = Dataset()
     d.split()
@@ -76,6 +77,6 @@ if __name__ == "__main__":
     y_pred = model.predict(d.X_test)
     y_true = d.y_test
 
-    mse = np.sum(np.square(y_true - y_pred))
+    mse = mean_squared_error(y_true, y_pred)
 
     print(f"MSE = {mse:.4f}")

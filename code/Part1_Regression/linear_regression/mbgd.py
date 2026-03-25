@@ -7,31 +7,29 @@ class MBGD(RegressorMixin, BaseEstimator):
         self,
         batch_size = 4,
         lr = 0.01,
-        epochs = 100,
+        max_iter = 100,
         lr_sched = None,
-        seed = 42,
-        eta_max = 0.01,
-        eta_min = 0.0001,
+        random_state = 42,
+        min_lr = 0.0001,
         step_size = 50,
         decay_factor = 0.5
     ):
         self.batch_size = batch_size
         self.lr = lr
-        self.epochs = epochs
+        self.max_iter = max_iter
         self.lr_sched = lr_sched
-        self.seed = seed
-        self.eta_max = eta_max
-        self.eta_min = eta_min
+        self.random_state = random_state
+        self.min_lr = min_lr
         self.step_size = step_size
         self.decay_factor = decay_factor
 
     def fit(self, X, y):
-        rng = np.random.default_rng(self.seed)
+        rng = np.random.default_rng(self.random_state)
 
         n_samples, n_features = X.shape
         X_design = np.c_[np.ones(n_samples), X]
         w = np.zeros(n_features + 1)
-        for epoch in range(self.epochs):
+        for i in range(self.max_iter):
             indices = rng.permutation(n_samples)
             X_shuffled = X_design[indices]
             y_shuffled = y[indices]
@@ -42,7 +40,7 @@ class MBGD(RegressorMixin, BaseEstimator):
                 y_batch = y_shuffled[start:end]
 
                 grad = - X_batch.T @ (y_batch - X_batch @ w) / len(X_batch)
-                w -= self._lr(epoch) * grad
+                w -= self._lr(i) * grad
 
         self.intercept_ = w[0]
         self.coef_ = w[1:]
@@ -51,14 +49,15 @@ class MBGD(RegressorMixin, BaseEstimator):
     def predict(self, X):
         return self.intercept_ + X @ self.coef_
 
-    def _lr(self, epoch):
+    def _lr(self, iteration):
         if self.lr_sched is None:
             return self.lr
         elif self.lr_sched == "step_decay":
-            return self.lr * (self.decay_factor ** (epoch // self.step_size))
+            return self.lr * (self.decay_factor ** \
+                   (iteration // self.step_size))
         elif self.lr_sched == "cosine_annealing":
-            return self.eta_min + 0.5 * (self.eta_max - self.eta_min) * \
-                   (1 + np.cos(np.pi * epoch / self.epochs))
+            return self.min_lr + 0.5 * (self.lr - self.min_lr) * \
+                   (1 + np.cos(np.pi * iteration / self.max_iter))
         else:
             raise ValueError(f"Unknown lr_sched: {self.lr_sched}")
 
@@ -66,6 +65,7 @@ class MBGD(RegressorMixin, BaseEstimator):
 if __name__ == "__main__":
     from ..dataset import CaliforniaHousingDataset as Dataset
     from ..pipeline import get_pipeline
+    from sklearn.metrics import mean_squared_error
 
     d = Dataset()
     d.split()
@@ -75,6 +75,6 @@ if __name__ == "__main__":
     y_pred = model.predict(d.X_test)
     y_true = d.y_test
 
-    mse = np.sum(np.square(y_true - y_pred))
+    mse = mean_squared_error(y_true, y_pred)
 
     print(f"MSE = {mse:.4f}")

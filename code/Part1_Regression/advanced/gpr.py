@@ -7,17 +7,17 @@ from sklearn.gaussian_process.kernels import RBF
 def gradient_descent_optimizer(obj_func, initial_theta, bounds):
     theta_opt = initial_theta.copy()
     lr = 0.001
-    epochs = 100
+    max_iter = 100
 
-    for epoch in range(epochs):
+    for _ in range(max_iter):
         value, grad = obj_func(theta_opt, eval_gradient=True)
         theta_opt += lr * grad
 
-        for i, (low, high) in enumerate(bounds):
+        for j, (low, high) in enumerate(bounds):
             if low is not None:
-                theta_opt[i] = max(theta_opt[i], low)
+                theta_opt[j] = max(theta_opt[j], low)
             if high is not None:
-                theta_opt[i] = min(theta_opt[i], high)
+                theta_opt[j] = min(theta_opt[j], high)
 
     func_min = obj_func(theta_opt, eval_gradient=False)
     return theta_opt, func_min
@@ -25,13 +25,11 @@ def gradient_descent_optimizer(obj_func, initial_theta, bounds):
 
 class GPR(RegressorMixin, BaseEstimator):
 
-    def __init__(self):
+    def __init__(self, random_sate=42):
         self._gpr = GaussianProcessRegressor(
             RBF(0.2, (1e-2, 1e1)),
             optimizer=gradient_descent_optimizer,
-            # n_restarts_optimizer=5,
-            copy_X_train=False,
-            random_state=42,
+            random_state=random_sate,
         )
 
     def fit(self, X, y):
@@ -45,6 +43,7 @@ class GPR(RegressorMixin, BaseEstimator):
 if __name__ == "__main__":
     from ..dataset import CaliforniaHousingDataset as Dataset
     from ..pipeline import get_pipeline
+    from sklearn.metrics import mean_squared_error
 
     d = Dataset()
     d.split()
@@ -59,6 +58,6 @@ if __name__ == "__main__":
     y_pred, _ = model.predict(d.X_test)
     y_true = d.y_test
 
-    mse = np.sum(np.square(y_true - y_pred))
+    mse = mean_squared_error(y_true, y_pred)
 
     print(f"MSE = {mse:.4f}")
