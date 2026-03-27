@@ -25,6 +25,10 @@ class CaliforniaHousingDataset:
         self.X = dataset.data.to_numpy()
         self.y = dataset.target.to_numpy()
         self.df = dataset.frame
+        self.feature_names = dataset.feature_names
+        self.target_name = dataset.target_names[0]
+        self.n_features = self.X.shape[1]
+        self.n_samples = self.X.shape[0]
 
     def size(self) -> int:
         """
