@@ -76,4 +76,5 @@ if __name__ == "__main__":
     y_true = d.y_test
 
     mse = mean_squared_error(y_true, y_pred)
+
     print(f"MSE = {mse:.4f}")
