@@ -1,4 +1,6 @@
 import numpy as np
+import ssl
+ssl._create_default_https_context = ssl._create_unverified_context
 from sklearn.datasets import fetch_california_housing
 
 

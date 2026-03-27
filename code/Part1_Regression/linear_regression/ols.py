@@ -29,6 +29,6 @@ if __name__ == "__main__":
     y_pred = model.predict(d.X_test)
     y_true = d.y_test
 
-    mse = np.sum(np.square(y_true - y_pred))
+    mse = np.mean(np.square(y_true - y_pred))
 
     print(f"MSE = {mse:.4f}")
