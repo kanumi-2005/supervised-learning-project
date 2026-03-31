@@ -28,6 +28,6 @@ class BiasVarianceAnalyzer:
         self.bias2_ = np.mean((mean_pred - y) ** 2)
 
         # variance
-        self.variance_ = np.mean(np.var(predictions, axis=0))
+        self.variance_ = np.mean(np.var(predictions, axis=0, ddof=1))
 
         return self
