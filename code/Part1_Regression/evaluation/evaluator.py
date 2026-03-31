@@ -5,6 +5,8 @@ from sklearn.metrics import mean_squared_error, root_mean_squared_error, \
      mean_absolute_error, r2_score
 from sklearn.model_selection import KFold, cross_validate
 
+from scipy.stats import ttest_rel, wilcoxon
+
 
 class Evaluator:
     def __init__(self, n_splits=10, random_state=42):
@@ -99,6 +101,62 @@ class Evaluator:
 
         return pd.DataFrame(results)
 
+    def cross_validate_raw(self, model, X, y,
+                           scoring="neg_mean_squared_error"):
+        scores = cross_validate(
+            model,
+            X,
+            y,
+            scoring=scoring,
+            cv=KFold(
+                n_splits=self.n_splits,
+                shuffle=True,
+                random_state=self.random_state
+            ),
+            n_jobs=-1
+        )
+
+        return -scores["test_score"]
+
+    def statistical_test(self, model_a, model_b, X, y,
+                         scoring="neg_mean_squared_error"):
+        scores_a = self.cross_validate_raw(model_a, X, y, scoring)
+        scores_b = self.cross_validate_raw(model_b, X, y, scoring)
+
+        t_stat, p_t = ttest_rel(scores_a, scores_b)
+        w_stat, p_w = wilcoxon(scores_a, scores_b)
+
+        return {
+            "Model A mean": np.mean(scores_a),
+            "Model B mean": np.mean(scores_b),
+            "t-test p-value": p_t,
+            "Wilcoxon p-value": p_w
+        }
+
+    def compare_models_statistical(self, models, X, y,
+                                   scoring="neg_mean_squared_error"):
+        names = list(models.keys())
+        results = []
+
+        for i in range(len(names)):
+            for j in range(i+1, len(names)):
+                name_a, name_b = names[i], names[j]
+
+                res = self.statistical_test(
+                    models[name_a],
+                    models[name_b],
+                    X, y
+                )
+
+                results.append({
+                    "Model A": name_a,
+                    "Model B": name_b,
+                    "p-value (t-test)": res["t-test p-value"],
+                    "p-value (Wilcoxon)": res["Wilcoxon p-value"]
+                })
+
+        return pd.DataFrame(results)
+
 
 if __name__ == "__main__":
     from ..dataset import CaliforniaHousingDataset as Dataset
@@ -125,3 +183,11 @@ if __name__ == "__main__":
     result = evaluator.compare_models_test(models, d.X_train, d.y_train,
                                            d.X_test, d.y_test)
     print(result)
+
+    stat_result = evaluator.compare_models_statistical(
+        models,
+        d.X_train,
+        d.y_train
+    )
+
+    print(stat_result)
