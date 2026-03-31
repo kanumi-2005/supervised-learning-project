@@ -1,9 +1,9 @@
 import numpy as np
-from numpy._core.numeric import indices
 from sklearn.base import ClassifierMixin, BaseEstimator
 
 
 def sigmoid(x):
+    x = np.clip(x, -50, 50)
     return 1 / (1 + np.exp(-x))
 
 
@@ -27,44 +27,57 @@ class SigmoidClassifier(ClassifierMixin, BaseEstimator):
         self.decay_factor = decay_factor
         self.random_state = random_state
 
+    def _encode_labels(self, y):
+        self.classes_ = np.unique(y)
+        if len(self.classes_) != 2:
+            raise ValueError("SigmoidClassifier only supports binary")
+        return (y == self.classes_[1]).astype(float)
 
     def _lr(self, iteration):
         if self.lr_sched is None:
             return self.lr
         elif self.lr_sched == "step_decay":
-            return self.lr * (self.decay_factor ** \
-                   (iteration // self.step_size))
+            return self.lr * (self.decay_factor **
+                              (iteration // self.step_size))
         else:
             raise ValueError(f"Unknown lr_sched: {self.lr_sched}")
+
+    def _gradient(self, X_batch, y_batch, w):
+        p = sigmoid(X_batch @ w)
+        grad = X_batch.T @ (p - y_batch)
+        return grad / X_batch.shape[0]
 
     def fit(self, X, y):
         rng = np.random.default_rng(self.random_state)
 
         n_samples, n_features = X.shape
-        X_design = np.c_[np.ones(X.shape[0]), X]
-        weights = np.zeros(n_features + 1)
-        for _ in range(self.max_iter):
+        y_bin = self._encode_labels(y)
+
+        X_design = np.c_[np.ones(n_samples), X]
+        w = np.zeros(n_features + 1)
+
+        for i in range(self.max_iter):
             indices = rng.permutation(n_samples)
             X_shuffled = X_design[indices]
-            y_shuffled = y[indices]
+            y_shuffled = y_bin[indices]
 
             for start in range(0, n_samples, self.batch_size):
                 end = start + self.batch_size
                 X_batch = X_shuffled[start:end]
                 y_batch = y_shuffled[start:end]
 
-                y_pred_proba = sigmoid(X_batch @ weights)
-                grad = (X_batch.T @ (y_pred_proba - y_batch)) / \
-                       X_batch.shape[0]
+                grad = self._gradient(X_batch, y_batch, w)
+                w -= self._lr(i) * grad
 
-                weights -= self.lr * grad
-
-        self.intercept_ = weights[0]
-        self.coef_  = weights[1:]
+        self.intercept_ = w[0]
+        self.coef_ = w[1:]
         return self
 
     def predict_proba(self, X):
-        return sigmoid(self.intercept_ + X @ self.coef_)
+        p = sigmoid(self.intercept_ + X @ self.coef_)
+        return np.c_[1 - p, p]
 
     def predict(self, X):
-        return (self.predict_proba(X) >= 0.5).astype(int)
+        probs = self.predict_proba(X)
+        indices = np.argmax(probs, axis=1)
+        return self.classes_[indices]
