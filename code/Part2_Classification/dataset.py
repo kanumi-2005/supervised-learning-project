@@ -2,6 +2,7 @@ import numpy as np
 from pandas.core.common import random_state
 from pandas.errors import DatabaseError
 from sklearn.datasets import fetch_covtype
+from sklearn.model_selection import train_test_split
 
 
 class CovtypeDataset:
@@ -30,29 +31,40 @@ class CovtypeDataset:
 
     def split(
         self,
-        train_size = 0.6,
-        val_size = 0.2,
-        test_size = 0.2,
-        random_state = 42
+        train_size=0.6,
+        val_size=0.2,
+        test_size=0.2,
+        random_state=42,
+        shuffle=True,
+        stratify=True,
     ):
         assert train_size + val_size + test_size == 1.0
 
-        rng = np.random.default_rng(random_state)
-        indices = rng.permutation(self.size())
+        stratify_y = self.y if stratify else None
 
-        train_end = int(self.size() * train_size)
-        val_end = train_end + int(self.size() * val_size)
+        X_train, X_temp, y_train, y_temp = train_test_split(
+            self.X,
+            self.y,
+            train_size=train_size,
+            random_state=random_state,
+            shuffle=shuffle,
+            stratify=stratify_y,
+        )
 
-        train_idx = indices[:train_end]
-        val_idx = indices[train_end:val_end]
-        test_idx = indices[val_end:]
+        val_ratio = val_size / (val_size + test_size)
+        stratify_temp = y_temp if stratify else None
+        X_val, X_test, y_val, y_test = train_test_split(
+            X_temp,
+            y_temp,
+            train_size=val_ratio,
+            random_state=random_state,
+            shuffle=shuffle,
+            stratify=stratify_temp,
+        )
 
-        self.X_train = self.X[train_idx]
-        self.X_val = self.X[val_idx]
-        self.X_test = self.X[test_idx]
-        self.y_train = self.y[train_idx]
-        self.y_val = self.y[val_idx]
-        self.y_test = self.y[test_idx]
+        self.X_train, self.y_train = X_train, y_train
+        self.X_val, self.y_val = X_val, y_val
+        self.X_test, self.y_test = X_test, y_test
 
 
 if __name__ == "__main__":
