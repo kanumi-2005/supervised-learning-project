@@ -16,6 +16,7 @@ class CovtypeDataset:
         self.target_name = dataset.target_names[0]
         self.n_features = self.X.shape[1]
         self.n_samples = self.X.shape[0]
+        self.classes = np.unique(self.y)
 
     def size(self):
         return self.n_samples

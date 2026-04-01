@@ -15,7 +15,7 @@ class SigmoidClassifier(ClassifierMixin, BaseEstimator):
         max_iter=150,
         batch_size=64,
         lr_sched="step_decay",
-        step_size=50,
+        step_size=30,
         decay_factor=0.5,
         random_state=42
     ):

@@ -37,6 +37,40 @@ class BayesianLinearRegression(BaseEstimator, RegressorMixin):
         return y_mean.ravel(), y_std.ravel()
     def get_posterior(self):
         return self.m_N, self.S_N
+     # Evidence Maximization 
+    def evidence_maximization(self, X, y, max_iter=100, tol=1e-6):
+        Phi = self._add_bias(X)
+        y = y.reshape(-1, 1)
+
+        for _ in range(max_iter):
+            # posterior
+            S_N_inv = self.alpha * np.eye(Phi.shape[1]) + self.beta * Phi.T @ Phi
+            S_N = np.linalg.inv(S_N_inv)
+            m_N = self.beta * S_N @ Phi.T @ y
+
+            # eigenvalues
+            eigenvals = np.linalg.eigvalsh(self.beta * Phi.T @ Phi)
+
+            # gamma
+            gamma = np.sum(eigenvals / (self.alpha + eigenvals))
+
+            # update alpha, beta
+            alpha_new = gamma / np.sum(m_N ** 2)
+
+            residual = y - Phi @ m_N
+            beta_new = (Phi.shape[0] - gamma) / np.sum(residual ** 2)
+
+            # check convergence
+            if abs(alpha_new - self.alpha) < tol and abs(beta_new - self.beta) < tol:
+                break
+
+            self.alpha = alpha_new
+            self.beta = beta_new
+
+        self.S_N = S_N
+        self.m_N = m_N
+
+        return self
 
 # ===== MAIN =====
 if __name__ == "__main__":
