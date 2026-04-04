@@ -25,11 +25,13 @@ def gradient_descent_optimizer(obj_func, initial_theta, bounds):
 
 class GPR(RegressorMixin, BaseEstimator):
 
-    def __init__(self, random_sate=42):
+    def __init__(self, alpha=1e-2, random_state=42):
+        self.random_state=random_state
         self._gpr = GaussianProcessRegressor(
             RBF(0.2, (1e-2, 1e1)),
+            alpha=alpha,
             optimizer=gradient_descent_optimizer,
-            random_state=random_sate,
+            random_state=random_state,
         )
 
     def fit(self, X, y):
