@@ -91,12 +91,13 @@ class SoftmaxClassifier(ClassifierMixin, BaseEstimator):
 
 if __name__ == "__main__":
     from ..dataset import CovtypeDataset as Dataset
+    from ..pipeline import get_pipeline
     from sklearn.metrics import accuracy_score
 
     d = Dataset()
     d.split()
 
-    model = SoftmaxClassifier()
+    model = get_pipeline(SoftmaxClassifier())
 
     model.fit(d.X_train, d.y_train)
     y_pred = model.predict(d.X_test)
