@@ -4,13 +4,10 @@ from sklearn.compose import TransformedTargetRegressor
 from sklearn.pipeline import Pipeline
 
 
-def get_pipeline(predictor, features = None):
-    pipe = Pipeline(
-        steps=[
-            ("features", features),
-            ("scaler", StandardScaler()),
-            ("predictor", predictor)
-        ]
-    )
-
-    return pipe
+def get_pipeline(predictor, features=None):
+    steps = []
+    steps.append(("scaler", StandardScaler()))
+    if features is not None:
+        steps.append(("features", features))
+    steps.append(("predictor", predictor))
+    return Pipeline(steps)
