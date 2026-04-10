@@ -1,24 +1,24 @@
 import numpy as np
-from sklearn.base import RegressorMixin, BaseEstimator
+from sklearn.base import RegressorMixin
+from ..base.basemodel import BaseModel
 
 
-class WLS(RegressorMixin, BaseEstimator):
+class WLS(RegressorMixin, BaseModel):
     def __init__(self, weights):
-        self.W = weights
+        self.weights = weights
 
-    def fit(self, X, y):
+    def _fit(self, X, y, **kwargs):
         X_design = np.c_[np.ones(X.shape[0]), X]
 
-        X_weighted = X_design.T * self.W
+        X_weighted = X_design.T * self.weights
         A = X_weighted @ X_design
         b = X_weighted @ y
         w = np.linalg.pinv(A) @ b
 
         self.intercept_ = w[0]
         self.coef_ = w[1:]
-        return self
 
-    def predict(self, X):
+    def _predict(self, X):
         return X @ self.coef_ + self.intercept_
 
 

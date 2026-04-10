@@ -1,9 +1,10 @@
 import numpy as np
-from sklearn.base import RegressorMixin, BaseEstimator
+from sklearn.base import RegressorMixin
+from ..base.basemodel import BaseModel
 
 
-class OLS(RegressorMixin, BaseEstimator):
-    def fit(self, X: np.ndarray, y):
+class OLS(RegressorMixin, BaseModel):
+    def _fit(self, X, y, **kwargs):
         X_design = np.c_[np.ones(len(X)), X]
         A = X_design.T @ X_design
         b = X_design.T @ y
@@ -11,9 +12,7 @@ class OLS(RegressorMixin, BaseEstimator):
         self.intercept_ = w[0]
         self.coef_ = w[1:]
 
-        return self
-
-    def predict(self, X):
+    def _predict(self, X):
         return X @ self.coef_ + self.intercept_
 
 

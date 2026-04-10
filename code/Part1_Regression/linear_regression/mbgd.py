@@ -1,65 +1,74 @@
 import numpy as np
-from sklearn.base import BaseEstimator, RegressorMixin
+from sklearn.base import RegressorMixin
+from sklearn.metrics import mean_squared_error
+from ..base.basegdmodel import BaseGDModel
 
 
-class MBGD(RegressorMixin, BaseEstimator):
+class MBGD(RegressorMixin, BaseGDModel):
     def __init__(
         self,
-        batch_size = 4,
-        lr = 0.01,
-        max_iter = 100,
-        lr_sched = None,
-        random_state = 42,
-        min_lr = 0.0001,
-        step_size = 50,
-        decay_factor = 0.5
+        batch_size=64,
+        lr=0.01,
+        max_iter=150,
+        lr_sched=None,
+        random_state=42,
+        min_lr=0.0001,
+        step_size=30,
+        decay_factor=0.5,
+        store_history=True
     ):
-        self.batch_size = batch_size
-        self.lr = lr
-        self.max_iter = max_iter
+        super().__init__(
+            lr=lr,
+            max_iter=max_iter,
+            store_history=store_history,
+            batch_size=batch_size,
+            random_state=random_state
+        )
         self.lr_sched = lr_sched
-        self.random_state = random_state
         self.min_lr = min_lr
         self.step_size = step_size
         self.decay_factor = decay_factor
 
-    def fit(self, X, y):
-        rng = np.random.default_rng(self.random_state)
+    def _init_params(self, X, y):
+        n_features = X.shape[1]
+        self.w = np.zeros(n_features + 1)
 
-        n_samples, n_features = X.shape
+    def _loss(self, X, y):
+        y_pred = self.w[0] + X @ self.w[1:]
+        return mean_squared_error(y, y_pred)
+
+    def _grad(self, X, y):
+        n_samples = X.shape[0]
         X_design = np.c_[np.ones(n_samples), X]
-        w = np.zeros(n_features + 1)
-        for i in range(self.max_iter):
-            indices = rng.permutation(n_samples)
-            X_shuffled = X_design[indices]
-            y_shuffled = y[indices]
+        return - X_design.T @ (y - X_design @ self.w) / n_samples
 
-            for start in range(0, n_samples, self.batch_size):
-                end = start + self.batch_size
-                X_batch = X_shuffled[start:end]
-                y_batch = y_shuffled[start:end]
-
-                grad = - X_batch.T @ (y_batch - X_batch @ w) / len(X_batch)
-                w -= self._lr(i) * grad
-
-        self.intercept_ = w[0]
-        self.coef_ = w[1:]
-        return self
-
-    def predict(self, X):
-        return self.intercept_ + X @ self.coef_
+    def _update_params(self, grad, iteration):
+        self.w -= self._lr(iteration) * grad
 
     def _lr(self, iteration):
         if self.lr_sched is None:
             return self.lr
         elif self.lr_sched == "step_decay":
-            return self.lr * (self.decay_factor ** \
-                   (iteration // self.step_size))
+            return self.lr * (self.decay_factor ** (iteration // self.step_size))
         elif self.lr_sched == "cosine_annealing":
             return self.min_lr + 0.5 * (self.lr - self.min_lr) * \
                    (1 + np.cos(np.pi * iteration / self.max_iter))
         else:
             raise ValueError(f"Unknown lr_sched: {self.lr_sched}")
+
+    def _extra_logs(self, X, y, grad, iter):
+        return {"lr": self._lr(iter)}
+
+    def _predict(self, X):
+        return self.w[0] + X @ self.w[1:]
+
+    @property
+    def intercept_(self):
+        return self.w[0]
+
+    @property
+    def coef_(self):
+        return self.w[1:]
 
 
 if __name__ == "__main__":
@@ -70,7 +79,7 @@ if __name__ == "__main__":
     d = Dataset()
     d.split()
 
-    model = get_pipeline(MBGD())
+    model = get_pipeline(MBGD(lr_sched="step_decay"))
     model.fit(d.X_train, d.y_train)
     y_pred = model.predict(d.X_test)
     y_true = d.y_test
