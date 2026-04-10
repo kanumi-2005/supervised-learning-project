@@ -1,5 +1,6 @@
 import numpy as np
-from sklearn.base import ClassifierMixin, BaseEstimator
+from sklearn.base import ClassifierMixin
+from ..base.basegdmodel import BaseGDModel
 
 
 def softmax(z):
@@ -8,8 +9,7 @@ def softmax(z):
     return exp_z / np.sum(exp_z, axis=1, keepdims=True)
 
 
-class SoftmaxClassifier(ClassifierMixin, BaseEstimator):
-
+class SoftmaxClassifier(ClassifierMixin, BaseGDModel):
     def __init__(
         self,
         lr=0.01,
@@ -18,15 +18,19 @@ class SoftmaxClassifier(ClassifierMixin, BaseEstimator):
         lr_sched="step_decay",
         step_size=30,
         decay_factor=0.5,
-        random_state=42
+        random_state=42,
+        store_history=True
     ):
-        self.lr = lr
-        self.max_iter = max_iter
-        self.batch_size = batch_size
+        super().__init__(
+            lr=lr,
+            max_iter=max_iter,
+            store_history=store_history,
+            batch_size=batch_size,
+            random_state=random_state
+        )
         self.lr_sched = lr_sched
         self.step_size = step_size
         self.decay_factor = decay_factor
-        self.random_state = random_state
 
     def _encode_labels(self, y):
         self.classes_ = np.unique(y)
@@ -38,55 +42,69 @@ class SoftmaxClassifier(ClassifierMixin, BaseEstimator):
         one_hot[np.arange(len(y)), y] = 1
         return one_hot
 
+    def _init_params(self, X, y):
+        n_samples, n_features = X.shape
+        y_encoded = self._encode_labels(y)
+        self.n_classes_ = len(self.classes_)
+
+        self.X_ = X
+        self.y_encoded_ = y_encoded
+
+        self.W = np.zeros((n_features + 1, self.n_classes_))
+
+    def _loss(self, X, y):
+        n_samples = X.shape[0]
+        X_design = np.c_[np.ones(n_samples), X]
+
+        y_encoded = np.array([self.class_to_index_[c] for c in y])
+        Y = self._one_hot(y_encoded, self.n_classes_)
+
+        probs = softmax(X_design @ self.W)
+        loss = -np.sum(Y * np.log(probs + 1e-12)) / n_samples
+        return loss
+
+    def _grad(self, X, y):
+        n_samples = X.shape[0]
+        X_design = np.c_[np.ones(n_samples), X]
+
+        y_encoded = np.array([self.class_to_index_[c] for c in y])
+        Y = self._one_hot(y_encoded, self.n_classes_)
+
+        probs = softmax(X_design @ self.W)
+        grad = (X_design.T @ (probs - Y)) / n_samples
+        return grad
+
+    def _update_params(self, grad, iteration):
+        self.W -= self._lr(iteration) * grad
+
     def _lr(self, iteration):
         if self.lr_sched is None:
             return self.lr
         elif self.lr_sched == "step_decay":
-            return self.lr * (self.decay_factor ** \
-                   (iteration // self.step_size))
+            return self.lr * (self.decay_factor ** (iteration // self.step_size))
         else:
             raise ValueError(f"Unknown lr_sched: {self.lr_sched}")
 
-    def fit(self, X, y):
-        rng = np.random.default_rng(self.random_state)
+    def _extra_logs(self, X, y, grad, iter):
+        return {"lr": self._lr(iter)}
 
-        n_samples, n_features = X.shape
-
-        y_encoded = self._encode_labels(y)
-        n_classes = len(self.classes_)
-
-        X_design = np.c_[np.ones(n_samples), X]
-
-        W = np.zeros((n_features + 1, n_classes))
-
-        for i in range(self.max_iter):
-            indices = rng.permutation(n_samples)
-            X_shuffled = X_design[indices]
-            y_shuffled = y_encoded[indices]
-
-            for start in range(0, n_samples, self.batch_size):
-                end = start + self.batch_size
-                X_batch = X_shuffled[start:end]
-                y_batch = y_shuffled[start:end]
-
-                y_pred_proba = softmax(X_batch @ W)
-                Y = self._one_hot(y_batch, n_classes)
-
-                grad = (X_batch.T @ (y_pred_proba - Y)) / X_batch.shape[0]
-                W -= self._lr(i) * grad
-
-        self.intercept_ = W[0]
-        self.coef_ = W[1:]
-        return self
-
-    def predict_proba(self, X):
-        scores = self.intercept_ + X @ self.coef_
-        return softmax(scores)
-
-    def predict(self, X):
+    def _predict(self, X):
         probs = self.predict_proba(X)
         indices = np.argmax(probs, axis=1)
         return self.classes_[indices]
+
+    def predict_proba(self, X):
+        n_samples = X.shape[0]
+        X_design = np.c_[np.ones(n_samples), X]
+        return softmax(X_design @ self.W)
+
+    @property
+    def intercept_(self):
+        return self.W[0]
+
+    @property
+    def coef_(self):
+        return self.W[1:]
 
 
 if __name__ == "__main__":
