@@ -1,0 +1,25 @@
+Bộ dữ liệu California Housing được xây dựng từ cuộc điều tra dân số Hoa Kỳ năm
+1990, trong đó mỗi quan sát tương ứng với một nhóm khu vực điều tra dân số
+(census block group), là đơn vị địa lý nhỏ nhất trong thống kê dân số, thường
+bao gồm từ vài trăm đến vài nghìn người \cite{pace1997sparse}.
+
+Dữ liệu được thu thập trên toàn bang California với 20,640 quan sát và 9 đặc
+trưng. Mỗi nhóm khu vực được xem như một vùng dân cư và được đại diện bởi một
+điểm trung tâm (centroid) nhằm phục vụ cho phân tích không gian. Khoảng cách
+giữa các khu vực được tính dựa trên tọa độ địa lý (kinh độ và vĩ độ) của các
+điểm trung tâm này, từ đó phản ánh mức độ liên hệ không gian giữa các vùng
+\cite{pace1997sparse}.
+
+Trung bình, mỗi nhóm khu vực có khoảng 1,425 cư dân sinh sống trong một khu vực
+địa lý nhỏ. Do đặc điểm phân bố dân cư, diện tích các khu vực thường giảm khi
+mật độ dân số tăng \cite{pace1997sparse}.
+
+Trong quá trình xử lý dữ liệu, các quan sát có giá trị bằng 0 ở cả biến đầu vào
+và biến mục tiêu đã được loại bỏ để đảm bảo tính nhất quán
+\cite{pace1997sparse}.
+
+Biến mục tiêu là giá trị trung vị nhà ở (median house value) trong từng khu
+vực, được đo theo đơn vị 100,000 USD. Một số đặc trưng như số phòng và số phòng
+ngủ được tính trung bình theo hộ gia đình (household), vì vậy có thể xuất hiện
+giá trị lớn ở những khu vực có ít hộ dân nhưng nhiều nhà trống, chẳng hạn khu
+nghỉ dưỡng.
