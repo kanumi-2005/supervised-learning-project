@@ -1,5 +1,6 @@
 import numpy as np
 from sklearn.base import ClassifierMixin
+from sklearn.metrics import log_loss
 from ..base.basegdmodel import BaseGDModel
 
 
@@ -13,10 +14,10 @@ class SoftmaxClassifier(ClassifierMixin, BaseGDModel):
     def __init__(
         self,
         lr=0.01,
-        max_iter=150,
-        batch_size=64,
+        max_iter=50,
+        batch_size=1024,
         lr_sched="step_decay",
-        step_size=30,
+        step_size=10,
         decay_factor=0.5,
         random_state=42,
         store_history=True
@@ -53,15 +54,8 @@ class SoftmaxClassifier(ClassifierMixin, BaseGDModel):
         self.W = np.zeros((n_features + 1, self.n_classes_))
 
     def _loss(self, X, y):
-        n_samples = X.shape[0]
-        X_design = np.c_[np.ones(n_samples), X]
-
-        y_encoded = np.array([self.class_to_index_[c] for c in y])
-        Y = self._one_hot(y_encoded, self.n_classes_)
-
-        probs = softmax(X_design @ self.W)
-        loss = -np.sum(Y * np.log(probs + 1e-12)) / n_samples
-        return loss
+        probs = self.predict_proba(X)
+        return log_loss(y, probs)
 
     def _grad(self, X, y):
         n_samples = X.shape[0]
