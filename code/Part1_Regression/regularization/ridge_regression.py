@@ -107,14 +107,15 @@ class RidgeRegressionCV(BaseEstimator, RegressorMixin):
         alphas = np.array(self.alphas)
         coefs = self.coefs_path_
 
-        plt.figure(figsize=(12, 6))
-        for i in range(coefs.shape[1]):
-            plt.plot(np.log10(alphas), coefs[:, i], label=f'Feature {i+1}')
+        fig, ax = plt.subplots(layout="constrained")
 
-        plt.title(title)
-        plt.xlabel(r'$\log_{10}(\lambda)$')
-        plt.ylabel('Coefficients')
-        plt.grid(True)
-        plt.legend(loc='best', fontsize='small')
-        plt.tight_layout()
+        for i in range(coefs.shape[1]):
+            ax.plot(np.log10(alphas), coefs[:, i], label=f'Feature {i+1}')
+
+        ax.set_title(title)
+        ax.set_xlabel(r'$\log_{10}(\lambda)$')
+        ax.set_ylabel('Coefficients')
+        ax.grid(True)
+        ax.legend(loc='best', fontsize='small')
+
         plt.show()
