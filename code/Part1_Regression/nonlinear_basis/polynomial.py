@@ -1,11 +1,12 @@
 import numpy as np
+from sklearn.base import BaseEstimator, TransformerMixin
 
 # POLYNOMIAL BASIS
 class PolynomialBasis:
     def __init__(self, degree=5):
         self.degree = degree
 
-    def fit(self, X):
+    def fit(self, X, y=None, **params):
         return self
 
     def transform(self, X):
