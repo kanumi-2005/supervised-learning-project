@@ -1,33 +1,50 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.model_selection import KFold
-from sklearn.linear_model import SGDRegressor
 from sklearn.base import BaseEstimator, RegressorMixin
 from sklearn.metrics import mean_squared_error
 
 
-class ElasticNet(SGDRegressor):
+class ElasticNet(BaseEstimator, RegressorMixin):
     def __init__(
             self,
-            alpha_1=0.01,
-            alpha_2=0.01,
-            warm_start=False,
-            random_state=42
+            alpha_1=1.0,
+            alpha_2=0.5,
+            learning_rate=0.01,
+            max_iter=5000
         ):
 
         self.alpha_1 = alpha_1
         self.alpha_2 = alpha_2
+        self.learning_rate = learning_rate
+        self.max_iter = max_iter
 
-        alpha = alpha_1 + alpha_2
-        l1_ratio = alpha_1 / alpha if alpha > 0 else 0
+    def fit(self, X, y):
+        n_samples, n_features = X.shape
+        y = np.asarray(y).ravel()
 
-        super().__init__(
-            penalty='elasticnet',
-            alpha=alpha,
-            l1_ratio=l1_ratio,
-            warm_start=warm_start,
-            random_state=random_state
-        )
+        self.coef_ = np.zeros(n_features)
+        self.intercept_ = 0.0
+
+        for _ in range(self.max_iter):
+            y_pred = X @ self.coef_ + self.intercept_
+            errors = y_pred - y
+
+            grad_mse = (2.0 / n_samples) * (X.T @ errors)
+            grad_l2 = 2.0 * self.alpha_2 * self.coef_
+            grad_l1 = self.alpha_1 * np.sign(self.coef_)
+
+            grad_w = grad_mse + grad_l2 + grad_l1
+            grad_b = (2.0 / n_samples) * np.sum(errors)
+
+            self.coef_ -= self.learning_rate * grad_w
+            self.intercept_ -= self.learning_rate * grad_b
+
+        self.n_features_in_ = n_features
+        return self
+
+    def predict(self, X):
+        return X @ self.coef_ + self.intercept_
 
 
 class ElasticNetCV(BaseEstimator, RegressorMixin):
@@ -64,7 +81,6 @@ class ElasticNetCV(BaseEstimator, RegressorMixin):
 
             fold_model = ElasticNet(
                 warm_start=True,
-                random_state=self.random_state
             )
 
             for i, (alpha_1, alpha_2) in enumerate(param_grid):
