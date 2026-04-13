@@ -1,0 +1,53 @@
+\usepackage{graphicx}
+\usepackage[margin=1in]{geometry}
+\usepackage{tikz}
+
+% font & tiếng việt
+\usepackage{fontspec}       % cần cho Unicode & OpenType fonts
+\usepackage{polyglossia}    % thay thế babel
+\setdefaultlanguage{vietnamese}
+\setotherlanguage{english}
+
+\usepackage[skip=4pt]{caption}  % trong preamble
+\captionsetup[table]{position=above}
+% Import
+\usepackage{import}
+
+% \setmainfont{Times New Roman}  % hoặc font khác hỗ trợ Unicode
+
+
+\usepackage[unicode]{hyperref}
+\usepackage{tabularray}
+\DefTblrTemplate{firsthead}{caption}{%
+  \makebox[\tablewidth]{\parbox{\columnwidth}{%
+    \UseTblrTemplate{caption}{normal}%
+  }}%
+}
+\SetTblrTemplate{firsthead}{caption}
+% \usepackage{indentfirst}
+
+% APA reference format
+\usepackage{apacite}
+
+\usepackage[inline]{enumitem}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage[ruled,vlined]{algorithm2e}
+
+% \usepackage{algorithm}
+% \usepackage{algorithmic}
+
+% \hyphenation{al-go-rithm ar-ti-fi-cial}
+
+\SetAlgorithmName{Thuật toán}{Thuật toán}{Danh sách thuật toán}
+
+\addto\captionsvietnamese{%
+  \renewcommand{\refname}{Tài liệu tham khảo}%
+}
+% Config
+% \AtBeginDocument{\renewcommand{\refname}{Tài liệu tham khảo}}
+% \AtBeginDocument{\renewcommand{\listtablename}{Danh sách bảng}}
+\AtBeginDocument{\renewcommand{\tblrcontfootname}{Còn tiếp trang sau}}
+\AtBeginDocument{\renewcommand{\tblrcontheadname}{(Tiếp theo)}}
+\graphicspath{{images/}}
+\UseTblrLibrary{varwidth}
+\UseTblrLibrary{diagbox}

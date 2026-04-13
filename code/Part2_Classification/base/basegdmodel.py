@@ -1,16 +1,17 @@
 from .basemodel import BaseModel
 import numpy as np
+import time
 
 
 class BaseGDModel(BaseModel):
     def __init__(
-            self,
-            lr,
-            max_iter,
-            store_history,
-            batch_size=None,
-            random_state=42
-        ):
+        self,
+        lr,
+        max_iter,
+        store_history,
+        batch_size=None,
+        random_state=42
+    ):
         super().__init__()
         self.lr = lr
         self.max_iter = max_iter
@@ -29,8 +30,11 @@ class BaseGDModel(BaseModel):
         if self.store_history:
             self.train_loss_history_ = []
             self.val_loss_history_ = []
+            self.time_history_ = []
 
         batch_size = self.batch_size or self.n_samples
+
+        start_time = time.perf_counter()
 
         for it in range(self.max_iter):
             indices = self.rng.permutation(self.n_samples)
@@ -51,15 +55,19 @@ class BaseGDModel(BaseModel):
             if X_val is not None and y_val is not None:
                 val_loss = self._loss(X_val, y_val)
 
+            elapsed = time.perf_counter() - start_time
+
             if self.store_history:
                 self.train_loss_history_.append(train_loss)
                 if val_loss is not None:
                     self.val_loss_history_.append(val_loss)
+                self.time_history_.append(elapsed)
 
             base_log = {
                 "iter": it,
                 "train_loss": train_loss,
-                "val_loss": val_loss
+                "val_loss": val_loss,
+                "time": elapsed
             }
 
             extra_log = self._extra_logs(
