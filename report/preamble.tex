@@ -8,7 +8,7 @@
 \setdefaultlanguage{vietnamese}
 \setotherlanguage{english}
 
-\usepackage[skip=4pt]{caption}  % trong preamble
+\usepackage[skip=6pt]{caption}  % trong preamble
 \captionsetup[table]{position=above}
 % Import
 \usepackage{import}
@@ -48,6 +48,9 @@
 % \AtBeginDocument{\renewcommand{\listtablename}{Danh sách bảng}}
 \AtBeginDocument{\renewcommand{\tblrcontfootname}{Còn tiếp trang sau}}
 \AtBeginDocument{\renewcommand{\tblrcontheadname}{(Tiếp theo)}}
-\graphicspath{{images/}}
 \UseTblrLibrary{varwidth}
 \UseTblrLibrary{diagbox}
+\edef\resourcespath{resources}
+\graphicspath{{\resourcespath/images/}}
+\edef\tablespath{\resourcespath/tables}
+\edef\imagespath{\resourcespath/images}
