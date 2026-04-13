@@ -1,20 +1,48 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.model_selection import KFold
-from sklearn.linear_model import SGDRegressor
 from sklearn.base import BaseEstimator, RegressorMixin
 from sklearn.metrics import mean_squared_error
 
 
-class LassoRegression(SGDRegressor):
-    def __init__(self, alpha=0.0001, warm_start=False, random_state=42):
-        super().__init__(
-            loss='squared_error',
-            penalty='l1',
-            alpha=alpha,
-            warm_start=warm_start,
-            random_state=random_state
-        )
+class LassoRegression(BaseEstimator, RegressorMixin):
+    def __init__(
+            self,
+            alpha=1.0,
+            learning_rate=0.001,
+            max_iter=1000,
+            warm_start=False,
+        ):
+
+        self.alpha = alpha
+        self.learning_rate = learning_rate
+        self.max_iter = max_iter
+        self.warm_start = warm_start
+
+    def fit(self, X, y):
+        n_samples, n_features = X.shape
+
+        if not (self.warm_start and hasattr(self, "coef_")):
+            self.coef_ = np.zeros(n_features)
+            self.intercept_ = 0.0
+
+        for _ in range(self.max_iter):
+            y_pred = X @ self.coef_ + self.intercept_
+            errors = y_pred - y
+
+
+            grad_w = (2.0 / n_samples) * (X.T @ errors) \
+                + self.alpha * np.sign(self.coef_)
+            grad_b = (2.0 / n_samples) * np.sum(errors)
+
+            self.coef_ -= self.learning_rate * grad_w
+            self.intercept_ -= self.learning_rate * grad_b
+
+        self.n_features_ = n_features
+        return self
+
+    def predict(self, X):
+        return X @ self.coef_ + self.intercept_
 
 
 class LassoRegressionCV(BaseEstimator, RegressorMixin):
@@ -37,7 +65,6 @@ class LassoRegressionCV(BaseEstimator, RegressorMixin):
         for train_idx, val_idx in kf.split(X):
             fold_model = LassoRegression(
                 warm_start=True,
-                random_state=self.random_state
             )
             fold_coefs = []
 
