@@ -10,8 +10,8 @@ class ElasticNet(BaseEstimator, RegressorMixin):
             self,
             alpha_1=1.0,
             alpha_2=0.5,
-            learning_rate=0.01,
-            max_iter=5000
+            learning_rate=0.001,
+            max_iter=1000
         ):
 
         self.alpha_1 = alpha_1
@@ -79,9 +79,7 @@ class ElasticNetCV(BaseEstimator, RegressorMixin):
             X_train, X_val = X[train_idx], X[val_idx]
             y_train, y_val = y[train_idx], y[val_idx]
 
-            fold_model = ElasticNet(
-                warm_start=True,
-            )
+            fold_model = ElasticNet()
 
             for i, (alpha_1, alpha_2) in enumerate(param_grid):
                 fold_model.set_params(alpha_1=alpha_1, alpha_2=alpha_2)
@@ -115,24 +113,24 @@ class ElasticNetCV(BaseEstimator, RegressorMixin):
         plot_alpha_1s = np.sort(self.alpha_1s)
         plot_alpha_2s = np.sort(self.alpha_2s)
 
-        log_alpha_1,log_alpha_2 = np.meshgrid(
+        log_alpha_1, log_alpha_2 = np.meshgrid(
             np.log10(plot_alpha_1s),
             np.log10(plot_alpha_2s)
         )
 
-        fliped_results = np.flip(self.results_, axis=(0, 1))
+        flipped_results = np.flip(self.results_, axis=(0, 1))
 
-        plt.figure(figsize=(12, 6))
+        fig, ax = plt.subplots(layout="constrained")
 
-        cp = plt.contourf(
+        cp = ax.contourf(
             log_alpha_1,
             log_alpha_2,
-            fliped_results,
+            flipped_results,
             levels=20,
             cmap='viridis_r'
         )
 
-        plt.plot(
+        ax.plot(
             np.log10(self.best_alpha_1_),
             np.log10(self.best_alpha_2_),
             'ro',
@@ -141,9 +139,11 @@ class ElasticNetCV(BaseEstimator, RegressorMixin):
             label='Optimal Point'
         )
 
-        plt.colorbar(cp, label='Mean MSE')
-        plt.xlabel(r'$\log_{10}(\lambda_1)$')
-        plt.ylabel(r'$\log_{10}(\lambda_2)$')
-        plt.title(title)
-        plt.legend()
+        fig.colorbar(cp, ax=ax, label='Mean MSE')
+
+        ax.set_xlabel(r'$\log_{10}(\lambda_1)$')
+        ax.set_ylabel(r'$\log_{10}(\lambda_2)$')
+        ax.set_title(title)
+        ax.legend()
+
         plt.show()
