@@ -11,8 +11,9 @@ def sigmoid(x):
 
 
 class IRLSClassifier(ClassifierMixin, BaseModel):
-    def __init__(self, max_iter=20, store_history=True):
+    def __init__(self, max_iter=20, reg_lambda=1e-4, store_history=True):
         self.max_iter = max_iter
+        self.reg_lambda = reg_lambda
         self.store_history = store_history
 
     def _encode_labels(self, y):
@@ -50,8 +51,8 @@ class IRLSClassifier(ClassifierMixin, BaseModel):
             z = X_design @ self.w
             p = sigmoid(z)
 
-            W = p * (1 - p)
-            H = X_design.T @ (W[:, None] * X_design)
+            W = np.clip(p * (1 - p), 1e-8, None)
+            H = X_design.T @ (W[:, None] * X_design) + self.reg_lambda * np.eye(X_design.shape[1])
             g = X_design.T @ (p - self.y_bin_)
 
             try:
