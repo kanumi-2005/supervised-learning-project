@@ -28,44 +28,48 @@ class LDA(ClassifierMixin, BaseEstimator):
 
     def predict(self, X):
         return self.model.predict(X)
-    
+
     def predict_proba(self, X):
         return self.model.predict_proba(X)
 
     def score(self, X, y):
         return self.model.score(X, y)
 
-    def plot2D(self, X, y):
+    def plot2D(self, X, y, padding=1):
         if self.n_components != 2:
-            raise ValueError("plot2D is only supported when n_components = 2")
+            raise ValueError("plot2D requires n_components = 2")
 
         X_lda = self.transform(X)
 
-        plt.figure()
+        clf = LinearDiscriminantAnalysis(n_components=2)
+        clf.fit(X_lda, y)
+
+        x_min, x_max = X_lda[:, 0].min() - padding, X_lda[:, 0].max() + padding
+        y_min, y_max = X_lda[:, 1].min() - padding, X_lda[:, 1].max() + padding
+
+        xx, yy = np.meshgrid(
+            np.linspace(x_min, x_max, 300),
+            np.linspace(y_min, y_max, 300)
+        )
+
+        grid = np.c_[xx.ravel(), yy.ravel()]
+        Z = clf.predict(grid)
+        Z = Z.reshape(xx.shape)
+
+        fig, ax = plt.subplots(layout="constrained")
+
+        ax.contour(xx, yy, Z, colors='k', linewidths=1)
+
         for label in np.unique(y):
             plt.scatter(
                 X_lda[y == label, 0],
                 X_lda[y == label, 1],
-                label=f"Class {label}"
+                label=f"Class {label}",
+                alpha=0.5
             )
 
-        x_min, x_max = X_lda[:, 0].min() - 1, X_lda[:, 0].max() + 1
-        y_min, y_max = X_lda[:, 1].min() - 1, X_lda[:, 1].max() + 1
-
-        xx, yy = np.meshgrid(
-            np.linspace(x_min, x_max, 200),
-            np.linspace(y_min, y_max, 200)
-        )
-
-        Z = self.model.predict(
-            self.model.inverse_transform(np.c_[xx.ravel(), yy.ravel()])
-        )
-        Z = Z.reshape(xx.shape)
-
-        plt.contour(xx, yy, Z)
-
-        plt.xlabel("LD1")
-        plt.ylabel("LD2")
-        plt.legend()
-        plt.title("LDA Decision Boundary (2D)")
+        ax.set_xlabel("LD1")
+        ax.set_ylabel("LD2")
+        ax.set_title("Correct LDA Decision Boundary")
+        ax.legend(loc='best')
         plt.show()
