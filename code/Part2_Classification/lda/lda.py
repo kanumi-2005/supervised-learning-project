@@ -70,6 +70,6 @@ class LDA(ClassifierMixin, BaseEstimator):
 
         ax.set_xlabel("LD1")
         ax.set_ylabel("LD2")
-        ax.set_title("Correct LDA Decision Boundary")
+        ax.set_title("LDA Decision Boundary")
         ax.legend(loc='best')
         plt.show()
