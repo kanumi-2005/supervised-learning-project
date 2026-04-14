@@ -59,7 +59,7 @@ class BaseModel(BaseEstimator):
 
     def _log(self, data):
         if self._logger is not None:
-            self._logger.log(data)
+            self._logger.info(data)
 
     @contextmanager
     def _track_resources(self):
