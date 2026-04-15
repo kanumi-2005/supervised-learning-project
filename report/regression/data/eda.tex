@@ -1,8 +1,6 @@
 \subsubsection{Phân tích khám phá}
 
 \paragraph{Thống kê mô tả}
-\tablename~\ref{tab:cali-housing-desc-part1}
-và~\ref{tab:cali-housing-desc-part2} mô tả
 \begin{table}[htbp]
   \caption{Thống kê mô tả bộ dữ liệu California Housing (phần 1)}
   \label{tab:cali-housing-desc-part1}
@@ -16,3 +14,116 @@ và~\ref{tab:cali-housing-desc-part2} mô tả
   \centering
   \import{\tablespath}{cali-housing-desc-part2}
 \end{table}
+
+\tablename~\ref{tab:cali-housing-desc-part1} và
+\ref{tab:cali-housing-desc-part2} trình bày các thống kê mô tả cơ bản của
+bộ dữ liệu California Housing. Các chỉ số bao gồm giá trị trung bình
+(mean), độ lệch chuẩn (standard deviation), giá trị nhỏ nhất (min), các
+phân vị (25\%, 50\%, 75\%) và giá trị lớn nhất (max) của từng biến. Tất cả đều
+đã được làm tròn đến 2 chữ số thập phân.
+
+Nhìn chung, các biến trong bộ dữ liệu có sự khác biệt đáng kể về thang đo
+và mức độ phân tán. Cụ thể, biến Population có giá trị trung bình
+là 1425.48 nhưng độ lệch chuẩn lên tới 1132.46, cho thấy sự phân bố rộng
+và tồn tại các khu vực có mật độ dân số rất cao. Tương tự, biến
+AveOccup có độ lệch chuẩn lớn (10.39) so với giá trị trung bình
+(3.07), phản ánh sự không đồng đều về số người trung bình trên mỗi hộ
+gia đình giữa các khu vực.
+
+Đối với các đặc trưng liên quan đến nhà ở, biến AveRooms có giá
+trị trung bình khoảng 5.43 phòng mỗi hộ, trong khi AveBedrms
+xấp xỉ 1.1 phòng ngủ, cho thấy mối quan hệ hợp lý giữa số phòng và số
+phòng ngủ. Tuy nhiên, giá trị cực đại của AveRooms (141.91) và
+AveBedrms (34.07) cho thấy sự tồn tại của các giá trị ngoại lệ, xuất
+phát từ những khu vực như khu nghỉ dưỡng với ít hộ dân nhưng nhiều phòng trống.
+
+Tương tự, các biến AveOccup, MedInc và MedHouseVal
+cũng xuất hiện các ngoại lai ở phía bên phải khi có sự chênh lệch lớn giữa giá
+trị phân vị thứ 3 so với giá trị cực đại ($15.0 - 4.74 = 10.26$) lớn hơn nhiều
+khi so với cực tiểu ($4.74 - 0.5 = 4.24$).
+
+Các biến tọa độ địa lý Latitude và Longitude có phạm vi giá trị tương đối hẹp
+và phù hợp với vị trí địa lý của bang California, điều này đảm bảo tính nhất
+quán về không gian của dữ liệu.
+
+Biến HouseAge có các chỉ số tương đối bình thường ngoại trừ giá trị cực đại
+là 52. Nó cho thấy dữ liệu có thể đã bị cắt ngưỡng.
+
+Biến mục tiêu MedHouseVal có giá trị trung bình là 2.07 (tương đương 207,000
+USD), với trung vị là 1.8. Giá trị lớn nhất đạt 5.0 cho thấy dữ liệu có thể bị
+cắt ngưỡng ở mức giá cao.
+
+Tổng thể, các thống kê mô tả cho thấy dữ liệu có sự phân bố không đồng đều và
+tồn tại ngoại lệ ở một số biến, do đó cần xem xét các bước tiền xử lý như chuẩn
+hóa hoặc xử lý ngoại lai trong các bước phân tích tiếp theo.
+
+\subparagraph{Phân phối biến mục tiêu}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{cali-housing-target-distribution}
+  \caption{Phân phối biến mục tiêu của bộ dữ liệu California Housing}
+  \label{fig:cali-housing-target-distribution}
+\end{figure}
+
+\figurename~\ref{fig:cali-housing-target-distribution} gồm 2 biểu đồ là biểu
+đồ tần suất (histogram, bên trái) và biểu đồ hộp và râu (boxplot, bên phải),
+cho thấy phân phối của biến mục tiêu MedHouseVal. Ta thấy biểu đồ tần suất
+lệch trái, điều này đúng khi thông tin từ
+\tablename~\ref{tab:cali-housing-desc-part2} cho ta biết trung vị lớn hơn
+trung bình đối với biến mục tiêu ($1.8 > 1.15$). Khoảng chia cuối cùng ở biểu
+đồ tần suất cho ta thấy sự bùng nổ về số lượng khu vực có chung khoảng giá
+trị. Điều này có thể được lý giải bằng việc cắt ngưỡng ở biến mục tiêu như đã
+được nói trước đó. Việc cắt ngưỡng này cũng có thể là nguyên nhân làm cho trung
+vị lớn hơn trung bình. Biểu đồ hộp cho thấy ngoại lai xuất hiện ở các giá
+trị ngắt ngưỡng này.
+
+\subparagraph{Mối quan hệ giữa biến mục tiêu và các biến đặc trưng}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{cali-housing-target-vs-features}
+  \caption{Biểu đồ phân tán giữa biến mục tiêu với các biến đặc trưng trong bộ
+  dữ liệu California Housing}
+  \label{fig:cali-housing-target-vs-features}
+\end{figure}
+
+\figurename~\ref{fig:cali-housing-target-vs-features} thể hiện sự phân tán
+giữa từng biến đặc trưng so với mục tiêu. Ta thấy rằng biến MedInc có mối tương
+quan thuận mạnh so với MedHouseVal. Các biến AveRooms, AveBedrms, Population
+cũng có tương quan thuận với biến mục tiêu nhưng không rõ ràng. Các biến
+Latitude và Longtitude cũng thể hiện mối quan hệ rõ rệt với mục tiêu nhưng
+không phải tuyến tính.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{cali-housing-correlation-matrix}
+  \caption{Ma trận tương quan giữa các biến trong bộ dữ liệu California
+  Housing}
+  \label{fig:cali-housing-correlation-matrix}
+\end{figure}
+
+\figurename~\ref{fig:cali-housing-correlation-matrix} thể hiện các tương quan
+tuyến tính các biến. Ta thấy giữa Latitude và Longtitude có mối tương quan
+nghịch rất mạnh ($-0.92$) điều này cũng thể hiện đúng với hình dáng chạy dọc
+theo trục Tây Bắc--Đông Nam của bang California. Giữa AveRooms và AveBedrms
+cũng có mối tương quan thuận mạnh ($0.85$) rất hợp lí khi số phòng ngủ thường
+tăng khi số phòng tăng. Đáng chú ý là giữa MedInc và biến mục tiêu có mối liên
+hệ tuyến tính mạnh ($0.69$). Do đó, MedInc có khả năng giải thích quan trọng
+trong các mô hình hồi quy tuyến tính.
+
+\subparagraph{Ngoại lai}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{cali-housing-features-outliers}
+  \caption{Ngoại lai các biến đặc trưng trong bộ dữ liệu California Housing}
+  \label{fig:cali-housing-features-outliers}
+\end{figure}
+
+\figurename~\ref{fig:cali-housing-features-outliers} gồm các biểu đồ hộp để thể
+hiện ngoại lai của các biến đặc trưng bằng phương pháp IQR. Ta thấy rằng các
+ngoại lai xuất hiện khá nhiều ở AveRooms, AveBedrms, Population, AveOccup và
+MedInc khi mà có nhiều khu vực rất giàu có, những khu vực nghỉ dưỡng có rất
+nhiều phòng, các khu đô thị tập trung đông đúc. Các biến HouseAge, Latitude và
+Longtitude còn lại khá ổn định và hầu như không có ngoại lai.
