@@ -1,10 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.base import ClassifierMixin, BaseEstimator
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+from ..base.basemodel import BaseModel
 
 
-class LDA(ClassifierMixin, BaseEstimator):
+class LDA(BaseModel):
     def __init__(self, n_components=None):
         self.n_components = n_components
         self.model = LinearDiscriminantAnalysis(
@@ -12,22 +12,21 @@ class LDA(ClassifierMixin, BaseEstimator):
             n_components=n_components
         )
 
-    def fit(self, X, y):
+    def _fit(self, X, y, **kwargs):
         self.model.fit(X, y)
         self.classes_ = self.model.classes_
         self.means_ = self.model.means_
         self.priors_ = self.model.priors_
         self.covariance_ = self.model.covariance_
-        return self
 
-    def fit_transform(self, X):
-        return self.model.fit_transform(X)
+    def _predict(self, X):
+        return self.model.predict(X)
+
+    def fit_transform(self, X, y=None):
+        return self.model.fit_transform(X, y)
 
     def transform(self, X):
         return self.model.transform(X)
-
-    def predict(self, X):
-        return self.model.predict(X)
 
     def predict_proba(self, X):
         return self.model.predict_proba(X)
@@ -44,8 +43,10 @@ class LDA(ClassifierMixin, BaseEstimator):
         clf = LinearDiscriminantAnalysis(n_components=2)
         clf.fit(X_lda, y)
 
-        x_min, x_max = X_lda[:, 0].min() - padding, X_lda[:, 0].max() + padding
-        y_min, y_max = X_lda[:, 1].min() - padding, X_lda[:, 1].max() + padding
+        x_min = X_lda[:, 0].min() - padding
+        x_max = X_lda[:, 0].max() + padding
+        y_min = X_lda[:, 1].min() - padding
+        y_max = X_lda[:, 1].max() + padding
 
         xx, yy = np.meshgrid(
             np.linspace(x_min, x_max, 300),
@@ -61,7 +62,7 @@ class LDA(ClassifierMixin, BaseEstimator):
         ax.contour(xx, yy, Z, colors='k', linewidths=1)
 
         for label in np.unique(y):
-            plt.scatter(
+            ax.scatter(
                 X_lda[y == label, 0],
                 X_lda[y == label, 1],
                 label=f"Class {label}",
@@ -71,5 +72,5 @@ class LDA(ClassifierMixin, BaseEstimator):
         ax.set_xlabel("LD1")
         ax.set_ylabel("LD2")
         ax.set_title("LDA Decision Boundary")
-        ax.legend(loc='best')
+        ax.legend(loc="best")
         plt.show()

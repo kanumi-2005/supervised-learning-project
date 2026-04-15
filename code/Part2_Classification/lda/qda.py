@@ -1,8 +1,8 @@
-from sklearn.base import ClassifierMixin, BaseEstimator
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
+from ..base.basemodel import BaseModel
 
 
-class QDA(ClassifierMixin, BaseEstimator):
+class QDA(BaseModel):
     def __init__(self, reg_param=0.001):
         self.reg_param = reg_param
         self.model = QuadraticDiscriminantAnalysis(
@@ -10,15 +10,14 @@ class QDA(ClassifierMixin, BaseEstimator):
             store_covariance=True
         )
 
-    def fit(self, X, y):
+    def _fit(self, X, y, **kwargs):
         self.model.fit(X, y)
         self.classes_ = self.model.classes_
         self.means_ = self.model.means_
         self.priors_ = self.model.priors_
         self.covariances_ = self.model.covariance_
-        return self
 
-    def predict(self, X):
+    def _predict(self, X):
         return self.model.predict(X)
 
     def predict_proba(self, X):
