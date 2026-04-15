@@ -12,13 +12,11 @@ class KernelRidgeCV(BaseEstimator, RegressorMixin):
     def _default_param_grid(self):
         if self.kernel == 'rbf':
             return {
-                "alpha": [0.1, 1, 10],
                 "gamma": [0.01, 0.1, 1]
             }
         elif self.kernel == 'polynomial':
             return {
-                "alpha": [0.1, 1, 10],
-                "degree": [2, 3, 4],
+                "degree": [2, 3],
                 "coef0": [0, 1]
             }
         else:

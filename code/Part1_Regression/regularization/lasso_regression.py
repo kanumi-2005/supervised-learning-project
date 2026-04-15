@@ -3,42 +3,63 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import KFold
 from sklearn.base import BaseEstimator, RegressorMixin
 from sklearn.metrics import mean_squared_error
+from ..base.basegdmodel import BaseGDModel
 
 
-class LassoRegression(BaseEstimator, RegressorMixin):
+class LassoRegression(BaseGDModel):
     def __init__(
-            self,
-            alpha=1.0,
-            learning_rate=0.001,
-            max_iter=1000,
-            warm_start=False,
-        ):
-
+        self,
+        alpha=1.0,
+        lr=0.001,
+        max_iter=1000,
+        store_history=False,
+        batch_size=None,
+        random_state=42
+    ):
         self.alpha = alpha
-        self.learning_rate = learning_rate
-        self.max_iter = max_iter
-        self.warm_start = warm_start
+        super().__init__(
+            lr=lr,
+            max_iter=max_iter,
+            store_history=store_history,
+            batch_size=batch_size,
+            random_state=random_state
+        )
 
-    def fit(self, X, y):
-        n_samples, n_features = X.shape
+    def _init_params(self, X, y):
+        n_features = X.shape[1]
+        self.coef_ = np.zeros(n_features)
+        self.intercept_ = 0.0
 
-        if not (self.warm_start and hasattr(self, "coef_")):
-            self.coef_ = np.zeros(n_features)
-            self.intercept_ = 0.0
+    def _loss(self, X, y):
+        y_pred = self.predict(X)
+        mse = np.mean((y_pred - y) ** 2)
+        reg = self.alpha * np.sum(np.abs(self.coef_))
+        return mse + reg
 
-        for _ in range(self.max_iter):
-            y_pred = X @ self.coef_ + self.intercept_
-            errors = y_pred - y
+    def _grad(self, X, y):
+        n_samples = X.shape[0]
 
+        y_pred = self.predict(X)
+        errors = y_pred - y
 
-            grad_w = (2.0 / n_samples) * (X.T @ errors) \
-                + self.alpha * np.sign(self.coef_)
-            grad_b = (2.0 / n_samples) * np.sum(errors)
+        grad_w = (2.0 / n_samples) * (X.T @ errors) + \
+            self.alpha * np.sign(self.coef_)
+        grad_b = (2.0 / n_samples) * np.sum(errors)
 
-            self.coef_ -= self.learning_rate * grad_w
-            self.intercept_ -= self.learning_rate * grad_b
+        return grad_w, grad_b
 
-        self.n_features_ = n_features
+    def _update_params(self, grad, iteration):
+        grad_w, grad_b = grad
+
+        self.coef_ -= self.lr * grad_w
+        self.intercept_ -= self.lr * grad_b
+
+    def _extra_logs(self, X, y, grad, iter):
+        return {}
+
+    def fit(self, X, y, **kwargs):
+        for _ in self._fit(X, y, **kwargs):
+            pass
         return self
 
     def predict(self, X):

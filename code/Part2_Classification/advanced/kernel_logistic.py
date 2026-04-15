@@ -21,11 +21,11 @@ class KernelLogisticRegression(ClassifierMixin, BaseEstimator):
 
     def fit(self, X, y):
         n, d = X.shape
-        self.classes = np.unique(y)
-        c = len(self.classes)
+        self.classes_ = np.unique(y)
+        c = len(self.classes_)
 
         y_idx = np.array(
-            [np.where(self.classes == label)[0][0] for label in y])
+            [np.where(self.classes_ == label)[0][0] for label in y])
 
         self.X = X
         self.K = self.rbf_kernel(X, X)
@@ -52,10 +52,13 @@ class KernelLogisticRegression(ClassifierMixin, BaseEstimator):
             self.alpha -= self.lr * grad_alpha
             self.b -= self.lr * grad_b
 
+        self.is_fitted_ = True
+        return self
+
     def predict(self, X):
         K_test = self.rbf_kernel(X, self.X)
 
         f = K_test @ self.alpha + self.b
         p = self.softmax(f)
 
-        return self.classes[np.argmax(p, axis=1)]
+        return self.classes_[np.argmax(p, axis=1)]

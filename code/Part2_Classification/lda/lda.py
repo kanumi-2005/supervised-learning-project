@@ -1,10 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.base import ClassifierMixin, BaseEstimator
+from sklearn.inspection import DecisionBoundaryDisplay
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+from ..base.basemodel import BaseModel
 
 
-class LDA(ClassifierMixin, BaseEstimator):
+class LDA(BaseModel):
     def __init__(self, n_components=None):
         self.n_components = n_components
         self.model = LinearDiscriminantAnalysis(
@@ -12,23 +13,22 @@ class LDA(ClassifierMixin, BaseEstimator):
             n_components=n_components
         )
 
-    def fit(self, X, y):
+    def _fit(self, X, y, **kwargs):
         self.model.fit(X, y)
         self.classes_ = self.model.classes_
         self.means_ = self.model.means_
         self.priors_ = self.model.priors_
         self.covariance_ = self.model.covariance_
-        return self
 
-    def fit_transform(self, X):
-        return self.model.fit_transform(X)
+    def _predict(self, X):
+        return self.model.predict(X)
+
+    def fit_transform(self, X, y=None):
+        return self.model.fit_transform(X, y)
 
     def transform(self, X):
         return self.model.transform(X)
 
-    def predict(self, X):
-        return self.model.predict(X)
-    
     def predict_proba(self, X):
         return self.model.predict_proba(X)
 
@@ -37,35 +37,34 @@ class LDA(ClassifierMixin, BaseEstimator):
 
     def plot2D(self, X, y):
         if self.n_components != 2:
-            raise ValueError("plot2D is only supported when n_components = 2")
+            raise ValueError("plot2D requires n_components = 2")
 
         X_lda = self.transform(X)
 
-        plt.figure()
+        clf = LinearDiscriminantAnalysis(n_components=2)
+        clf.fit(X_lda, y)
+
+        fig, ax = plt.subplots(layout="constrained")
+
+        DecisionBoundaryDisplay.from_estimator(
+            clf,
+            X_lda,
+            response_method="predict",
+            grid_resolution=300,
+            ax=ax,
+            alpha=0.3
+        )
+
         for label in np.unique(y):
-            plt.scatter(
+            ax.scatter(
                 X_lda[y == label, 0],
                 X_lda[y == label, 1],
-                label=f"Class {label}"
+                label=f"Class {label}",
+                alpha=0.5
             )
 
-        x_min, x_max = X_lda[:, 0].min() - 1, X_lda[:, 0].max() + 1
-        y_min, y_max = X_lda[:, 1].min() - 1, X_lda[:, 1].max() + 1
-
-        xx, yy = np.meshgrid(
-            np.linspace(x_min, x_max, 200),
-            np.linspace(y_min, y_max, 200)
-        )
-
-        Z = self.model.predict(
-            self.model.inverse_transform(np.c_[xx.ravel(), yy.ravel()])
-        )
-        Z = Z.reshape(xx.shape)
-
-        plt.contour(xx, yy, Z)
-
-        plt.xlabel("LD1")
-        plt.ylabel("LD2")
-        plt.legend()
-        plt.title("LDA Decision Boundary (2D)")
+        ax.set_xlabel("LD1")
+        ax.set_ylabel("LD2")
+        ax.set_title("LDA Decision Boundary")
+        ax.legend(loc="best")
         plt.show()
