@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from sklearn.inspection import DecisionBoundaryDisplay
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from ..base.basemodel import BaseModel
 
@@ -34,7 +35,7 @@ class LDA(BaseModel):
     def score(self, X, y):
         return self.model.score(X, y)
 
-    def plot2D(self, X, y, padding=1):
+    def plot2D(self, X, y):
         if self.n_components != 2:
             raise ValueError("plot2D requires n_components = 2")
 
@@ -43,23 +44,16 @@ class LDA(BaseModel):
         clf = LinearDiscriminantAnalysis(n_components=2)
         clf.fit(X_lda, y)
 
-        x_min = X_lda[:, 0].min() - padding
-        x_max = X_lda[:, 0].max() + padding
-        y_min = X_lda[:, 1].min() - padding
-        y_max = X_lda[:, 1].max() + padding
-
-        xx, yy = np.meshgrid(
-            np.linspace(x_min, x_max, 300),
-            np.linspace(y_min, y_max, 300)
-        )
-
-        grid = np.c_[xx.ravel(), yy.ravel()]
-        Z = clf.predict(grid)
-        Z = Z.reshape(xx.shape)
-
         fig, ax = plt.subplots(layout="constrained")
 
-        ax.contour(xx, yy, Z, colors='k', linewidths=1)
+        DecisionBoundaryDisplay.from_estimator(
+            clf,
+            X_lda,
+            response_method="predict",
+            grid_resolution=300,
+            ax=ax,
+            alpha=0.3
+        )
 
         for label in np.unique(y):
             ax.scatter(
