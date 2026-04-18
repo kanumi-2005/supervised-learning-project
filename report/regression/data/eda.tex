@@ -1,6 +1,14 @@
 \subsubsection{Phân tích khám phá}
 
 \paragraph{Thống kê mô tả}
+
+\tablename~\ref{tab:cali-housing-desc-part1} và
+\ref{tab:cali-housing-desc-part2} trình bày các thống kê mô tả cơ bản của
+bộ dữ liệu California Housing. Các chỉ số bao gồm giá trị trung bình
+(mean), độ lệch chuẩn (standard deviation), giá trị nhỏ nhất (min), các
+phân vị (25\%, 50\%, 75\%) và giá trị lớn nhất (max) của từng biến. Tất cả đều
+đã được làm tròn đến 2 chữ số thập phân.
+
 \begin{table}[htbp]
   \caption{Thống kê mô tả bộ dữ liệu California Housing (phần 1)}
   \label{tab:cali-housing-desc-part1}
@@ -14,13 +22,6 @@
   \centering
   \import{\tablespath}{cali-housing-desc-part2}
 \end{table}
-
-\tablename~\ref{tab:cali-housing-desc-part1} và
-\ref{tab:cali-housing-desc-part2} trình bày các thống kê mô tả cơ bản của
-bộ dữ liệu California Housing. Các chỉ số bao gồm giá trị trung bình
-(mean), độ lệch chuẩn (standard deviation), giá trị nhỏ nhất (min), các
-phân vị (25\%, 50\%, 75\%) và giá trị lớn nhất (max) của từng biến. Tất cả đều
-đã được làm tròn đến 2 chữ số thập phân.
 
 Nhìn chung, các biến trong bộ dữ liệu có sự khác biệt đáng kể về thang đo
 và mức độ phân tán. Cụ thể, biến Population có giá trị trung bình
@@ -59,13 +60,6 @@ hóa hoặc xử lý ngoại lai trong các bước phân tích tiếp theo.
 
 \subparagraph{Phân phối biến mục tiêu}
 
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.9\textwidth]{cali-housing-target-distribution}
-  \caption{Phân phối biến mục tiêu của bộ dữ liệu California Housing}
-  \label{fig:cali-housing-target-distribution}
-\end{figure}
-
 \figurename~\ref{fig:cali-housing-target-distribution} gồm 2 biểu đồ là biểu
 đồ tần suất (histogram, bên trái) và biểu đồ hộp và râu (boxplot, bên phải),
 cho thấy phân phối của biến mục tiêu MedHouseVal. Ta thấy biểu đồ tần suất
@@ -78,15 +72,14 @@ trị. Điều này có thể được lý giải bằng việc cắt ngưỡng 
 vị lớn hơn trung bình. Biểu đồ hộp cho thấy ngoại lai xuất hiện ở các giá
 trị ngắt ngưỡng này.
 
-\subparagraph{Mối quan hệ giữa biến mục tiêu và các biến đặc trưng}
-
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.9\textwidth]{cali-housing-target-vs-features}
-  \caption{Biểu đồ phân tán giữa biến mục tiêu với các biến đặc trưng trong bộ
-  dữ liệu California Housing}
-  \label{fig:cali-housing-target-vs-features}
+  \includegraphics[width=0.9\textwidth]{cali-housing-target-distribution}
+  \caption{Phân phối biến mục tiêu của bộ dữ liệu California Housing}
+  \label{fig:cali-housing-target-distribution}
 \end{figure}
+
+\subparagraph{Mối quan hệ giữa biến mục tiêu và các biến đặc trưng}
 
 \figurename~\ref{fig:cali-housing-target-vs-features} thể hiện sự phân tán
 giữa từng biến đặc trưng so với mục tiêu. Ta thấy rằng biến MedInc có mối tương
@@ -97,10 +90,10 @@ không phải tuyến tính.
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.9\textwidth]{cali-housing-correlation-matrix}
-  \caption{Ma trận tương quan giữa các biến trong bộ dữ liệu California
-  Housing}
-  \label{fig:cali-housing-correlation-matrix}
+  \includegraphics[width=0.9\textwidth]{cali-housing-target-vs-features}
+  \caption{Biểu đồ phân tán giữa biến mục tiêu với các biến đặc trưng trong bộ
+  dữ liệu California Housing}
+  \label{fig:cali-housing-target-vs-features}
 \end{figure}
 
 \figurename~\ref{fig:cali-housing-correlation-matrix} thể hiện các tương quan
@@ -112,14 +105,15 @@ tăng khi số phòng tăng. Đáng chú ý là giữa MedInc và biến mục t
 hệ tuyến tính mạnh ($0.69$). Do đó, MedInc có khả năng giải thích quan trọng
 trong các mô hình hồi quy tuyến tính.
 
-\subparagraph{Ngoại lai}
-
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.9\textwidth]{cali-housing-features-outliers}
-  \caption{Ngoại lai các biến đặc trưng trong bộ dữ liệu California Housing}
-  \label{fig:cali-housing-features-outliers}
+  \includegraphics[width=0.9\textwidth]{cali-housing-correlation-matrix}
+  \caption{Ma trận tương quan giữa các biến trong bộ dữ liệu California
+  Housing}
+  \label{fig:cali-housing-correlation-matrix}
 \end{figure}
+
+\subparagraph{Ngoại lai}
 
 \figurename~\ref{fig:cali-housing-features-outliers} gồm các biểu đồ hộp để thể
 hiện ngoại lai của các biến đặc trưng bằng phương pháp IQR. Ta thấy rằng các
@@ -127,3 +121,10 @@ ngoại lai xuất hiện khá nhiều ở AveRooms, AveBedrms, Population, AveO
 MedInc khi mà có nhiều khu vực rất giàu có, những khu vực nghỉ dưỡng có rất
 nhiều phòng, các khu đô thị tập trung đông đúc. Các biến HouseAge, Latitude và
 Longtitude còn lại khá ổn định và hầu như không có ngoại lai.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{cali-housing-features-outliers}
+  \caption{Ngoại lai các biến đặc trưng trong bộ dữ liệu California Housing}
+  \label{fig:cali-housing-features-outliers}
+\end{figure}
