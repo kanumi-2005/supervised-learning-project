@@ -41,4 +41,29 @@ Về hiệu suất, độ phức tạp tính toán của một lần xử lý m�
 $\Theta(BM)$. Khi đó, với một epoch, độ phức tạp là $\Theta(NM)$. Và với $k$
 epoch thì độ phức tạp là $\Theta(kNM)$.
 
+\subparagraph{Lập lịch tốc độ học (Learning Rate Scheduling)}
+
+Việc duy trì một tốc độ học $\eta$ cố định trong suốt quá trình huấn luyện
+thường dẫn đến sự mất cân bằng giữa tốc độ hội tụ và độ ổn định của mô hình.
+Do đó, các chiến lược lập lịch tốc độ học được sử dụng nhằm điều chỉnh $\eta$
+theo tiến trình huấn luyện.
+
+Một cách tiếp cận phổ biến là \emph{Step Decay}, trong đó tốc độ học được
+giảm theo một hệ số suy giảm $\gamma$ sau những khoảng chu kỳ (epochs) nhất
+định: \begin{equation}
+  \eta_t = \eta_0 \cdot \gamma^{\left\lfloor t/s \right\rfloor},
+\end{equation} trong đó $\eta_0$ là tốc độ học ban đầu, $t$ là epoch hiện tại,
+$s$ là số epoch giữa các lần giảm, và $\gamma \in (0,1)$ là hệ số suy giảm.
+
+Bên cạnh đó, chiến lược \emph{Cosine Annealing} điều chỉnh tốc độ học theo
+một hàm cosine: \begin{equation}
+  \eta_t = \eta_{\min} + \frac{1}{2}(\eta_{\max} - \eta_{\min})
+  \biggl(1 + \cos\Bigl(\frac{\pi t}{T}\Bigr)\biggr),
+\end{equation} trong đó $\eta_{\max}$ và $\eta_{\min}$ lần lượt là giá trị lớn
+nhất và nhỏ nhất của tốc độ học, $t$ là epoch hiện tại, và $T$ là tổng số epoch
+trong một chu kỳ.
+
+Sự thay đổi mượt mà của Cosine Annealing giúp hạn chế dao động gradient lớn,
+trong khi Step Decay cung cấp cách điều chỉnh đơn giản và hiệu quả.
+
 \paragraph{So sánh giữa phương pháp Normal Equation và Gradient Descent}
