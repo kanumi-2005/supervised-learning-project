@@ -9,16 +9,16 @@ from ..base.basegdmodel import BaseGDModel
 class ElasticNet(BaseGDModel):
     def __init__(
         self,
-        alpha_l1=1.0,
-        alpha_l2=0.5,
+        alpha_1=1.0,
+        alpha_2=0.5,
         lr=0.001,
         max_iter=1000,
         store_history=False,
         batch_size=None,
         random_state=42
     ):
-        self.alpha_l1 = alpha_l1
-        self.alpha_l2 = alpha_l2
+        self.alpha_1 = alpha_1
+        self.alpha_2 = alpha_2
         super().__init__(
             lr=lr,
             max_iter=max_iter,
@@ -35,8 +35,8 @@ class ElasticNet(BaseGDModel):
     def _loss(self, X, y):
         y_pred = self.predict(X)
         mse = np.mean((y_pred - y) ** 2)
-        l1 = self.alpha_l1 * np.sum(np.abs(self.coef_))
-        l2 = self.alpha_l2 * np.sum(self.coef_ ** 2)
+        l1 = self.alpha_1 * np.sum(np.abs(self.coef_))
+        l2 = self.alpha_2 * np.sum(self.coef_ ** 2)
         return mse + l1 + l2
 
     def _grad(self, X, y):
@@ -46,8 +46,8 @@ class ElasticNet(BaseGDModel):
         errors = y_pred - y
 
         grad_mse = (2.0 / n_samples) * (X.T @ errors)
-        grad_l2 = 2.0 * self.alpha_l2 * self.coef_
-        grad_l1 = self.alpha_l1 * np.sign(self.coef_)
+        grad_l2 = 2.0 * self.alpha_2 * self.coef_
+        grad_l1 = self.alpha_1 * np.sign(self.coef_)
 
         grad_w = grad_mse + grad_l2 + grad_l1
         grad_b = (2.0 / n_samples) * np.sum(errors)
@@ -159,8 +159,8 @@ class ElasticNetCV(BaseEstimator, RegressorMixin):
             np.log10(self.best_alpha_1_),
             np.log10(self.best_alpha_2_),
             'ro',
-            markersize=6,
-            markeredgecolor='white',
+            markersize=15,
+            markeredgecolor='black',
             label='Optimal Point'
         )
 
