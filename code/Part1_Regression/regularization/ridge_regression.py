@@ -14,9 +14,11 @@ class RidgeRegression(BaseGDModel):
         max_iter=1000,
         store_history=False,
         batch_size=None,
+        warm_start=False,
         random_state=42
     ):
         self.alpha = alpha
+        self.warm_start = warm_start
         super().__init__(
             lr=lr,
             max_iter=max_iter,
@@ -27,6 +29,10 @@ class RidgeRegression(BaseGDModel):
 
     def _init_params(self, X, y):
         n_features = X.shape[1]
+
+        if self.warm_start and hasattr(self, "coef_"):
+            return
+
         self.coef_ = np.zeros(n_features)
         self.intercept_ = 0.0
 
