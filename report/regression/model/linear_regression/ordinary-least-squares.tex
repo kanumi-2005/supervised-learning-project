@@ -1,0 +1,44 @@
+\subsubsection{Bình phương tối thiểu thông thường (Ordinary least squares,
+OLS)}
+
+Phương pháp Bình phương tối thiểu thông thường (OLS) hướng đến việc tìm bộ
+trọng số $\boldsymbol{w}^\ast$ sao cho cực tiểu quá tổng bình phương sai số giữa giá trị
+thực tế và giá trị dự đoán hay cực tiểu hoá hàm lỗi: \begin{equation}
+  E_D(\boldsymbol{w}) = 1/2\cdot\lVert \boldsymbol{t} -
+  \boldsymbol{\Phi}\boldsymbol{w}\rVert^2.
+\end{equation}
+
+\paragraph{Phương trình chuẩn (Normal Equation)}
+
+Phương trình chuẩn cung cấp một lời giải đóng cho bài toán tối ưu trên bằng
+cách giải nghiệm đạo hàm bậc nhất bằng 0. Công thức nghiệm tối ưu là:
+\begin{equation}
+  \boldsymbol{w}^\ast = \arg\min_{\boldsymbol{w}}E_D(\boldsymbol{w}) =
+  (\boldsymbol{\Phi}^\intercal\boldsymbol{\Phi})^{-1}
+  \boldsymbol{\Phi}^\intercal\boldsymbol{t}.
+\end{equation}
+
+Trong thực tế cài đặt, thay vì nghịch đảo trực tiếp
+($\boldsymbol{\Phi}^\intercal\boldsymbol{\Phi})^{-1}$---vốn dễ gây lỗi nếu
+ma trận bị suy biến (singular)---em sử dụng ma trận giả nghịch đảo
+Moore--Penrose $\boldsymbol{\Phi}^\dagger$. Công thức triển khai trở thành:
+\begin{equation}
+\boldsymbol{w}^\ast = \boldsymbol{\Phi}^\dagger \boldsymbol{t}.
+\end{equation}
+
+Độ phức tạp tính toán nghiệm là $\Theta(NM^2 + NM + M^3 + M^2)$. Đối với bộ dữ
+liệu California Housing, khi mà $N \gg M$ ($20640 \gg 9$, trong đó $9$ là số
+lượng đặc trưng cộng thêm 1 để học hệ số chặn), độ phức tạp tương
+đương $\Theta(NM^2)$.
+
+\paragraph{Mini-batch Gradient Descent}
+
+Đối với các bài toán có kích thước dữ liệu lớn, việc tính toán trực tiếp trên
+toàn bộ dữ liệu gây áp lực lớn cho bộ nhớ. Thuật toán Mini-batch
+Gradient Descent nhằm cân bằng giữa tốc độ hội tụ và hiệu năng tính toán.
+
+Về hiệu suất, độ phức tạp tính toán của một lần xử lý một lô (batch) là
+$\Theta(BM)$. Khi đó, với một epoch, độ phức tạp là $\Theta(NM)$. Và với $k$
+epoch thì độ phức tạp là $\Theta(kNM)$.
+
+\paragraph{So sánh giữa phương pháp Normal Equation và Gradient Descent}
