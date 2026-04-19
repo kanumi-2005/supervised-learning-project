@@ -4,19 +4,31 @@ from ..base.basemodel import BaseModel
 
 
 class WLS(RegressorMixin, BaseModel):
-    def __init__(self, weights):
-        self.weights = weights
+    def __init__(self):
+        self.intercept_ = None
+        self.coef_ = None
+        self.weights_ = None
 
     def _fit(self, X, y, **kwargs):
         X_design = np.c_[np.ones(X.shape[0]), X]
+        pinv_X = np.linalg.pinv(X_design)
 
-        X_weighted = X_design.T * self.weights
-        A = X_weighted @ X_design
-        b = X_weighted @ y
-        w = np.linalg.pinv(A) @ b
+        w_ols = pinv_X @ y
+        res_sq = np.square(y - X_design @ w_ols)
 
-        self.intercept_ = w[0]
-        self.coef_ = w[1:]
+        log_res_sq = np.log(res_sq + 1e-6)
+        gamma = pinv_X @ log_res_sq
+
+        sigma2_hat = np.exp(X_design @ gamma)
+        self.weights_ = 1.0 / sigma2_hat
+
+        X_w = X_design.T * self.weights_
+        A_wls = X_w @ X_design
+        b_wls = X_w @ y
+        w_final = np.linalg.pinv(A_wls) @ b_wls
+
+        self.intercept_ = w_final[0]
+        self.coef_ = w_final[1:]
 
     def _predict(self, X):
         return X @ self.coef_ + self.intercept_
@@ -24,17 +36,17 @@ class WLS(RegressorMixin, BaseModel):
 
 if __name__ == "__main__":
     from ..dataset import CaliforniaHousingDataset as Dataset
-    from ..pipeline import get_pipeline
     from sklearn.metrics import mean_squared_error
 
     d = Dataset()
     d.split()
 
-    model = get_pipeline(WLS(np.ones(d.train_size())))
+    model = WLS()
     model.fit(d.X_train, d.y_train)
+
     y_pred = model.predict(d.X_test)
-    y_true = d.y_test
+    mse = mean_squared_error(d.y_test, y_pred)
 
-    mse = mean_squared_error(y_true, y_pred)
-
-    print(f"MSE = {mse:.4f}")
+    print(f"Time: {model.training_time_:.4f}s")
+    print(f"Memory: {model.training_memory_ / 1024:.2f}KB")
+    print(f"MSE: {mse:.4f}")
