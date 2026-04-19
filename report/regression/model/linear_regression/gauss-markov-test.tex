@@ -1,0 +1,64 @@
+\subsubsection{Kiểm tra giả thiết Gauss--Markov}
+\paragraph{Biểu đồ phần dư (residual plot)}
+
+\figurename~\ref{fig:ols-residual-plot} thể hiện phần dư trên tập huấn luyện.
+Normal Equation được dùng để tìm nghiệm bình phương tối thiểu. Nhìn vào hình ta
+thấy có xuất hiện vệt của đường thẳng. Đây là do việc ngắt ngưỡng của biến mục
+tiểu. Độ phân tán không đồng đều (trong đoạn $[0,1]$ và $[4, 6]$) thấp và không
+ổn định như trong đoạn $[2, 4]$. Điều này cho thấy giả thiết về phương sai bằng
+nhau giữa các mẫu là không đúng. Phân tán phần dư trong đoạn $[0, 1]$ và $[4,
+6]$ nằm trên đường thẳng $e = 0$ cho thấy trung bình phần dư trên đoạn này cũng
+không bằng 0. Trên đoạn $[6, 8]$ cũng thấy trung bình phần dư nhỏ hơn 0 nhưng
+nguyên nhân chính là do việc ngắt ngưỡng. Trên đoạn $[2, 4]$, giả thiết
+Gauss--Markov vẫn giữ tính đúng.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{ols-residual-plot}
+  \caption{Biểu đồ phần dư của mô hình hồi quy tuyến tính qua phương pháp bình
+  phương tối thiểu}
+  \label{fig:ols-residual-plot}
+\end{figure}
+
+\paragraph{Biểu đồ phân vị-phân vị (Quantile-Quantile plot)}
+
+\figurename~\ref{fig:ols-qq-plot} cho thấy sự tuân theo phân phối chuẩn của
+phần dư trên tập huấn luyện. Ở vùng trung tâm ($[-1, 2]$) các điểm bám sát với
+đường tham chiếu. Điều này thể hiện mô hình ổn định và phần dư bám sát phân
+phối chuẩn. Vùng đuôi bên trái ($[-3, -11]$), đường biểu diễn cong nhẹ lên đường
+tham chiếu. Điều này cho thấy hiện tượng đuôi mỏng, nghĩa là mô hình hiếm khi
+xảy ra sai số âm cực lớn. Vùng đuôi bên phải ($[2, 4]$), xuất hiện hiện tượng
+vểnh cao rõ rệt. Đây là dấu hiệu hiện tượng đuôi dày, phản ánh sự tồn tại của
+các sai số dương lớn. Hiện tượng này chủ yếu do dữ liệu bị chặn ngưỡng tại mức.
+Khi giá trị thực tế cao vượt ngưỡng nhưng dữ liệu ghi nhận thấp hơn, mô hình
+tuyến tính OLS khó có thể khớp chính xác, dẫn đến bùng nổ sai số dương ở phân
+khúc này.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{ols-qq-plot}
+  \caption{Biểu đồ phân vị-phân vị phần dư của mô hình hồi quy tuyến tính
+  qua phương pháp bình phương tối thiểu khi so với phân
+  phối chuẩn}
+  \label{fig:ols-qq-plot}
+\end{figure}
+
+\paragraph{Kiểm định Breusch--Pagan}
+
+\tablename~\ref{tab:breusch-pagan-test-result} cho kết quả đánh giá giả thuyết
+về phương sai sai số không đổi (Homoscedasticity)---một trong điều kiện tiên
+quyết của định lý Gauss--Markov để ước lượng bình phương tối thiểu là không
+chệch tuyến tính tốt nhất (BLUE). Cả hai giá trị thống kê (LM Stat khoảng
+$1248.62$ và F Stat khoảng $173.45$) đều rất lớn. Điều này cho thấy sự sai lệch
+đáng kê giữa phân phối phần dư thực tế và giả thiết phương sai sai số đồng
+nhất. Và với mức ý nghĩa $\alpha = 0.05$, ta có $p$-value nhỏ hơn $\alpha$. Do
+đó ta bác bỏ giả thuyết $H_0$ (phương sai sai số không đổi) và chấp nhận giả
+thuyết $H_1$ (phương sai sai số thay đổi). Kết quả này nhất quán với nội dung
+biểu đồ phần dư khi độ rộng phân tán không đều.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Kết quả kiểm định Breusch--Pagan trên tập huấn luyện}
+  \label{tab:breusch-pagan-test-result}
+  \import{\tablespath}{breusch-pagan-test-result}
+\end{table}
