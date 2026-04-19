@@ -34,7 +34,7 @@ def lasso_selection(X, y, feature_names, alphas=(0.1, 1.0, 10.0), cv=10):
     lasso = LassoCV(alphas=alphas, cv=cv)
     lasso.fit(X, y)
 
-    selected_idx = [i for i, coef in enumerate(lasso.coef_) if coef != 0]
+    selected_idx = [i for i, coef in enumerate(lasso.coef_) if abs(coef) > 1e-3]
     selected_features = [feature_names[i] for i in selected_idx]
 
     return selected_features
