@@ -1,0 +1,1 @@
+{'LM Stat': np.float64(1248.615593028101), 'LM p-value': np.float64(2.9971092972062764e-264), 'F Stat': np.float64(173.4517799184423), 'F p-value': np.float64(1.049113595091813e-278)}
