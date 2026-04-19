@@ -1,0 +1,41 @@
+\paragraph{Lựa chọn đặng trưng}
+
+Lựa chọn đặc trưng nhằm mục tiêu lựa chọn một tập con các đặc trưng quan trọng
+nhất, giúp giảm độ phức tạp của mô hình, cải thiện khả năng tổng quát hóa và
+giảm hiện tượng overfitting. Dưới đây là một số phương pháp phổ biến.
+
+\subparagraph{Forward Stepwise Selection}
+Phương pháp này bắt đầu với một mô hình rỗng (không có đặc trưng nào). Tại mỗi
+bước, ta thêm vào đặc trưng giúp cải thiện hiệu năng mô hình nhiều nhất (ví
+dụ: giảm sai số hoặc tăng độ chính xác).
+\begin{itemize}
+    \item Khởi đầu với tập đặc trưng rỗng.
+    \item Tại mỗi bước, thử thêm từng đặc trưng chưa được chọn vào mô hình.
+    \item Chọn đặc trưng làm cải thiện tốt nhất theo tiêu chí đánh giá.
+    \item Lặp lại cho đến khi không còn cải thiện đáng kể hoặc đạt số lượng
+    đặc trưng mong muốn.
+\end{itemize}
+
+\subparagraph{Backward Elimination}
+Ngược lại với forward selection, phương pháp này bắt đầu với toàn bộ tập đặc
+trưng và loại bỏ dần các đặc trưng kém quan trọng.
+\begin{itemize}
+    \item Khởi đầu với tất cả các đặc trưng.
+    \item Tại mỗi bước, loại bỏ đặc trưng ít đóng góp nhất (ví dụ: có trọng số
+    nhỏ hoặc không có ý nghĩa thống kê).
+    \item Đánh giá lại mô hình sau khi loại bỏ.
+    \item Lặp lại cho đến khi việc loại bỏ làm giảm hiệu năng đáng kể.
+\end{itemize}
+
+\subparagraph{Feature Selection bằng Lasso}
+Phương pháp này dựa trên regularization với chuẩn $L_1$ (Lasso). Khi huấn
+luyện mô hình với Lasso, một số hệ số $w_j$ sẽ bị đưa về đúng $0$.
+\begin{itemize}
+    \item Huấn luyện mô hình với regularization $L_1$.
+    \item Các đặc trưng có hệ số $w_j = 0$ được xem là không quan trọng và bị
+    loại bỏ.
+    \item Các đặc trưng có hệ số khác $0$ được giữ lại.
+\end{itemize}
+
+Ưu điểm của phương pháp này là thực hiện feature selection một cách tự động
+trong quá trình huấn luyện, đặc biệt hiệu quả khi số chiều lớn.

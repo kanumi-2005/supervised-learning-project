@@ -1,0 +1,81 @@
+\paragraph{Elastic Net}
+
+\subparagraph{Ý tưởng}
+Elastic Net là phương pháp kết hợp cả hai dạng điều chuẩn $L_1$ (Lasso) và
+$L_2$ (Ridge). Mục tiêu là tận dụng ưu điểm của cả hai:
+\begin{itemize}
+  \item $L_1$: tạo nghiệm thưa (feature selection)
+  \item $L_2$: ổn định nghiệm và xử lý tốt khi các biến có tương quan cao
+\end{itemize}
+
+\subparagraph{Hạng tử điều chỉnh}
+Hạng tử điều chỉnh trong Elastic Net có dạng:
+\begin{equation}
+  E_W(\mathbf{w}) = \alpha \|\mathbf{w}\|_1 + \frac{1 - \alpha}{2} \|\mathbf{w
+  }\|_2
+\end{equation}
+
+\subparagraph{Hàm mục tiêu}
+Hàm mục tiêu của Elastic Net là:
+\begin{equation}
+  E(\mathbf{w}) = \frac{1}{2} \|\mathbf{Xw} - \mathbf{t}\|^2
+  + \lambda \left( \alpha \|\mathbf{w}\|_1 + \frac{1 - \alpha}{2} \|\mathbf{w}
+  \|^2 \right)
+\end{equation}
+
+\subparagraph{Các trường hợp đặc biệt}
+Elastic Net bao gồm hai phương pháp trước như các trường hợp riêng:
+\begin{itemize}
+  \item $\alpha = 1$: trở thành Lasso Regression
+  \item $\alpha = 0$: trở thành Ridge Regression
+\end{itemize}
+
+\subparagraph{Nghiệm giải}
+Tương tự như Lasso, Elastic Net \textbf{không có nghiệm đóng tường minh} do sự
+xuất hiện của chuẩn $L_1$.
+Nghiệm thường được tìm bằng các phương pháp tối ưu số:
+\begin{itemize}
+  \item Coordinate Descent (phổ biến nhất)
+  \item Gradient Descent với kỹ thuật proximal
+\end{itemize}
+
+\subparagraph{Ưu điểm}
+Elastic Net khắc phục được một số hạn chế của Lasso:
+\begin{itemize}
+  \item Khi các biến đầu vào có tương quan cao:
+  \begin{itemize}
+    \item Lasso có xu hướng chọn một biến và bỏ các biến còn lại
+    \item Elastic Net có thể giữ lại nhóm biến liên quan
+  \end{itemize}
+  \item Vẫn giữ được tính chất nghiệm thưa (sparse)
+  \item Ổn định hơn so với Lasso khi dữ liệu có nhiễu
+\end{itemize}
+
+\subparagraph{Diễn giải trực quan}
+
+Elastic Net có thể được hiểu là bài toán với ràng buộc kết hợp:
+
+\begin{equation}
+  \min_{\mathbf{w}} \|\mathbf{Xw} - \mathbf{t}\|^2
+  \quad \text{với} \quad
+  \alpha \|\mathbf{w}\|_1 + (1-\alpha)\|\mathbf{w}\|^2 \leq C
+\end{equation}
+
+Elastic Net có thể được hiểu là bài toán tối ưu với ràng buộc:
+\begin{equation}
+  \min_{\mathbf{w}} \|\mathbf{Xw} - \mathbf{t}\|^2
+  \quad \text{với} \quad
+  \alpha \|\mathbf{w}\|_1 + (1 - \alpha)\|\mathbf{w}\|^2 \leq C
+\end{equation}
+
+Miền ràng buộc trong trường hợp này là sự kết hợp giữa hình thoi ($L_1$) và
+hình cầu ($L_2$).
+
+Do đó:
+\begin{itemize}
+  \item Giống Lasso: nghiệm có xu hướng thưa (nhiều hệ số bằng 0)
+  \item Giống Ridge: nghiệm ổn định hơn và ít nhạy với nhiễu
+\end{itemize}
+
+Elastic Net tạo ra sự cân bằng giữa việc lựa chọn đặc trưng và duy trì tính ổn
+định của mô hình, đặc biệt hiệu quả khi các biến đầu vào có tương quan cao.

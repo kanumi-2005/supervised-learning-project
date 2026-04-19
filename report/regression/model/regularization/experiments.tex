@@ -1,0 +1,91 @@
+\paragraph{Thí nghiệm và kết quả}
+\subparagraph{Chọn $\lambda$ tốt nhất bằng $k$-fold}
+Chọn tập $\lambda$ ứng viên là:
+\begin{equation}
+  \lambda \in \left\{10^{-10}, 10^{-12}, \ldots, 10^{-1}, 1, 10\right\}.
+\end{equation}
+
+\subparagraph{Kết quả}
+Kết quả thực nghiệm trên cả Ridge Regression và Lasso Regression cho thấy giá
+trị $\lambda$ tối ưu nằm ở biên nhỏ nhất của tập ứng viên, cụ thể là $\lambda
+= 10^{-10}$. Điều này cho thấy mô hình gần như không cần đến regularization và
+nghiệm thu được xấp xỉ nghiệm của bài toán hồi quy tuyến tính thông thường
+(Ordinary Least Squares).
+
+\subparagraph{Giải thích}
+Hiện tượng lựa chọn $\lambda$ rất nhỏ có thể xuất phát từ nguyên nhân mô hình
+không cần regularization. Dữ liệu có số lượng đặc trưng nhỏ, mức nhiễu thấp
+hoặc không có hiện tượng đa cộng tuyến mạnh, dẫn đến việc mô hình tuyến tính
+đã tổng quát hóa tốt. Khi đó, việc thêm regularization chỉ làm tăng bias mà
+không cải thiện variance, nên giá trị $\lambda$ tối ưu tiến về 0.
+
+\subparagraph{Regularization path}
+\figurename~\ref{fig:ridge-regularization-path} và
+\figurename~\ref{fig:lasso-regularization-path} thể hiện sự thay đổi của các
+hệ số hồi quy của Ridge và Lasso khi hệ số điều chỉnh (regularization
+coefficient) thay đổi trên thang logarit.Khi $\lambda$ lớn (bên phải đồ thị),
+các hệ số bị co lại đáng kể về gần $0$ do tác động mạnh của regularization.
+Ngược lại, khi $\lambda$ giảm dần (bên trái đồ thị), các hệ số tiến gần tới
+nghiệm của bài toán hồi quy tuyến tính không regularization (Ordinary Least
+Squares). Điều này thể hiện rõ qua việc các đường biểu diễn trở nên ổn định và
+đạt giá trị lớn hơn khi $\lambda$ dần đến $0$. Do nghiệm của Lasso Regression
+thưa nên khi $\lambda$ tăng dần (bên phải
+\figurename~\ref{fig:lasso-regularization-path}) nhiều hệ số hồi quy bị ép
+bằng 0.
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{ridge-regularization-path}
+  \caption{Regularization path của Ridge Regression}
+  \label{fig:ridge-regularization-path}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{lasso-regularization-path}
+  \caption{Regularization path của Lasso Regression}
+  \label{fig:lasso-regularization-path}
+\end{figure}
+
+\subparagraph{Vùng tối ưu Elastic Net}
+\figurename~\ref{fig:elastic-net-optimal-region} thể hiện sự thay đổi của MSE
+trung bình theo sự thay đổi của $\lambda_1$ và $\lambda_2$ trên thang logarit.
+Có thể quan sát rằng vùng tối ưu nằm ở vùng mà $\lambda_1$ và $\lambda_2$ rất
+nhỏ (góc dưới trái của đồ thị). Điều này cho thấy mô hình đạt hiệu năng tốt
+khi hai hệ số điều chỉnh (regularization coefficient) tiến dần về $0$. Điều
+này chỉ ra rằng trong bài toán hiện tại, việc áp dụng regularization không
+mang lại cải thiện rõ rệt về khả năng tổng quát hóa của mô hình.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{elastic-net-optimal-region}
+  \caption{Vùng tối ưu của Elastic Net}
+  \label{fig:elastic-net-optimal-region}
+\end{figure}
+
+\subparagraph{Lựa chọn đặc trưng}
+Kết quả thực nghiệm cho thấy khi chọn đặc trưng cả Forward Stepwise Selection
+và Backward Elimination bằng mô hình OLS đều cho ra cùng một tập đặc trưng
+\textit{(MedInc, HouseAge, Latitude, Longitude)} và chọn đặc trưng dựa trên
+lasso cho kết quả là \textit{(MedInc, HouseAge, AveRooms, AveBedrms, AveOccup,
+Latitude, Longitude)}
+
+\subparagraph{Giải thích}
+
+Sự khác biệt giữa kết quả lựa chọn đặc trưng của OLS và Lasso xuất phát từ
+cơ chế regularization của hai phương pháp.
+
+Đối với OLS, mô hình không áp dụng regularization nên việc lựa chọn đặc
+trưng hoàn toàn dựa trên khả năng giải thích phương sai của từng biến.
+Trong trường hợp này, cả Forward Stepwise Selection và Backward Elimination
+đều hội tụ về cùng một tập đặc trưng \textit{(MedInc, HouseAge, Latitude,
+Longitude)}, cho thấy đây là các biến mang thông tin quan trọng và ít dư
+thừa nhất trong dữ liệu.
+
+Ngược lại, Lasso sử dụng chuẩn $\ell_1$ để regularize các hệ số, từ đó có
+khả năng đưa một số hệ số về 0 và thực hiện lựa chọn đặc trưng một cách tự
+động. Tuy nhiên, trong thực nghiệm này, tập đặc trưng được chọn bởi Lasso
+vẫn bao gồm nhiều biến, cụ thể là \textit{(MedInc, HouseAge, AveRooms,
+AveBedrms, AveOccup, Latitude, Longitude)}. Điều này cho thấy giá trị
+$\lambda$ tối ưu được lựa chọn tương đối nhỏ, khiến tác động của
+regularization chưa đủ mạnh để loại bỏ hoàn toàn các đặc trưng có đóng góp
+nhỏ.

@@ -1,0 +1,62 @@
+\paragraph{Chọn hệ số điều chỉnh $\lambda$ tốt nhất}
+Việc lựa chọn hệ số điều chỉnh $\lambda$ là một bước quan trọng trong các mô
+hình regularization, vì tham số này quyết định sự cân bằng giữa mức độ khớp dữ
+liệu và khả năng tổng quát hóa của mô hình. Nếu $\lambda$ quá nhỏ, mô hình dễ
+xảy ra hiện tượng \textit{overfitting}; ngược lại, nếu $\lambda$ quá lớn, mô
+hình có thể bị \textit{underfitting}. Một phương pháp phổ biến để lựa chọn
+$\lambda$ là sử dụng \textbf{$k$-fold Cross Validation}.
+
+\subparagraph{Phương pháp $k$-fold Cross Validation}
+Tập dữ liệu huấn luyện được chia thành $k$ phần có kích thước xấp xỉ bằng
+nhau:
+\begin{equation}
+D = D_1 \cup D_2 \cup \cdots \cup D_{k}.
+\end{equation}
+Với mỗi giá trị $\lambda$ trong tập giá trị ứng viên, ta thực hiện:
+\begin{enumerate}
+    \item Chọn lần lượt từng tập $D_i$ làm tập kiểm định.
+    \item Sử dụng $k-1$ tập còn lại để huấn luyện mô hình.
+    \item Tính sai số trên tập kiểm định.
+    \item Lặp lại cho $i = 1,2,\ldots,k$.
+\end{enumerate}
+Sai số cross-validation ứng với mỗi $\lambda$ được tính bằng trung bình sai số
+trên $k$ lần:
+\begin{equation}
+CV(\lambda) = \frac{1}{k}\sum_{i=1}^{k} E_i(\lambda),
+\end{equation}
+trong đó $E_i(\lambda)$ là sai số trên fold thứ $i$.
+Giá trị tối ưu của $\lambda$ được chọn theo tiêu chuẩn:
+\begin{equation}
+\lambda^\ast = \arg\min_{\lambda} CV(\lambda).
+\end{equation}
+
+\subparagraph{Grid Search}
+Để tìm giá trị $\lambda$ tối ưu, ta xây dựng một tập giá trị ứng viên theo
+lưới tìm kiếm như sau:
+\begin{equation}
+\lambda \in \left\{\lambda_1, \lambda_2, \ldots, \lambda_{n-1}, \lambda_{n}
+\right\}.
+\end{equation}
+Mỗi giá trị trong lưới sẽ được đánh giá bằng quy trình $k$-fold
+cross-validation ở trên. Phương pháp này được gọi là \textbf{grid search}.
+
+\subparagraph{Warm Start}
+Để tăng tốc quá trình huấn luyện khi thử nhiều giá trị $\lambda$, ta sử dụng
+kỹ thuật \textbf{warm start}.
+Cụ thể, khi huấn luyện với giá trị $\lambda_j$, thay vì khởi tạo ngẫu nhiên
+tham số $w$, ta sử dụng nghiệm tối ưu thu được từ giá trị trước đó
+$\lambda_{j-1}$:
+\begin{equation}
+  w^{(0)}_{\lambda_j} = w^\ast_{\lambda_{j-1}}.
+\end{equation}
+Kỹ thuật này giúp giảm số vòng lặp hội tụ, đặc biệt khi các giá trị $\lambda$
+được sắp xếp liên tiếp theo thang logarit.
+
+\subparagraph{Quy trình tổng quát}
+Toàn bộ quy trình chọn $\lambda$ được thực hiện như sau:
+\begin{enumerate}
+    \item Xây dựng tập giá trị ứng viên của $\lambda$.
+    \item Thực hiện grid search kết hợp $k$-fold cross-validation.
+    \item Sử dụng warm start để tăng tốc quá trình huấn luyện.
+    \item Chọn giá trị $\lambda^\ast$ cho sai số validation nhỏ nhất.
+\end{enumerate}

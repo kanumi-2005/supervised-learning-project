@@ -1,0 +1,49 @@
+\paragraph{Ridge Regression}
+
+\subparagraph{Hạng tử điều chỉnh}
+Công thức hạng tử điều chỉnh trong Ridge Regression có dạng:
+\begin{equation}
+  \frac{1}{2}\|\mathbf{w}\|_2
+\end{equation}
+Hạng tử này chính là tổng bình phương các trọng số, còn được gọi là chuẩn
+$L_2$ của vector trọng số.
+Việc đưa hạng tử này vào hàm lỗi có tác dụng làm "phạt" các giá trị trọng số
+lớn.
+
+\subparagraph{Hàm mục tiêu}
+Khi đó, hàm mục tiêu của Ridge Regression là:
+\begin{equation}
+  E(\mathbf{w}) = \frac{1}{2} \|\mathbf{Xw} - \mathbf{t}\|^2 + \frac{\lambda}
+  {2}\|\mathbf{w}\|_2.
+\end{equation}
+\subparagraph{Nghiệm giải}
+Ta giải được nghiệm của Ridge Regression là:
+\begin{equation}
+  \mathbf{w} = (\mathbf{X}^{\intercal}\mathbf{X} + \lambda \mathbf{I})^{-1}
+  \mathbf{X}^{\intercal}\mathbf{t}.
+\end{equation}
+So với nghiệm của hồi quy tuyến tính thông thường:
+\begin{equation}
+  \mathbf{w} = (\mathbf{X}^{\intercal}\mathbf{X})^{-1} \mathbf{X}^{\intercal}
+  \mathbf{t}.
+\end{equation}
+Ridge Regression bổ sung thêm $\lambda \mathbf{I}$ vào ma trận $\mathbf{X}^
+{\intercal}\mathbf{X}$.
+Điều này mang lại hai lợi ích quan trọng:
+\begin{itemize}
+  \item \textbf{Tránh ma trận suy biến}: Khi $\mathbf{X}^{\intercal}\mathbf{X}
+  $ không khả nghịch, việc cộng $\lambda \mathbf{I}$ giúp ma trận luôn khả
+  nghịch.
+  \item \textbf{Ổn định nghiệm}: Giảm độ nhạy của nghiệm đối với nhiễu trong
+  dữ liệu.
+\end{itemize}
+
+\subparagraph{Diễn giải trực quan}
+Có thể hiểu Ridge Regression là bài toán tối ưu với ràng buộc:
+\begin{equation}
+  \min_{\mathbf{w}} \|\mathbf{Xw} - \mathbf{t}\|^2 \quad \text{với} \quad \|
+  \mathbf{w}\|^2 \leq C.
+\end{equation}
+Tức là ta tìm nghiệm vừa khớp dữ liệu tốt, vừa nằm trong một "quả cầu" giới
+hạn độ lớn của trọng số. Điều này giúp mô hình tránh học các hệ số quá lớn gây
+overfitting.
