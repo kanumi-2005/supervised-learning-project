@@ -1,0 +1,118 @@
+\subsubsection{Gaussian Process Regression}
+
+Gaussian Process Regression (GPR) là một phương pháp hồi quy phi tham số
+(non-parametric Bayesian approach), trong đó ta không trực tiếp học một hàm ánh
+xạ cố định, mà thay vào đó định nghĩa một phân phối trên không gian các hàm.
+
+\paragraph{Khái niệm Gaussian Process}
+
+Một Gaussian Process được định nghĩa như sau:
+\begin{equation}
+  f(\boldsymbol{x}) \sim \mathcal{GP}(m(\boldsymbol{x}), k(\boldsymbol{x},
+  \boldsymbol{x}')),
+\end{equation}
+
+trong đó:
+\begin{itemize}
+  \item $m(\boldsymbol{x})$ là hàm mean (thường giả sử bằng 0)
+  \item $k(\boldsymbol{x}, \boldsymbol{x}')$ là hàm kernel mô tả độ tương quan
+    giữa hai điểm dữ liệu
+\end{itemize}
+
+Với bài toán hồi quy, ta giả sử dữ liệu quan sát:
+\begin{equation}
+  t_i = f(\boldsymbol{x}_i) + \epsilon, \quad \epsilon \sim \mathcal{N}(0,
+  \sigma_n^2).
+\end{equation}
+
+\paragraph{Kernel RBF}
+
+Trong thực nghiệm, ta sử dụng Radial Basis Function (RBF) kernel:
+\begin{equation}
+  k(\boldsymbol{x}, \boldsymbol{x}') = \sigma_f^2
+  \exp\left(-\frac{\|\boldsymbol{x} - \boldsymbol{x}'\|^2}{2\ell^2}\right),
+\end{equation}
+
+trong đó:
+\begin{itemize}
+    \item $\ell$ là tham số length-scale, điều khiển độ mượt của hàm
+    \item $\sigma_f^2$ là variance, điều khiển biên độ dao động
+\end{itemize}
+
+RBF kernel giả định rằng các điểm gần nhau trong không gian input sẽ có giá trị
+đầu ra tương tự nhau.
+
+\paragraph{Posterior dự đoán}
+
+Với tập huấn luyện $\boldsymbol{X} = \{\boldsymbol{x}_i\}_{i=1}^n$ và
+$\boldsymbol{t} = \{t_i\}_{i=1}^n$, ta xây dựng ma trận kernel:
+\begin{equation}
+  \boldsymbol{K} = K(\boldsymbol{X}, \boldsymbol{X}) + \sigma_n^2
+  \boldsymbol{I}.
+\end{equation}
+
+Với một điểm kiểm tra $\boldsymbol{x}_*$, ta có:
+\begin{equation}
+  \boldsymbol{k}_* = K(\boldsymbol{X}, \boldsymbol{x}_*), \quad
+  k_{**} = K(\boldsymbol{x}_*, \boldsymbol{x}_*).
+\end{equation}
+
+Khi đó phân phối hậu nghiệm (posterior predictive distribution) là Gaussian:
+\begin{equation}
+  p(f_* \mid \boldsymbol{x}_*, \boldsymbol{X}, \boldsymbol{t}) =
+  \mathcal{N}(\mu_*, \sigma_*^2),
+\end{equation}
+
+với:
+\begin{gather}
+  \mu_* = \boldsymbol{k}_*^T \boldsymbol{K}^{-1} \boldsymbol{t}, \\
+  \sigma_*^2 = k_{**} - \boldsymbol{k}_*^T \boldsymbol{K}^{-1}
+  \boldsymbol{k}_*.
+\end{gather}
+
+\paragraph{Log-Marginal Likelihood}
+
+Các tham số kernel $\boldsymbol{\theta} = \{\ell, \sigma_f, \sigma_n\}$
+được học bằng cách tối ưu log-marginal likelihood:
+\begin{equation}
+  \log p(\boldsymbol{t} \mid \boldsymbol{X}) =
+  -\frac{1}{2} \boldsymbol{t}^T \boldsymbol{K}^{-1} \boldsymbol{t}
+  - \frac{1}{2} \log |\boldsymbol{K}|
+  - \frac{n}{2} \log(2\pi).
+\end{equation}
+
+Hàm này gồm ba thành phần:
+\begin{itemize}
+    \item \textbf{Data fit term}: $\boldsymbol{t}^T \boldsymbol{K}^{-1}
+      \boldsymbol{t}$
+    \item \textbf{Complexity penalty}: $\log |\boldsymbol{K}|$
+    \item \textbf{Normalization constant}
+\end{itemize}
+
+\paragraph{Tối ưu tham số bằng Gradient Ascent}
+
+Ta tối ưu tham số kernel bằng gradient ascent: \begin{equation}
+  \boldsymbol{\theta} \leftarrow \boldsymbol{\theta} + \eta
+  \nabla_{\boldsymbol{\theta}} \log p(\boldsymbol{t} \mid \boldsymbol{X})
+\end{equation}
+
+Quy trình huấn luyện: \begin{enumerate}
+    \item Khởi tạo tham số $\ell, \sigma_f, \sigma_n$
+    \item Tính ma trận kernel $\boldsymbol{K}$
+    \item Tính log-marginal likelihood
+    \item Tính gradient theo từng tham số
+    \item Cập nhật tham số
+\end{enumerate}
+
+Quá trình này giúp mô hình tự động học độ mượt và độ nhiễu phù hợp với dữ liệu.
+
+\paragraph{Dự đoán và bất định}
+
+Sau khi huấn luyện, mô hình không chỉ đưa ra giá trị dự đoán mà còn cung cấp độ
+bất định: \begin{equation}
+  f_* \sim \mathcal{N}(\mu_*, \sigma_*^2).
+\end{equation} Trong đó:
+\begin{itemize}
+    \item $\mu_*$ là giá trị dự đoán trung bình
+    \item $\sigma_*^2$ biểu diễn độ không chắc chắn
+\end{itemize}
