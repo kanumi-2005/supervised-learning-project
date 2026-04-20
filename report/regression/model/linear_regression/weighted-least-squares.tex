@@ -1,0 +1,93 @@
+\subsubsection{Bình phương tối thiểu có trọng số (Weighted Least Squares, WLS)}
+
+Phương pháp Bình phương tối thiểu có trọng số (WLS) mở rộng từ OLS nhằm xử lý
+trường hợp phương sai của sai số không đồng nhất (heteroskedasticity), tức là:
+\begin{equation}
+  \mathrm{Var}(\varepsilon_i) = \sigma_i^2.
+\end{equation}
+
+Ý tưởng chính là gán trọng số khác nhau cho từng quan sát, trong đó các quan
+sát có phương sai lớn sẽ có trọng số nhỏ hơn. Hàm lỗi của WLS được viết lại như
+sau: \begin{equation}
+  E_D(\boldsymbol{w}) = \frac{1}{2} (\boldsymbol{t} -
+  \boldsymbol{\Phi}\boldsymbol{w})^\intercal \boldsymbol{W} (\boldsymbol{t} -
+  \boldsymbol{\Phi}\boldsymbol{w}),
+\end{equation} trong đó $\boldsymbol{W} = \mathrm{diag}(w_1, \dots, w_N)$ là ma
+trận trọng số, với $w_i = 1/\sigma_i^2$.
+
+\paragraph{Phương trình chuẩn cho WLS}
+
+Tương tự OLS, nghiệm tối ưu của bài toán trên được xác định bằng cách giải
+phương trình: \begin{equation}
+  \boldsymbol{w}^\ast =
+  (\boldsymbol{\Phi}^\intercal \boldsymbol{W} \boldsymbol{\Phi})^{-1}
+  \boldsymbol{\Phi}^\intercal \boldsymbol{W} \boldsymbol{t}.
+\end{equation}
+
+Trong thực tế, để tránh vấn đề ma trận suy biến, ta có thể sử dụng giả nghịch
+đảo: \begin{equation}
+  \boldsymbol{w}^\ast =
+  (\boldsymbol{\Phi}^\intercal \boldsymbol{W} \boldsymbol{\Phi})^\dagger
+  \boldsymbol{\Phi}^\intercal \boldsymbol{W} \boldsymbol{t}.
+\end{equation}
+
+\paragraph{Ước lượng khả thi bằng FGLS (Feasible Generalized Least
+Squares)}
+
+Trong thực tế, các phương sai $\sigma_i^2$ thường không biết trước, do đó ma
+trận trọng số $\boldsymbol{W}$ cũng chưa xác định. Phương pháp FGLS được sử
+dụng để ước lượng các trọng số này từ dữ liệu.
+
+\subparagraph{Bước 1: Ước lượng ban đầu bằng OLS}
+
+Ước lượng nghiệm ban đầu: \begin{equation}
+  \hat{\boldsymbol{w}}_{OLS} =
+  (\boldsymbol{\Phi}^\intercal \boldsymbol{\Phi})^{-1}
+  \boldsymbol{\Phi}^\intercal \boldsymbol{t}.
+\end{equation} Sau đó, tính phần dư: \begin{equation}
+  \hat{\varepsilon}_i = t_i - \boldsymbol{\phi}_i^\intercal
+  \hat{\boldsymbol{w}}_{OLS}.
+\end{equation}
+
+\subparagraph{Bước 2: Mô hình hóa phương sai}
+
+Giả sử phương sai phụ thuộc vào đặc trưng theo công thức: \begin{equation}
+  \sigma_i^2 = \exp(\boldsymbol{\phi}_i^\intercal \boldsymbol{\gamma}).
+\end{equation} Khi đó, ta thực hiện hồi quy phụ: \begin{equation}
+  \log(\hat{\varepsilon}_i^2) = \boldsymbol{\phi}_i^\intercal
+  \boldsymbol{\gamma} + u_i,
+\end{equation} để ước lượng $\boldsymbol{\gamma}$.
+
+\subparagraph{Bước 3: Ước lượng trọng số}
+
+Từ đó, ta có: \begin{equation}
+  \hat{\sigma}_i^2 = \exp(\boldsymbol{\phi}_i^\intercal
+  \hat{\boldsymbol{\gamma}}),  \quad \hat{w}_i = \frac{1}{\hat{\sigma}_i^2}.
+\end{equation} Xây dựng ma trận trọng số: \begin{equation}
+  \hat{\boldsymbol{W}} = \mathrm{diag}(\hat{w}_1, \dots, \hat{w}_N).
+\end{equation}
+
+\subparagraph{Bước 4: Thực hiện WLS}
+
+Cuối cùng, nghiệm FGLS được xác định: \begin{equation}
+  \hat{\boldsymbol{w}}_{FGLS} =
+  (\boldsymbol{\Phi}^\intercal \hat{\boldsymbol{W}} \boldsymbol{\Phi})^{-1}
+  \boldsymbol{\Phi}^\intercal \hat{\boldsymbol{W}} \boldsymbol{t}.
+\end{equation}
+
+\paragraph{Độ phức tạp tính toán}
+
+Chi phí tính toán của FGLS bao gồm ba bước chính: \begin{itemize}
+  \item Ước lượng OLS ban đầu: $\Theta(NM^2 + M^3)$, trong đó $\Theta(NM^2)$ để
+    tính $\boldsymbol{\Phi}^\top \boldsymbol{\Phi}$ và $\Theta(M^3)$ để nghịch
+    đảo ma trận.
+
+  \item Hồi quy phụ để ước lượng phương sai: $\Theta(NM^2 + M^3)$, do đây cũng
+    là một bài toán OLS với cùng số chiều đặc trưng.
+
+  \item Ước lượng WLS: $\Theta(NM^2 + M^3)$, bao gồm việc tính
+    $\boldsymbol{\Phi}^\top \boldsymbol{W} \boldsymbol{\Phi}$ và nghịch đảo ma
+    trận tương ứng.
+\end{itemize} Do đó, tổng chi phí tính toán là $\Theta(NM^2 + M^3)$.  Tương tự
+với  $N \gg M$ thì độ phức tạp có thể xấp xỉ $\Theta(NM^2)$, tức là cùng bậc
+với OLS.
