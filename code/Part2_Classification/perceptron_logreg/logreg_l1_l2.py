@@ -2,7 +2,7 @@ import numpy as np
 from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score
-from code.Part2_Classification.dataset import CovtypeDataset
+from dataset import CovtypeDataset
 
 def compare_L1_L2():
     # ===== Load data =====

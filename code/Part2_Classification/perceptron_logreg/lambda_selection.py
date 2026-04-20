@@ -5,7 +5,7 @@ from sklearn.metrics import log_loss
 from sklearn.datasets import fetch_covtype
 from sklearn.preprocessing import StandardScaler
 
-from code.Part2_Classification.dataset import CovtypeDataset
+from dataset import CovtypeDataset
 
 def select_best_lambda(X, y, lambdas):
     skf = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)

@@ -1,7 +1,7 @@
 import numpy as np
 from sklearn.metrics import classification_report, accuracy_score
 from sklearn.model_selection import train_test_split
-from code.Part2_Classification.dataset import CovtypeDataset
+from dataset import CovtypeDataset
 from sklearn.preprocessing import StandardScaler
 
 class WeightedSoftmaxClassier:
