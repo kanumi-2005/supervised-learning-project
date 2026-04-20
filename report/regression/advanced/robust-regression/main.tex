@@ -1,0 +1,44 @@
+\subsubsection{Robust Regression với IRLS}
+
+Trong hồi quy tuyến tính thông thường (Ordinary Least Squares -- OLS), mô hình
+giả định rằng nhiễu phương sai bằng nhau và tối ưu hóa tổng bình phương sai số.
+Tuy nhiên, giả định này khiến OLS trở nên rất nhạy cảm với các điểm ngoại lai,
+do sai số lớn bị bình phương và khuếch đại ảnh hưởng.
+
+Để khắc phục hạn chế này, phương pháp Robust Regression được sử dụng nhằm giảm
+ảnh hưởng của ngoại lai thông qua việc gán trọng số thích nghi cho từng quan
+sát. Một trong những kỹ thuật phổ biến là Iteratively Reweighted Least Squares
+(IRLS), trong đó bài toán được giải lặp bằng cách cập nhật trọng số dựa trên
+phần dư.
+
+Tại mỗi bước lặp, phần dư được tính theo: \begin{equation}
+  \boldsymbol{r} = \boldsymbol{t} - \boldsymbol{\Phi}\boldsymbol{w}.
+\end{equation}
+
+Dựa trên phần dư này, trọng số được cập nhật theo một hàm loss robust. Với loss
+Huber, các quan sát có sai số nhỏ được giữ nguyên trọng số bằng 1, trong khi
+các quan sát có sai số lớn bị giảm trọng số theo tỉ lệ nghịch: \begin{equation}
+  w_i = \begin{cases}
+    1 & \text{nếu } \lvert r_i\rvert \leq \delta, \\
+    \frac{\delta}{\lvert r_i\rvert} & \text{nếu } \lvert r_i\rvert > \delta.
+  \end{cases}
+\end{equation}
+
+Trong trường hợp sử dụng phân phối Student-t, trọng số được suy ra từ
+likelihood của phân phối này: \begin{equation}
+  w_i = \frac{\nu + 1}{\nu + r_i^2},
+\end{equation} trong đó $\nu$ là bậc tự do, điều khiển độ “heavy-tailed” của
+phân phối. Giá trị $\nu$ nhỏ giúp mô hình trở nên robust hơn với ngoại lai.
+
+Sau khi có trọng số, bài toán trở thành một dạng Weighted Least Squares:
+\begin{equation}
+  \boldsymbol{w} =
+  (\boldsymbol{\Phi}^T \boldsymbol{W} \boldsymbol{\Phi})^{-1}
+  \boldsymbol{\Phi}^T \boldsymbol{W} \boldsymbol{t},
+\end{equation} trong đó $\boldsymbol{W}$ là ma trận đường chéo chứa các trọng
+số.
+
+So với OLS, IRLS làm giảm đáng kể ảnh hưởng của các điểm ngoại lai bằng cách
+giảm trọng số của các quan sát có sai số lớn. Điều này giúp mô hình ổn định hơn
+trong các tập dữ liệu có nhiễu không thoả giả thiết Guass--Markov hoặc chứa
+ngoại lai, đồng thời cải thiện khả năng tổng quát hóa trong thực tế.
