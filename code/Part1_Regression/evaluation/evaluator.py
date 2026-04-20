@@ -72,7 +72,6 @@ class Evaluator:
         r2 = r2_score(y_true, y_pred)
 
         metrics = {
-            "type": "metrics",
             "MSE": mse,
             "RMSE": rmse,
             "MAE": mae,
