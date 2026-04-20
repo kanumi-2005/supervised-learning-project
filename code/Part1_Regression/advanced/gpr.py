@@ -1,17 +1,19 @@
 import numpy as np
 from sklearn.base import RegressorMixin, BaseEstimator
 from sklearn.gaussian_process import GaussianProcessRegressor
-from sklearn.gaussian_process.kernels import RBF
+from sklearn.gaussian_process.kernels import (
+    RBF, WhiteKernel, ConstantKernel
+)
 
 
 def gradient_descent_optimizer(obj_func, initial_theta, bounds):
     theta_opt = initial_theta.copy()
-    lr = 0.001
-    max_iter = 100
+    lr = 0.01
 
-    for _ in range(max_iter):
+    for _ in range(200):
         value, grad = obj_func(theta_opt, eval_gradient=True)
-        theta_opt += lr * grad
+
+        theta_opt -= lr * grad
 
         for j, (low, high) in enumerate(bounds):
             if low is not None:
@@ -28,7 +30,7 @@ class GPR(RegressorMixin, BaseEstimator):
     def __init__(self, alpha=1e-2, random_state=42):
         self.random_state=random_state
         self._gpr = GaussianProcessRegressor(
-            RBF(0.2, (1e-2, 1e1)),
+            ConstantKernel() * RBF() + WhiteKernel(),
             alpha=alpha,
             optimizer=gradient_descent_optimizer,
             random_state=random_state,
