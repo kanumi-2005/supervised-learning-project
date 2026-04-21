@@ -1,0 +1,98 @@
+\subsubsection{Phân tích Bias-Variance}
+
+Trong phần này, ta thực hiện phân tích Bias-Variance cho hai mô hình Ridge và
+Lasso nhằm hiểu rõ hơn về khả năng tổng quát hóa của từng mô hình.
+
+Phân tích được thực hiện bằng phương pháp bootstrap với 200 lần lặp. Cụ thể,
+với mỗi lần lặp, chúng tôi lấy mẫu lại từ tập huấn luyện, huấn luyện mô hình
+và ghi nhận dự đoán. Từ đó, ước lượng được bias$^2$ và variance theo công thức
+thực nghiệm.
+
+\paragraph{Kết quả ước lượng}
+\tablename~\ref{tab:bias-variance} trình bày kết quả ước lượng bias$^2$ và
+variance cho hai mô hình.
+
+\begin{table}[htbp]
+  \caption{Phân tích Bias-Variance cho Ridge và Lasso}
+  \label{tab:bias-variance}
+  \centering
+  \import{\tablespath}{bias-variance}
+\end{table}
+
+Kết quả cho thấy Ridge có bias$^2$ thấp hơn so với Lasso, nhưng lại có
+variance cao hơn. Điều này cho thấy sự đánh đổi giữa bias$^2$ và variance  của
+hai phương pháp regularization:
+\begin{itemize}
+    \item Ridge ($l_2$ regularization) giữ lại toàn bộ các đặc trưng và phân
+    phối trọng số một cách mượt mà, do đó giảm bias nhưng có xu hướng tăng
+    variance.
+    \item Lasso ($l_1$ regularization) thực hiện lựa chọn đặc trưng bằng cách đưa
+    một số hệ số về 0, dẫn đến mô hình đơn giản hơn, variance thấp hơn nhưng
+    bias cao hơn.
+\end{itemize}
+
+Sự đánh đổi giữa bias và variance thể hiện rõ ràng trong kết quả thực nghiệm:
+Ridge đạt được sự cân bằng tốt hơn giữa hai thành phần, trong khi Lasso thiên
+về giảm variance với chi phí là tăng bias.
+
+Ngoài ra, khi quan sát regularization path (biểu diễn sự thay đổi của hệ số
+theo tham số điều chuẩn), có thể thấy rằng:
+\begin{itemize}
+    \item Với Ridge, các hệ số giảm dần một cách liên tục khi tăng mức
+    regularization.
+    \item Với Lasso, nhiều hệ số bị triệt tiêu hoàn toàn về 0, làm giảm độ
+    phức tạp của mô hình.
+\end{itemize}
+
+Tóm lại, kết quả phân tích Bias-Variance cho thấy Ridge phù hợp hơn trong bài
+toán này nhờ đạt được sự cân bằng tốt giữa bias và variance, trong khi Lasso
+có xu hướng underfitting do bias cao.
+
+\paragraph{Thay đổi của bias-variance theo hệ số điều chỉnh}
+
+\subparagraph{Ridge Regression}
+
+\figurename~\ref{fig:bias-variance-ridge} minh họa sự thay đổi của bias$^2$ và
+variance theo hệ số điều chuẩn $\lambda$ đối với Ridge Regression. Có thể quan
+sát rằng bias$^2$ của Ridge gần như ổn định khi $\lambda$ thay đổi, trong khi
+variance có xu hướng tăng nhẹ khi $\lambda$ lớn. Điều này phản ánh đặc điểm
+của Ridge Regression: các hệ số bị co lại một cách liên tục nhưng không bị
+triệt tiêu hoàn toàn, giúp mô hình duy trì mức bias thấp và kiểm soát variance
+tương đối tốt. Do đó, Ridge đạt được sự cân bằng ổn định giữa bias và variance
+trên toàn bộ miền giá trị của $\lambda$.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{bias-variance-ridge}
+  \caption{Bias-Variance của Ridge trên regularization path}
+  \label{fig:bias-variance-ridge}
+\end{figure}
+
+\subparagraph{Lasso Regression}
+
+\figurename~\ref{fig:bias-variance-lasso} trình bày sự thay đổi của bias$^2$ và
+variance theo $\lambda$ đối với Lasso Regression. Có thể thấy, khi $\lambda$
+tăng, bias$^2$ tăng mạnh, đặc biệt ở vùng $\lambda$ lớn. Nguyên nhân là do
+Lasso thực hiện regularization dạng $l_1$, khiến nhiều hệ số bị đưa về 0, làm
+giảm độ phức tạp của mô hình nhưng đồng thời làm mất thông tin quan trọng, dẫn
+đến underfitting. Ngược lại, variance giảm dần và tiến gần về 0 khi $\lambda$
+lớn, cho thấy mô hình trở nên rất ổn định nhưng kém linh hoạt. Hiện tượng này
+thể hiện rõ ràng sự đánh đổi giữa bias và variance: Lasso ưu tiên giảm variance
+bằng cách tăng bias.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{bias-variance-lasso}
+  \caption{Bias-Variance của Lasso trên regularization path}
+  \label{fig:bias-variance-lasso}
+\end{figure}
+
+\paragraph{So sánh và nhận xét}
+
+Từ hai hình trên, có thể thấy:
+\begin{itemize}
+    \item Ridge duy trì bias thấp và variance ở mức trung bình, cho thấy khả năng tổng quát hóa ổn định.
+    \item Lasso tạo ra mô hình đơn giản hơn với variance thấp, nhưng phải trả giá bằng bias cao khi $\lambda$ lớn.
+\end{itemize}
+
+Tóm lại, Ridge phù hợp hơn trong trường hợp dữ liệu có nhiều đặc trưng đóng góp nhỏ, trong khi Lasso hữu ích khi cần lựa chọn đặc trưng, nhưng dễ dẫn đến underfitting nếu regularization quá mạnh.
