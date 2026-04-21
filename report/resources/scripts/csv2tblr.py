@@ -3,6 +3,8 @@ import argparse
 from pathlib import Path
 import re
 
+from pandas.core.indexers import is_empty_indexer
+
 
 # =========================
 # LATEX ESCAPE
@@ -65,11 +67,24 @@ def load_csv(path, no_header=False):
 # =========================
 # RANGE PARSER
 # =========================
-def parse_range(token):
+def parse_range(token, columns):
     m = re.match(r"^(\d+)-(\d+)$", token)
     if m:
         return list(range(int(m.group(1)), int(m.group(2)) + 1))
-    return None
+
+    m = re.match(r"^-(\d+)$", token)
+    if m:
+        return list(range(0, int(m.group(1)) + 1))
+
+    m = re.match(r"^(\d+)-$", token)
+    if m:
+        return list(range(int(m.group(1), columns)))
+
+    m = re.match(r"(\d+)$", token)
+    if m:
+        return list(range(int(m.group(1)), int(m.group(1)) + 1))
+
+    raise ValueError(f"Invalid range: \"{token}\"")
 
 
 # =========================
@@ -78,21 +93,30 @@ def parse_range(token):
 def parse_groups(groups, columns):
     parsed = []
 
+    if groups is None:
+        parsed.append(list(range(0, columns)))
+
     for group in groups:
         cols = []
         tokens = group.split()
 
         for t in tokens:
-            r = parse_range(t)
+            r = parse_range(t, columns)
 
             if r is not None:
                 cols.extend(r)
             elif t.isdigit():
                 cols.append(int(t))
             else:
-                cols.append(columns.get_loc(t))
+                cols.append(t)
+
+        cols = sorted(set(cols))
+
+        if len(cols) == 0:
+            raise ValueError(f"Empty group: \"{group}\"")
 
         parsed.append(sorted(set(cols)))
+
 
     return parsed
 
@@ -150,53 +174,71 @@ def main():
     parser.add_argument("csv_path")
     parser.add_argument("output_prefix")
 
-    parser.add_argument("--groups", nargs="+", required=True)
-    parser.add_argument("--shared", nargs="+", default=[])
+    parser.add_argument("--groups", nargs="+", default=None)
+    parser.add_argument("--shared", nargs=1, default=[])
     parser.add_argument("--include-remaining", action="store_true")
     parser.add_argument("--no-header", action="store_true")
 
     args = parser.parse_args()
 
+
     df = load_csv(args.csv_path, args.no_header)
+    n_columns = df.shape[1]
 
     # =========================
     # SHARED COLUMNS
     # =========================
-    shared_cols = []
-    for c in args.shared:
-        if c.isdigit():
-            shared_cols.append(df.columns[int(c)])
-        else:
-            shared_cols.append(c)
-
-    remaining_cols = [c for c in df.columns if c not in shared_cols]
+    parsed  = parse_groups(args.shared, n_columns)
+    if len(parsed) == 0:
+        shared_group = []
+    else:
+        shared_group, = parsed
 
     # =========================
     # GROUP PARSING
     # =========================
-    parsed = parse_groups(args.groups, pd.Index(remaining_cols))
+    if args.groups is None:
+        groups = [[i for i in range(0, n_columns) if i not in shared_group]]
+    else:
+        parsed = parse_groups(args.groups, n_columns)
+        groups = []
+        for g in parsed:
+            groups.append(g)
 
-    groups = []
-    for g in parsed:
-        groups.append([remaining_cols[i] for i in g if i < len(remaining_cols)])
+    # =========================
+    # CHECK DUPLICATE COLUMNS
+    # =========================
+    all_cols = shared_group + [c for g in groups for c in g]
+
+    if len(all_cols) != len(set(all_cols)):
+        raise ValueError("Duplicate columns detected")
 
     # =========================
     # REMAINING GROUP
     # =========================
     used = set()
+    for s in groups:
+        used.update(s)
     for g in groups:
         used.update(g)
 
     if args.include_remaining:
-        rest = [c for c in remaining_cols if c not in used]
+        rest = [c for c in range(n_columns) if c not in used]
         if rest:
             groups.append(rest)
 
     # =========================
     # EXPORT TABLES
     # =========================
+    if len(groups) == 1:
+        df_part = df
+        out = f"{args.output_prefix}.tex"
+        save_tex(df_part, out)
+        print("Saved:", out)
+        return
+
     for i, cols in enumerate(groups):
-        df_part = df[shared_cols + cols]
+        df_part = df.iloc[:, shared_group + cols]
 
         out = f"{args.output_prefix}-part{i+1}.tex"
         save_tex(df_part, out)

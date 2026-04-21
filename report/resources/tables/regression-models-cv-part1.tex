@@ -1,0 +1,18 @@
+\begin{tblr}{
+  width=\textwidth,
+  colspec={|l|l|l|},
+  row{1} = {font=\bfseries, bg=gray!15},
+  hlines,
+  vlines
+}
+Model       & MSE & RMSE \\
+OLS         & $0.5345 \pm 0.0384$ & $0.7306 \pm 0.0256$ \\
+MBGD        & $0.5364 \pm 0.0342$ & $0.7321 \pm 0.0228$ \\
+WLS         & $0.6220 \pm 0.1587$ & $0.7829 \pm 0.0953$ \\
+Ridge       & $0.8875 \pm 0.0352$ & $0.9419 \pm 0.0186$ \\
+Lasso       & $1.0627 \pm 0.0430$ & $1.0307 \pm 0.0207$ \\
+Elastic Net & $1.1408 \pm 0.0470$ & $1.0679 \pm 0.0219$ \\
+Polynomial  & $0.6877 \pm 0.5260$ & $0.7943 \pm 0.2383$ \\
+RBF         & $0.7295 \pm 0.0219$ & $0.8540 \pm 0.0128$ \\
+Fourier     & $1.0607 \pm 2.0013$ & $0.8303 \pm 0.6093$ \\
+\end{tblr}
