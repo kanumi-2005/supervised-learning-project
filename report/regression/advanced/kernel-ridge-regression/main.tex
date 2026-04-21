@@ -1,0 +1,86 @@
+\subsubsection{Kernel Ridge Regression}
+
+Trong phần này, ta triển khai Kernel Ridge Regression với hai loại kernel là
+RBF và Polynomial, đồng thời so sánh với Ridge Regression tuyến tính.
+
+Đối với RBF kernel, tham số $\gamma$ được lựa chọn thông qua grid search với
+tập giá trị $\{0.01, 0.1, 1\}$. Kết quả tốt nhất đạt được tại $\gamma = 0.1$.
+
+Đối với Polynomial kernel, các tham số được tìm kiếm trên tập giá trị degree
+là $\{2, 3\}$ và coef0 là $\{0, 1\}$ Kết quả tối ưu là degree = 2 và coef0
+= 1.
+
+\tablename~\ref{tab:kernel-ridge-cross-validation} trình bày kết quả
+cross-validation của các mô hình. RBF Ridge cho kết quả tốt nhất, trong khi
+Ridge tuyến tính kém nhất và Polynomial Ridge có độ biến động lớn.
+
+\paragraph{Kết quả cross-validation}
+
+\begin{table}[htbp]
+  \caption{Kết quả cross-validation của các mô hình}
+  \label{tab:kernel-ridge-cross-validation}
+  \centering
+  \import{\tablespath}{kernel-ridge-cross-validation}
+\end{table}
+
+\paragraph{Kết quả trên tập kiểm tra}
+\tablename~\ref{tab:kernel-ridge-test-result} trình bày kết quả trên tập kiểm
+tra của các mô hình. Có thể thấy rằng mô hình RBF Ridge tiếp tục đạt hiệu năng
+tốt nhất với các giá trị MSE, RMSE và MAE thấp nhất, đồng thời hệ số $R^2$ cao
+nhất, cho thấy khả năng tổng quát hóa tốt. Polynomial Ridge cũng cải thiện so
+với Ridge tuyến tính, tuy nhiên vẫn kém hơn RBF Ridge. Trong khi đó, Ridge
+Regression tuyến tính cho kết quả thấp nhất do không thể mô hình hóa các quan
+hệ phi tuyến trong dữ liệu.
+
+\begin{table}[htbp]
+  \caption{Kết quả trên tập kiểm tra}
+  \label{tab:kernel-ridge-test-result}
+  \centering
+  \import{\tablespath}{kernel-ridge-test-result}
+\end{table}
+
+\paragraph{Kiểm định thống kê}
+
+\tablename~\ref{tab:kernel-ridge-statistical-test} cho thấy kết quả kiểm định
+thống kê giữa các mô hình. Cụ thể, sự khác biệt giữa Ridge và RBF Ridge là có
+ý nghĩa thống kê với p-value rất nhỏ trong cả t-test ($1.99 \times 10^{-13}$)
+và Wilcoxon test (0.001953), nhỏ hơn mức ý nghĩa $\alpha = 0.05$. Điều này xác
+nhận rằng RBF Ridge cải thiện hiệu năng một cách đáng kể so với Ridge tuyến
+tính. Đối với cặp Ridge và Polynomial Ridge, cả hai kiểm định đều cho p-value
+lớn hơn 0.05 (0.5153 và 0.4316), cho thấy không có sự khác biệt có ý nghĩa
+thống kê giữa hai mô hình này. Điều này phù hợp với các kết quả thực nghiệm
+trước đó, khi Polynomial Ridge không cho thấy sự cải thiện ổn định so với
+Ridge. Đối với cặp RBF Ridge và Polynomial Ridge, kết quả không hoàn toàn nhất
+quán giữa hai kiểm định: t-test cho p-value = 0.2299 (không có ý nghĩa thống
+kê), trong khi Wilcoxon test cho p-value = 0.0020 (có ý nghĩa thống kê). Sự
+khác biệt này có thể xuất phát từ việc t-test giả định phân phối chuẩn, trong
+khi Wilcoxon test là kiểm định phi tham số và nhạy hơn với sự khác biệt về phân
+phối. Tổng hợp lại, có thể kết luận rằng RBF Ridge là mô hình vượt trội nhất,
+với sự cải thiện có ý nghĩa thống kê so với Ridge, trong khi Polynomial Ridge
+không cho thấy sự khác biệt rõ ràng và ổn định so với các mô hình còn lại.
+
+\begin{table}[htbp]
+  \caption{So sánh thống kê giữa các mô hình}
+  \label{tab:kernel-ridge-statistical-test}
+  \centering
+  \import{\tablespath}{kernel-ridge-statistical-test}
+\end{table}
+
+\paragraph{Nhận xét}
+
+Kết quả cho thấy mô hình RBF Ridge đạt hiệu năng tốt nhất trên cả cross-
+validation và tập kiểm tra, với sai số thấp nhất và hệ số $R^2$ cao nhất. Điều
+này cho thấy dữ liệu có mối quan hệ phi tuyến mà kernel RBF có thể nắm bắt
+hiệu quả.
+
+Polynomial Ridge cải thiện kết quả so với Ridge tuyến tính trên tập kiểm tra,
+tuy nhiên kết quả cross-validation có độ biến động lớn, cho thấy mô hình không
+ổn định và có khả năng overfitting.
+
+Kiểm định thống kê cho thấy sự khác biệt giữa Ridge và RBF Ridge là có ý nghĩa
+thống kê (p-value rất nhỏ), trong khi sự khác biệt giữa Ridge và Polynomial
+Ridge không có ý nghĩa thống kê (p-value lớn hơn 0.05).
+
+Tóm lại, RBF kernel là lựa chọn phù hợp nhất trong bài toán này, trong khi
+Ridge tuyến tính đóng vai trò baseline và Polynomial kernel cần được điều
+chỉnh cẩn thận để đạt hiệu quả tốt.
