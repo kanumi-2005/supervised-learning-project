@@ -1,14 +1,15 @@
-\subsubsection{Bình phương tối thiểu thông thường (Ordinary least squares,
+\paragraph{Bình phương tối thiểu thông thường (Ordinary least squares,
 OLS)}
 
 Phương pháp Bình phương tối thiểu thông thường (OLS) hướng đến việc tìm bộ
-trọng số $\boldsymbol{w}^\ast$ sao cho cực tiểu quá tổng bình phương sai số giữa giá trị
-thực tế và giá trị dự đoán hay cực tiểu hoá hàm lỗi: \begin{equation}
+trọng số $\boldsymbol{w}^\ast$ sao cho cực tiểu quá tổng bình phương sai số
+giữa giá trị thực tế và giá trị dự đoán hay cực tiểu hoá hàm lỗi:
+\begin{equation}
   E_D(\boldsymbol{w}) = 1/2\cdot\lVert \boldsymbol{t} -
   \boldsymbol{\Phi}\boldsymbol{w}\rVert^2.
 \end{equation}
 
-\paragraph{Phương trình chuẩn (Normal Equation)}
+\subparagraph{Phương trình chuẩn (Normal Equation)}
 
 Phương trình chuẩn cung cấp một lời giải đóng cho bài toán tối ưu trên bằng
 cách giải nghiệm đạo hàm bậc nhất bằng 0. Công thức nghiệm tối ưu là:
@@ -31,7 +32,7 @@ liệu California Housing, khi mà $N \gg M$ ($20640 \gg 9$, trong đó $9$ là 
 lượng đặc trưng cộng thêm 1 để học hệ số chặn), độ phức tạp tương
 đương $\Theta(NM^2)$.
 
-\paragraph{Mini-batch Gradient Descent}
+\subparagraph{Mini-batch Gradient Descent}
 
 Đối với các bài toán có kích thước dữ liệu lớn, việc tính toán trực tiếp trên
 toàn bộ dữ liệu gây áp lực lớn cho bộ nhớ. Thuật toán Mini-batch
@@ -40,8 +41,6 @@ Gradient Descent nhằm cân bằng giữa tốc độ hội tụ và hiệu nă
 Về hiệu suất, độ phức tạp tính toán của một lần xử lý một lô (batch) là
 $\Theta(BM)$. Khi đó, với một epoch, độ phức tạp là $\Theta(NM)$. Và với $k$
 epoch thì độ phức tạp là $\Theta(kNM)$.
-
-\subparagraph{Lập lịch tốc độ học (Learning Rate Scheduling)}
 
 Việc duy trì một tốc độ học $\eta$ cố định trong suốt quá trình huấn luyện
 thường dẫn đến sự mất cân bằng giữa tốc độ hội tụ và độ ổn định của mô hình.
@@ -66,4 +65,4 @@ trong một chu kỳ.
 Sự thay đổi mượt mà của Cosine Annealing giúp hạn chế dao động gradient lớn,
 trong khi Step Decay cung cấp cách điều chỉnh đơn giản và hiệu quả.
 
-\paragraph{So sánh giữa phương pháp Normal Equation và Gradient Descent}
+\subparagraph{So sánh giữa phương pháp Normal Equation và Gradient Descent}
