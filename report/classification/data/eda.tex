@@ -116,3 +116,51 @@ Sự mất cân bằng này cho thấy bài toán phân loại rừng là một 
 không cân bằng, trong đó một số lớp chiếm ưu thế rõ rệt so với các lớp còn lại.
 Điều này có thể ảnh hưởng đến hiệu năng của các mô hình học máy, đặc biệt là xu
 hướng thiên lệch về các lớp phổ biến nếu không có biện pháp xử lý phù hợp.
+
+\paragraph{Các biến đặc trưng định lượng}
+
+\figurename~\ref{fig:covtype-numeric-features-group1}
+và~\ref{fig:covtype-numeric-features-group2} cho ta thấy phân phối của các biến
+đặc trưng định lượng của bộ dữ liệu Forest CoverType. Hình gồm hai cột, cột
+trái là biểu đồ hộp của biến đặc trưng, cột phải là biểu đồ tần suất của biến
+tương ứng.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{covtype-numeric-features-group1}
+  \caption{Phân phối các biến đặc trưng định lượng của bộ dữ liệu Forest
+  CoverType (phần 1)}
+  \label{fig:covtype-numeric-features-group1}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{covtype-numeric-features-group2}
+  \caption{Phân phối các biến đặc trưng định lượng của bộ dữ liệu Forest
+  CoverType (phần 2)}
+  \label{fig:covtype-numeric-features-group2}
+\end{figure}
+
+Các biến \textenglish{Slope}, \textenglish{Aspect},
+\textenglish{Horizontal\_Distance\_To\_Hydrology},
+\textenglish{Vertical\_Distance\_To\_Hydrology},
+\textenglish{Horizontal\_Distance\_To\_Roadways} và
+\textenglish{Horizontal\_Distance\_To\_Fire\_Points} có phân phối lệch phải.
+Điều này cho thấy phần lớn các quan sát nằm trong các khu vực có địa hình tương
+đối ``thuận lợi'', tức là độ dốc thấp đến trung bình và ở khoảng cách không quá
+xa các yếu tố địa lý như nguồn nước, đường giao thông và điểm cháy rừng. Ngược
+lại, chỉ một số ít quan sát thuộc các khu vực xa biệt lập hoặc có điều kiện địa
+hình cực đoan, tạo thành đuôi kéo dài về phía các giá trị lớn.
+
+Các biến \textenglish{Hillshade\_9am} và \textenglish{Hillshade\_Noon} có phân
+phối lệch trái, cho thấy phần lớn các khu vực có mức độ chiếu sáng cao vào buổi
+sáng và giữa trưa, tương ứng với các bề mặt ít bị che khuất bởi địa hình hoặc
+thảm thực vật. Chỉ một số ít khu vực có mức chiếu sáng thấp, thường tương ứng
+với các vị trí bị che bóng hoặc địa hình phức tạp.
+
+Các biến \textenglish{Elevation} và \textenglish{Hillshade\_3pm} có phân phối
+tương đối cân bằng. Đối với \textenglish{Elevation}, sự lệch trái nhẹ cho thấy
+khu vực nghiên cứu chủ yếu nằm ở độ cao trung bình đến cao, với một số ít vùng
+có độ cao thấp hơn. Trong khi đó, \textenglish{Hillshade\_3pm} phân bố khá đối
+xứng, phản ánh sự đa dạng tương đối đồng đều của điều kiện chiếu sáng vào buổi
+chiều trong khu vực khảo sát.
