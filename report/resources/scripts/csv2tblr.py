@@ -146,7 +146,7 @@ def df_to_tblr(df):
 
     return f"""\\begin{{tblr}}{{
   width=\\textwidth,
-  colspec={{|{colspec}|}},
+  colspec={{{colspec}}},
   row{{1}} = {{font=\\bfseries, bg=gray!15}},
   hlines,
   vlines
