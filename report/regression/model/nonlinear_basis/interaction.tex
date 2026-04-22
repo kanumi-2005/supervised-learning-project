@@ -1,0 +1,37 @@
+\subsubsection{Phân tích ảnh hưởng của hiệu ứng tương tác}
+
+Nhằm khảo sát vai trò của các mối quan hệ phi tuyến giữa các biến đầu vào, chúng tôi mở rộng tập đặc trưng bằng cách bổ sung các thành phần tương tác dạng $x_i x_j$. Các đặc trưng này giúp mô hình có khả năng biểu diễn tốt hơn các quan hệ phụ thuộc phức tạp giữa các biến.
+
+\paragraph{Thiết lập mô hình}
+
+Xuất phát từ tập đặc trưng gốc $\{x_1, x_2, \dots, x_d\}$, chúng tôi xây dựng thêm các biến tương tác theo dạng:
+
+\[
+x_i x_j, \quad \text{với } i \neq j
+\]
+
+Sau đó, mô hình hồi quy tuyến tính được huấn luyện trên tập dữ liệu đã được mở rộng bởi các đặc trưng này.
+
+\paragraph{Kết quả thực nghiệm}
+
+Hiệu năng mô hình được đánh giá trên tập validation như sau:
+
+\begin{itemize}
+    \item MSE (không sử dụng tương tác): 2.0967
+    \item MSE (có sử dụng tương tác): 4.0124
+    \item Chênh lệch: -1.9157
+\end{itemize}
+
+\paragraph{Phân tích kết quả}
+
+Kết quả thực nghiệm cho thấy việc bổ sung các đặc trưng tương tác $x_i x_j$ không mang lại cải thiện về hiệu năng, mà còn làm gia tăng sai số dự đoán. Điều này có thể được giải thích bởi một số nguyên nhân:
+
+\begin{itemize}
+    \item Việc mở rộng đặc trưng làm tăng đáng kể độ phức tạp của mô hình, dẫn đến nguy cơ overfitting cao hơn.
+    \item Sự xuất hiện của các đặc trưng tương tác có thể gây ra hiện tượng đa cộng tuyến, làm giảm tính ổn định của mô hình.
+    \item Các phương pháp biểu diễn phi tuyến như RBF hoặc Fourier đã đủ khả năng mô hình hóa quan hệ giữa các biến, khiến các thành phần tương tác trở nên dư thừa.
+\end{itemize}
+
+\paragraph{Kết luận}
+
+Từ kết quả thu được, có thể thấy rằng việc bổ sung các đặc trưng tương tác $x_i x_j$ trong mô hình hồi quy tuyến tính không cải thiện hiệu năng, thậm chí còn làm giảm độ chính xác dự đoán. Do đó, trong bài toán này, việc sử dụng các đặc trưng tương tác không mang lại lợi ích đáng kể.
