@@ -10,17 +10,25 @@ tập giá trị $\{0.01, 0.1, 1\}$. Kết quả tốt nhất đạt được t�
 là $\{2, 3\}$ và coef0 là $\{0, 1\}$ Kết quả tối ưu là degree = 2 và coef0
 = 1.
 
-\tablename~\ref{tab:kernel-ridge-cross-validation} trình bày kết quả
+\tablename~\ref{tab:kernel-ridge-cross-validation-1} và
+\tablename~\ref{tab:kernel-ridge-cross-validation-2} trình bày kết quả
 cross-validation của các mô hình. RBF Ridge cho kết quả tốt nhất, trong khi
 Ridge tuyến tính kém nhất và Polynomial Ridge có độ biến động lớn.
 
 \paragraph{Kết quả cross-validation}
 
 \begin{table}[htbp]
-  \caption{Kết quả cross-validation của các mô hình}
-  \label{tab:kernel-ridge-cross-validation}
+  \caption{Kết quả cross-validation của các mô hình (phần 1)}
+  \label{tab:kernel-ridge-cross-validation-1}
   \centering
-  \import{\tablespath}{kernel-ridge-cross-validation}
+  \import{\tablespath}{kernel-ridge-cross-validation-1}
+\end{table}
+
+\begin{table}[htbp]
+  \caption{Kết quả cross-validation của các mô hình (phần 2)}
+  \label{tab:kernel-ridge-cross-validation-2}
+  \centering
+  \import{\tablespath}{kernel-ridge-cross-validation-2}
 \end{table}
 
 \paragraph{Kết quả trên tập kiểm tra}

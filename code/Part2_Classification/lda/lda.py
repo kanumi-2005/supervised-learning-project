@@ -63,8 +63,6 @@ class LDA(BaseModel):
                 alpha=0.5
             )
 
-        ax.set_xlabel("LD1")
-        ax.set_ylabel("LD2")
         ax.set_title("LDA Decision Boundary")
         ax.legend(loc="best")
         plt.show()

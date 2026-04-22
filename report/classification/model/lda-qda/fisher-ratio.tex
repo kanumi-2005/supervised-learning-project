@@ -1,0 +1,58 @@
+\subsection{Fisher Ratio}
+Fisher Ratio là một tiêu chí đánh giá mức độ phân biệt của từng đặc trưng
+trong bài toán phân loại. Ý tưởng chính là đo lường mức độ tách biệt giữa các
+lớp so với mức độ phân tán bên trong mỗi lớp.
+
+\paragraph{Định nghĩa}
+Với mỗi đặc trưng $j$, Fisher Ratio được định nghĩa là:
+\begin{equation}
+  J_j = \frac{\sum\limits_{k} n_k (\mu_{k,j} - \mu_j)^2}
+  {\sum\limits_{k} n_k \sigma_{k,j}^2},
+\end{equation}
+trong đó:
+\begin{itemize}
+  \item $n_k$ là số lượng mẫu của lớp $k$
+  \item $\mu_{k,j}$ là giá trị trung bình của đặc trưng $j$ trong lớp $k$
+  \item $\mu_j$ là giá trị trung bình của đặc trưng $j$ trên toàn bộ dữ liệu
+  \item $\sigma_{k,j}^2$ là phương sai của đặc trưng $j$ trong lớp $k$
+\end{itemize}
+
+\paragraph{Ý nghĩa}
+Fisher Ratio thể hiện sự cân bằng giữa:
+\begin{itemize}
+  \item \textbf{Between-class variance} (tử số): đo mức độ khác biệt giữa các
+  lớp
+  \item \textbf{Within-class variance} (mẫu số): đo mức độ phân tán trong từng
+  lớp
+\end{itemize}
+
+\begin{itemize}
+  \item Nếu $J_j$ lớn: đặc trưng $j$ giúp phân tách các lớp tốt (mean khác
+  nhau rõ rệt, variance trong lớp nhỏ)
+  \item Nếu $J_j$ nhỏ: đặc trưng ít hữu ích cho phân loại
+\end{itemize}
+
+\paragraph{Liên hệ với LDA}
+
+Fisher Ratio chính là dạng đơn giản (theo từng đặc trưng độc lập) của tiêu chí
+Fisher được sử dụng trong Linear Discriminant Analysis (LDA):
+\begin{equation}
+  J(\boldsymbol{w}) = \frac{\boldsymbol{w}^\intercal \boldsymbol{S}_B
+  \boldsymbol{w}} {\boldsymbol{w}^\intercal \boldsymbol{S}_W \boldsymbol{w}}.
+\end{equation}
+
+Trong khi LDA tìm một phép chiếu tối ưu $\boldsymbol{w}$ trong không gian nhiều
+chiều, Fisher Ratio đánh giá trực tiếp từng đặc trưng riêng lẻ.
+
+\paragraph{Ứng dụng}
+Fisher Ratio thường được sử dụng trong:
+\begin{itemize}
+  \item \textbf{Lựa chọn đặc trưng}: chọn các đặc trưng có $J_j$ lớn
+  \item \textbf{Phân tích dữ liệu}: đánh giá mức độ phân biệt của từng biến đầu vào
+\end{itemize}
+
+\paragraph{Nhận xét}
+Fisher Ratio là một tiêu chí đơn giản và hiệu quả, đặc biệt phù hợp khi cần
+đánh giá nhanh tầm quan trọng của các đặc trưng. Tuy nhiên, do xét từng đặc
+trưng độc lập, phương pháp này không nắm bắt được mối quan hệ giữa các đặc
+trưng, do đó có thể bỏ sót các tương tác quan trọng trong dữ liệu.

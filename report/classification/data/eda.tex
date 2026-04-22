@@ -116,3 +116,145 @@ Sự mất cân bằng này cho thấy bài toán phân loại rừng là một 
 không cân bằng, trong đó một số lớp chiếm ưu thế rõ rệt so với các lớp còn lại.
 Điều này có thể ảnh hưởng đến hiệu năng của các mô hình học máy, đặc biệt là xu
 hướng thiên lệch về các lớp phổ biến nếu không có biện pháp xử lý phù hợp.
+
+\paragraph{Các biến đặc trưng định lượng}
+
+\figurename~\ref{fig:covtype-numeric-features-group1}
+và~\ref{fig:covtype-numeric-features-group2} cho ta thấy phân phối của các biến
+đặc trưng định lượng của bộ dữ liệu Forest CoverType. Hình gồm hai cột, cột
+trái là biểu đồ hộp của biến đặc trưng, cột phải là biểu đồ tần suất của biến
+tương ứng.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{covtype-numeric-features-group1}
+  \caption{Phân phối các biến đặc trưng định lượng của bộ dữ liệu Forest
+  CoverType (phần 1)}
+  \label{fig:covtype-numeric-features-group1}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{covtype-numeric-features-group2}
+  \caption{Phân phối các biến đặc trưng định lượng của bộ dữ liệu Forest
+  CoverType (phần 2)}
+  \label{fig:covtype-numeric-features-group2}
+\end{figure}
+
+Các biến \textenglish{Slope}, \textenglish{Aspect},
+\textenglish{Horizontal\_Distance\_To\_Hydrology},
+\textenglish{Vertical\_Distance\_To\_Hydrology},
+\textenglish{Horizontal\_Distance\_To\_Roadways} và
+\textenglish{Horizontal\_Distance\_To\_Fire\_Points} có phân phối lệch phải.
+Điều này cho thấy phần lớn các quan sát nằm trong các khu vực có địa hình tương
+đối ``thuận lợi'', tức là độ dốc thấp đến trung bình và ở khoảng cách không quá
+xa các yếu tố địa lý như nguồn nước, đường giao thông và điểm cháy rừng. Ngược
+lại, chỉ một số ít quan sát thuộc các khu vực xa biệt lập hoặc có điều kiện địa
+hình cực đoan, tạo thành đuôi kéo dài về phía các giá trị lớn.
+
+Các biến \textenglish{Hillshade\_9am} và \textenglish{Hillshade\_Noon} có phân
+phối lệch trái, cho thấy phần lớn các khu vực có mức độ chiếu sáng cao vào buổi
+sáng và giữa trưa, tương ứng với các bề mặt ít bị che khuất bởi địa hình hoặc
+thảm thực vật. Chỉ một số ít khu vực có mức chiếu sáng thấp, thường tương ứng
+với các vị trí bị che bóng hoặc địa hình phức tạp.
+
+Các biến \textenglish{Elevation} và \textenglish{Hillshade\_3pm} có phân phối
+tương đối cân bằng. Đối với \textenglish{Elevation}, sự lệch trái nhẹ cho thấy
+khu vực nghiên cứu chủ yếu nằm ở độ cao trung bình đến cao, với một số ít vùng
+có độ cao thấp hơn. Trong khi đó, \textenglish{Hillshade\_3pm} phân bố khá đối
+xứng, phản ánh sự đa dạng tương đối đồng đều của điều kiện chiếu sáng vào buổi
+chiều trong khu vực khảo sát.
+
+\paragraph{Các biến đặc trưng định tính}
+
+\figurename~\ref{fig:covtype-categorical-features-group1},
+\ref{fig:covtype-categorical-features-group2},
+\ref{fig:covtype-categorical-features-group3}
+và~\ref{fig:covtype-categorical-features-group4} cho ta thấy phân phối của các
+đặc trưng trong bộ dữ liệu Forest CoverType.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{covtype-categorical-features-group1}
+  \caption{Biểu đồ đếm tần suất các biến đặc trưng định tính của bộ dữ liệu
+  Forest CoverType (phần 1)}
+  \label{fig:covtype-categorical-features-group1}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{covtype-categorical-features-group2}
+  \caption{Biểu đồ đếm tần suất các biến đặc trưng định tính của bộ dữ liệu
+  Forest CoverType (phần 2)}
+  \label{fig:covtype-categorical-features-group2}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{covtype-categorical-features-group3}
+  \caption{Biểu đồ đếm tần suất các biến đặc trưng định tính của bộ dữ liệu
+  Forest CoverType (phần 3)}
+  \label{fig:covtype-categorical-features-group3}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{covtype-categorical-features-group4}
+  \caption{Biểu đồ đếm tần suất các biến đặc trưng định tính của bộ dữ liệu
+  Forest CoverType (phần 4)}
+  \label{fig:covtype-categorical-features-group4}
+\end{figure}
+
+Ta thấy \textenglish{Wilderness\_Area\_0} và~\textenglish{Wilderness\_Area\_2}
+chiếm đa số trong bộ dữ liệu. Điều này có thể do độ cao trung bình của hai khu
+vực này thấp (được nói ở phần giới thiệu) có có diện tích phủ lớn hơn.
+
+Các loại đất \textenglish{Soil\_Type\_28} và \textenglish{Soil\_Type\_22} có số
+lượng lớn hơn hẳn các loại đất khác.
+
+\paragraph{Phân bố từng từng đặc trưng định lượng theo từng lớp của biến mục
+tiêu}
+
+\figurename~\ref{fig:covtype-numeric-features-vs-target-group1}
+và~\ref{fig:covtype-numeric-features-vs-target-group2} cho ta thấy phân bố từng
+đặc trưng theo từng lớp của biến mục tiêu trong bộ dữ liệu Forest CoverType.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{covtype-numeric-features-vs-target-group1}
+  \caption{Biểu đồ hộp từng đặc trưng định lượng theo từng lớp của biến mục
+  tiêu trong bộ dữ liệu Forest CoverType (phần 1)}
+  \label{fig:covtype-numeric-features-vs-target-group1}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{covtype-numeric-features-vs-target-group2}
+  \caption{Biểu đồ hộp từng đặc trưng định lượng theo từng lớp của biến mục
+  tiêu trong bộ dữ liệu Forest CoverType (phần 2)}
+  \label{fig:covtype-numeric-features-vs-target-group2}
+\end{figure}
+
+Qua 2 hình, ta thấy biến \textenglish{Elevation} có sự phân bố khác nhau tương
+đối giữa các lớp. Điều này gợi ý rằng độ cao có thể là một đặc trưng quan trọng
+trong việc phân biệt các loại rừng phủ.
+
+Các đặc trưng khác thì chưa thấy sự phân biệt nào rõ ràng.
+
+\paragraph{Phân bố của biến mục tiêu theo từng khu vực}
+
+\figurename~\ref{fig:covtype-area-wise-target-distribution} cho ta thấy phân bố
+của từng loại rừng phủ theo từng khu vực.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{covtype-area-wise-target-distribution}
+  \caption{Biểu đồ đếm tần suất biến mục tiêu theo từng khu vực trong bộ dữ
+  liệu Forest CoverType}
+  \label{fig:covtype-area-wise-target-distribution}
+\end{figure}
+
+Như đã được nói ở phần giới thiệu, các loại rừng phủ chủ yếu giúp ta có thể
+loại trừ khả năng các loại phủ thiểu số trong khu vực đã biết. Điều này cũng
+cho thấy đặc trưng \textenglish{Wilderness\_Area} quan trọng trong việc phân
+biệt các lớp của biến mục tiêu.

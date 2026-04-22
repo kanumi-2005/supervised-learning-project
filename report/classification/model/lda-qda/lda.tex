@@ -1,0 +1,93 @@
+\subsubsection{Linear Discriminant Analysis}
+Linear Discriminant Analysis (LDA) có thể được hiểu dưới hai góc nhìn tương
+đương: góc nhìn xác suất (probabilistic) và góc nhìn hình học (projection).
+
+\paragraph{Góc nhìn xác suất}
+LDA giả định rằng dữ liệu của mỗi lớp tuân theo phân phối Gaussian đa biến với
+cùng ma trận hiệp phương sai:
+
+\begin{equation}
+  \boldsymbol{x} \mid t = k \sim \mathcal{N}(\boldsymbol{\mu}_k,
+  \boldsymbol{\Sigma}).
+\end{equation}
+Dựa trên định lý Bayes, ta thu được hàm phân biệt tuyến tính:
+
+\begin{equation}
+  \delta_k(\boldsymbol{x}) = \boldsymbol{x}^\intercal \boldsymbol{\Sigma}^{-1}
+  \boldsymbol{\mu}_k - \frac{1}{2} \boldsymbol{\mu}_k^\intercal
+  \boldsymbol{\Sigma}^{-1} \boldsymbol{\mu}_k + \log \pi_k.
+\end{equation}
+Mẫu $\boldsymbol{x}$ được gán vào lớp có giá trị $\delta_k(\boldsymbol{x})$
+lớn nhất. Do các lớp chia sẻ cùng $\boldsymbol{\Sigma}$, biên quyết định là
+tuyến tính.
+
+\paragraph{Góc nhìn hình học}
+
+Từ góc nhìn hình học, LDA tìm một phép chiếu tuyến tính
+$\boldsymbol{w}$ sao cho khi chiếu dữ liệu:
+\begin{equation}
+  z = \boldsymbol{w}^\intercal \boldsymbol{x},
+\end{equation}
+các lớp được phân tách tốt nhất.
+
+Tiêu chí tối ưu là cực đại hóa tỷ lệ giữa phương sai giữa các lớp và
+phương sai trong lớp:
+\begin{equation}
+  \boldsymbol{w}^* = \arg\max_{\boldsymbol{w}}
+  \frac{\boldsymbol{w}^\intercal \boldsymbol{S}_B \boldsymbol{w}}
+       {\boldsymbol{w}^\intercal \boldsymbol{S}_W \boldsymbol{w}}.
+\end{equation}
+
+Trong đó:
+
+\begin{itemize}
+  \item $\boldsymbol{S}_B$ (between-class variance) đo mức độ phân tách
+  giữa các lớp, được định nghĩa:
+  \begin{equation}
+    \boldsymbol{S}_B =
+    \sum_{k=1}^{K} N_k
+    (\boldsymbol{\mu}_k - \boldsymbol{\mu})
+    (\boldsymbol{\mu}_k - \boldsymbol{\mu})^\intercal,
+  \end{equation}
+  với:
+  \begin{itemize}
+    \item $K$ là số lớp
+    \item $N_k$ là số mẫu của lớp $k$
+    \item $\boldsymbol{\mu}_k$ là trung bình của lớp $k$
+    \item $\boldsymbol{\mu}$ là trung bình toàn bộ dữ liệu
+  \end{itemize}
+
+  \item $\boldsymbol{S}_W$ (within-class variance) đo mức độ phân tán
+  của các điểm trong từng lớp:
+  \begin{equation}
+    \boldsymbol{S}_W =
+    \sum_{k=1}^{K} \sum_{\boldsymbol{x}_i \in C_k}
+    (\boldsymbol{x}_i - \boldsymbol{\mu}_k)
+    (\boldsymbol{x}_i - \boldsymbol{\mu}_k)^\intercal,
+  \end{equation}
+  trong đó $C_k$ là tập các mẫu thuộc lớp $k$.
+\end{itemize}
+
+Trực quan:
+\begin{itemize}
+  \item $\boldsymbol{S}_B$ càng lớn $\Rightarrow$ các lớp càng tách xa nhau
+  \item $\boldsymbol{S}_W$ càng nhỏ $\Rightarrow$ các điểm trong lớp càng
+  tập trung
+\end{itemize}
+
+Do đó, LDA tìm $\boldsymbol{w}$ sao cho:
+\begin{itemize}
+  \item khoảng cách giữa các lớp là lớn nhất
+  \item độ phân tán trong mỗi lớp là nhỏ nhất
+\end{itemize}
+
+\paragraph{Nhận xét}
+
+Hai cách tiếp cận trên là tương đương và dẫn đến cùng một nghiệm. Góc nhìn xác
+suất giúp diễn giải LDA như một mô hình sinh (generative model), trong khi góc
+nhìn hình học cho thấy LDA là một phương pháp giảm chiều có giám sát, tối đa
+hóa khả năng phân tách giữa các lớp.
+
+Trong thực tế, LDA hoạt động tốt khi dữ liệu gần với giả định Gaussian và các
+lớp có phương sai tương tự nhau, nhưng có thể kém hiệu quả khi các giả định
+này bị vi phạm hoặc khi quan hệ giữa các lớp là phi tuyến.

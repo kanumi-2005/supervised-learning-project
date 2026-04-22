@@ -44,10 +44,10 @@ cross-validation ở trên. Phương pháp này được gọi là \textbf{grid 
 Để tăng tốc quá trình huấn luyện khi thử nhiều giá trị $\lambda$, ta sử dụng
 kỹ thuật \textbf{warm start}.
 Cụ thể, khi huấn luyện với giá trị $\lambda_j$, thay vì khởi tạo ngẫu nhiên
-tham số $w$, ta sử dụng nghiệm tối ưu thu được từ giá trị trước đó
+tham số $\boldsymbol{w}$, ta sử dụng nghiệm tối ưu thu được từ giá trị trước đó
 $\lambda_{j-1}$:
 \begin{equation}
-  w^{(0)}_{\lambda_j} = w^\ast_{\lambda_{j-1}}.
+  \boldsymbol{w}^{(0)}_{\lambda_j} = \boldsymbol{w}^\ast_{\lambda_{j-1}}.
 \end{equation}
 Kỹ thuật này giúp giảm số vòng lặp hội tụ, đặc biệt khi các giá trị $\lambda$
 được sắp xếp liên tiếp theo thang logarit.

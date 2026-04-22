@@ -11,16 +11,15 @@ $L_2$ (Ridge). Mục tiêu là tận dụng ưu điểm của cả hai:
 \subparagraph{Hạng tử điều chỉnh}
 Hạng tử điều chỉnh trong Elastic Net có dạng:
 \begin{equation}
-  E_W(\mathbf{w}) = \alpha \|\mathbf{w}\|_1 + \frac{1 - \alpha}{2} \|\mathbf{w
-  }\|_2
+  E_W(\boldsymbol{w}) = \alpha \|\boldsymbol{w}\|_1 + \frac{1 - \alpha}{2} \|\boldsymbol{w}\|_2
 \end{equation}
 
 \subparagraph{Hàm mục tiêu}
 Hàm mục tiêu của Elastic Net là:
 \begin{equation}
-  E(\mathbf{w}) = \frac{1}{2} \|\mathbf{Xw} - \mathbf{t}\|^2
-  + \lambda \left( \alpha \|\mathbf{w}\|_1 + \frac{1 - \alpha}{2} \|\mathbf{w}
-  \|^2 \right)
+  E(\boldsymbol{w}) = \frac{1}{2} \|\boldsymbol{X}\boldsymbol{w} -
+  \boldsymbol{t}\|^2 + \lambda \left( \alpha \|\boldsymbol{w}\|_1 +
+  \frac{1 - \alpha}{2} \|\boldsymbol{w}\|^2 \right)
 \end{equation}
 
 \subparagraph{Các trường hợp đặc biệt}
@@ -56,16 +55,16 @@ Elastic Net khắc phục được một số hạn chế của Lasso:
 Elastic Net có thể được hiểu là bài toán với ràng buộc kết hợp:
 
 \begin{equation}
-  \min_{\mathbf{w}} \|\mathbf{Xw} - \mathbf{t}\|^2
+  \min_{\boldsymbol{w}} \|\boldsymbol{X}\boldsymbol{w} - \boldsymbol{t}\|^2
   \quad \text{với} \quad
-  \alpha \|\mathbf{w}\|_1 + (1-\alpha)\|\mathbf{w}\|^2 \leq C
+  \alpha \|\boldsymbol{w}\|_1 + (1-\alpha)\|\boldsymbol{w}\|^2 \leq C
 \end{equation}
 
 Elastic Net có thể được hiểu là bài toán tối ưu với ràng buộc:
 \begin{equation}
-  \min_{\mathbf{w}} \|\mathbf{Xw} - \mathbf{t}\|^2
+  \min_{\boldsymbol{w}} \|\boldsymbol{X}\boldsymbol{w} - \boldsymbol{t}\|^2
   \quad \text{với} \quad
-  \alpha \|\mathbf{w}\|_1 + (1 - \alpha)\|\mathbf{w}\|^2 \leq C
+  \alpha \|\boldsymbol{w}\|_1 + (1 - \alpha)\|\boldsymbol{w}\|^2 \leq C
 \end{equation}
 
 Miền ràng buộc trong trường hợp này là sự kết hợp giữa hình thoi ($L_1$) và
