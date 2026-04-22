@@ -1,0 +1,248 @@
+\subsubsection{Ablation Study}
+
+Để đánh giá một cách toàn diện mức độ đóng góp của từng nhóm đặc trưng
+và từng họ hàm cơ sở, chúng tôi thực hiện ablation study bằng cách lần lượt
+loại bỏ từng thành phần trong mô hình và quan sát sự thay đổi của sai số
+bình phương trung bình (MSE) trên tập validation.
+
+Mục tiêu chính của thí nghiệm này gồm:
+(i) xác định các đặc trưng quan trọng nhất,
+(ii) đánh giá vai trò của từng loại basis function,
+(iii) phân tích mức độ nhạy của mô hình dưới các perturbation khác nhau.
+
+%------------------------------------------------
+\paragraph{1. Biểu diễn trực quan kết quả Ablation}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.95\linewidth]{ablation_study.png}
+    \caption{Ablation Study: Feature \& Basis Importance (MSE trên validation, thang log)}
+    \label{fig:ablation_plot}
+\end{figure}
+
+Hình \ref{fig:ablation_plot} thể hiện kết quả ablation study dưới dạng
+biểu đồ cột, trong đó:
+
+\begin{itemize}
+    \item Màu xanh lá: các mô hình đơn lẻ (individual models)
+    \item Màu xanh dương: các mô hình loại bỏ từng thành phần (ablation models)
+    \item Màu đỏ: mô hình đầy đủ (full model)
+\end{itemize}
+
+Do độ chênh lệch giữa các giá trị MSE rất lớn (từ $10^{-1}$ đến $10^{4}$),
+trục tung được biểu diễn theo thang logarit ($\log_{10}$) nhằm đảm bảo khả năng
+so sánh trực quan giữa các cấu hình.
+
+%------------------------------------------------
+\paragraph{2. Bảng tổng hợp kết quả Ablation Study}
+
+Bảng \ref{tab:ablation_summary} tổng hợp toàn bộ giá trị MSE tương ứng với từng cấu hình mô hình.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{|l|c|}
+\hline
+\textbf{Model / Configuration} & \textbf{Validation MSE} \\
+\hline
+RBF               & 0.6379 \\
+Fourier           & 0.4199 \\
+Polynomial        & 65.1358 \\
+NO\_RBF           & 0.4939 \\
+NO\_Fourier       & 1767.3249 \\
+NO\_Polynomial    & 0.4175 \\
+NO\_Economic      & 255.3254 \\
+NO\_Density       & 0.4427 \\
+NO\_Spatial       & 605.1461 \\
+NO\_MedInc        & 807.2610 \\
+NO\_HouseAge      & 8.0081 \\
+NO\_AveRooms      & 189.1508 \\
+NO\_AveBedrms     & 90.5460 \\
+NO\_Population    & 60.2631 \\
+NO\_AveOccup      & 0.4718 \\
+NO\_Latitude      & 187.5998 \\
+NO\_Longitude     & 161.8832 \\
+FULL              & 78.5531 \\
+\hline
+\end{tabular}
+\caption{Tổng hợp kết quả Ablation Study trên tập validation (MSE)}
+\label{tab:ablation_summary}
+\end{table}
+
+%------------------------------------------------
+\paragraph{2. Phân tích tổng quan hành vi mô hình}
+
+Quan sát từ biểu đồ, có thể rút ra một số đặc điểm quan trọng:
+
+\begin{itemize}
+    \item Nhóm mô hình Fourier và NO\_POLY đạt MSE thấp nhất ($\approx 0.41$--$0.42$),
+    cho thấy đây là vùng tối ưu về mặt biểu diễn.
+
+    \item Polynomial basis thể hiện hành vi cực kỳ không ổn định với MSE tăng mạnh,
+    phản ánh sự bùng nổ sai số do tính chất ill-conditioned của không gian đa thức.
+
+    \item Các cấu hình loại bỏ Fourier (NO\_Fourier) dẫn đến MSE tăng đột biến
+    ($> 10^3$), cho thấy Fourier basis đóng vai trò cốt lõi trong việc tái tạo
+    cấu trúc dữ liệu.
+
+\end{itemize}
+
+%------------------------------------------------
+\paragraph{3. Phân tích theo nhóm đặc trưng (Feature Importance)}
+
+Từ các cấu hình loại bỏ từng feature, ta có thể xếp hạng mức độ quan trọng
+của các đặc trưng như sau:
+
+\[
+\begin{aligned}
+\text{MedInc} \gg \text{Spatial Features (Latitude, Longitude)} \gg \\
+\text{HouseAge} > \text{Population} > \text{Rooms Features} > \text{AveOccup}
+\end{aligned}
+\]
+
+Cụ thể:
+
+\begin{itemize}
+    \item \textbf{MedInc (Median Income)}:
+    khi loại bỏ làm MSE tăng lên $807.26$, chứng tỏ đây là biến có sức dự báo mạnh nhất,
+    phản ánh mối quan hệ kinh tế trực tiếp đến giá nhà.
+
+    \item \textbf{Spatial features (Latitude, Longitude)}:
+    khi loại bỏ gây tăng MSE lớn ($\approx 160$--$187$),
+    cho thấy giá nhà phụ thuộc mạnh vào vị trí địa lý (spatial dependency).
+
+    \item \textbf{Population, AveRooms, AveBedrms}:
+    ảnh hưởng trung bình, phản ánh cấu trúc khu dân cư.
+
+    \item \textbf{AveOccup}:
+    gần như không ảnh hưởng ($0.4718$), cho thấy biến này ít thông tin dự báo.
+\end{itemize}
+
+%------------------------------------------------
+\paragraph{4. Phân tích theo basis function (Model Sensitivity)}
+
+Xét theo nhóm hàm cơ sở:
+
+\begin{itemize}
+    \item \textbf{Fourier Basis}:
+    ổn định nhất, đạt MSE thấp nhất ($0.4199$),
+    chứng tỏ dữ liệu có cấu trúc mang tính chu kỳ/tần số thấp.
+
+    \item \textbf{RBF Basis}:
+    hoạt động tốt ($0.6379$), nhưng phụ thuộc vào phân bố center,
+    do tính chất local approximation.
+
+    \item \textbf{Polynomial Basis}:
+    mất ổn định nghiêm trọng ($65.13$),
+    phản ánh hiện tượng numerical explosion khi tăng bậc đa thức.
+\end{itemize}
+
+Đặc biệt, cấu hình NO\_Fourier làm MSE tăng lên hơn $10^3$,
+chứng minh Fourier basis là thành phần không thể thiếu trong việc
+mô hình hóa cấu trúc dữ liệu.
+
+%------------------------------------------------
+\paragraph{5. Hiện tượng đáng chú ý: FULL model kém hiệu năng}
+
+Một kết quả đáng chú ý là mô hình FULL có MSE cao bất thường ($78.55$),
+trong khi nhiều cấu hình rút gọn lại đạt MSE thấp hơn rất nhiều.
+
+Điều này có thể được giải thích bởi:
+
+\begin{itemize}
+    \item \textbf{Over-parameterization}: số lượng feature quá lớn gây nhiễu gradient
+    \item \textbf{Feature interaction không kiểm soát}: các basis kết hợp gây collinearity
+    \item \textbf{Scaling mismatch}: một số nhóm feature có scale khác nhau làm lệch tối ưu
+\end{itemize}
+
+Do đó, mô hình đầy đủ không đồng nghĩa với mô hình tốt nhất,
+mà cần có cơ chế chọn lọc đặc trưng và regularization phù hợp.
+
+%------------------------------------------------
+\paragraph{6. Nhận xét tổng quát}
+
+Từ toàn bộ kết quả ablation study, có thể kết luận:
+
+\begin{itemize}
+    \item Fourier basis là thành phần quan trọng nhất trong việc giảm sai số tổng thể.
+    \item RBF basis giúp cải thiện độ ổn định nhưng không mạnh bằng Fourier.
+    \item Polynomial basis gây mất ổn định số học khi tăng độ phức tạp.
+    \item MedInc và Spatial features là hai nhóm đặc trưng quyết định chính.
+    \item Mô hình tốt không phải là mô hình đầy đủ, mà là mô hình cân bằng giữa
+    biểu diễn và khả năng tổng quát hóa.
+\end{itemize}
+
+Tổng thể, kết quả nhấn mạnh vai trò của \textit{feature importance under structural perturbation},
+trong đó việc loại bỏ hoặc thay đổi từng thành phần giúp làm rõ cấu trúc thông tin tiềm ẩn
+trong dữ liệu.
+
+\subsubsection{Overall Discussion}
+
+Tổng hợp từ cả validation curve và ablation study, có thể thấy hiệu năng của mô hình
+không chỉ phụ thuộc vào độ phức tạp của từng thành phần riêng lẻ, mà còn phụ thuộc mạnh
+vào sự tương tác giữa các nhóm đặc trưng và không gian hàm cơ sở.
+
+Xét từ góc nhìn bias-variance tradeoff, các mô hình thể hiện hành vi nhất quán:
+
+\begin{itemize}
+    \item Khi độ phức tạp tăng (Polynomial degree hoặc số basis tăng), bias giảm
+    nhưng variance tăng mạnh, dẫn đến hiện tượng overfitting rõ rệt.
+
+    \item Các mô hình có cấu trúc cục bộ (RBF) hoặc theo miền tần số (Fourier)
+    cho khả năng kiểm soát variance tốt hơn so với Polynomial basis toàn cục.
+
+    \item Hiệu năng tối ưu đạt được khi mô hình nằm ở vùng cân bằng giữa biểu diễn
+    (representation power) và độ ổn định số học (numerical stability).
+\end{itemize}
+
+Đặc biệt, từ ablation study, có thể thấy rằng:
+
+\begin{itemize}
+    \item Các đặc trưng kinh tế (MedInc) và vị trí địa lý (Latitude, Longitude)
+    đóng vai trò quyết định trong bài toán dự đoán.
+
+    \item Một số đặc trưng có ảnh hưởng rất nhỏ (AveOccup, Density),
+    cho thấy tồn tại redundancy trong không gian dữ liệu.
+
+    \item Việc loại bỏ Fourier basis gây suy giảm nghiêm trọng hiệu năng,
+    chứng tỏ dữ liệu có thành phần cấu trúc theo miền tần số thấp.
+\end{itemize}
+
+Một điểm quan trọng là mô hình full không phải lúc nào cũng tối ưu.
+Hiện tượng FULL model có MSE cao hơn nhiều cấu hình rút gọn cho thấy:
+
+\begin{itemize}
+    \item Sự xuất hiện của noise amplification khi số lượng feature quá lớn
+    \item Collinearity giữa các basis function khác nhau
+    \item Thiếu regularization phù hợp trong không gian đặc trưng mở rộng
+\end{itemize}
+
+%------------------------------------------------
+\subsubsection{Conclusion}
+
+Trong nghiên cứu này, chúng tôi đã xây dựng và đánh giá các mô hình hồi quy phi tuyến
+dựa trên ba họ hàm cơ sở: Polynomial, RBF và Fourier, đồng thời thực hiện ablation study
+để phân tích mức độ quan trọng của từng thành phần.
+
+Kết quả thực nghiệm cho thấy:
+
+\begin{itemize}
+    \item Fourier basis cho hiệu năng tốt nhất và ổn định nhất trong hầu hết các cấu hình,
+    đặc biệt trong việc mô hình hóa các thành phần dao động của dữ liệu.
+
+    \item RBF basis cung cấp sự cân bằng tốt giữa độ linh hoạt và tính ổn định,
+    phù hợp với các bài toán có cấu trúc phi tuyến cục bộ.
+
+    \item Polynomial basis dễ dẫn đến mất ổn định số học và overfitting khi tăng bậc.
+
+    \item Các đặc trưng kinh tế và vị trí địa lý là yếu tố quan trọng nhất
+    trong bài toán dự đoán giá nhà.
+
+    \item Mô hình tốt không nhất thiết là mô hình phức tạp nhất,
+    mà là mô hình có cấu trúc phù hợp với phân bố dữ liệu.
+\end{itemize}
+
+Tổng thể, nghiên cứu khẳng định vai trò quan trọng của việc lựa chọn
+không gian biểu diễn (feature space design) và kiểm soát độ phức tạp mô hình,
+đồng thời nhấn mạnh nguyên lý cốt lõi trong machine learning:
+\textit{generalization is achieved through controlled complexity, not maximal complexity}.

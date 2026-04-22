@@ -1,13 +1,31 @@
 \subsubsection{Validation Curve}
 
-Để đánh giá ảnh hưởng của độ phức tạp mô hình, chúng tôi xây dựng validation curve
-cho ba nhóm mô hình: Polynomial Basis, RBF và Fourier Basis. Hiệu năng mô hình được đo
-bằng sai số bình phương trung bình (MSE) trên tập huấn luyện và tập validation.
+Để đánh giá một cách hệ thống ảnh hưởng của độ phức tạp mô hình đến khả năng tổng quát hóa,
+chúng tôi xây dựng các validation curve cho ba nhóm mô hình phi tuyến: Polynomial Basis,
+Radial Basis Function (RBF) và Fourier Basis. 
+
+Hiệu năng mô hình được đo bằng sai số bình phương trung bình (Mean Squared Error - MSE)
+trên cả tập huấn luyện và tập validation, nhằm quan sát sự đánh đổi giữa bias và variance
+khi độ phức tạp tăng dần.
+
+Về mặt lý thuyết, bài toán có thể được xem như:
+\[
+\hat{f} = \arg\min_f \mathbb{E} \left[ (y - f(x))^2 \right]
+\]
+trong đó sai số có thể phân rã thành:
+\[
+\text{Error} = \text{Bias}^2 + \text{Variance} + \text{Noise}
+\]
 
 %------------------------------------------------
 \paragraph{1. Polynomial Basis (theo bậc đa thức $p$)}
 
-Trong thí nghiệm này, chúng tôi thay đổi bậc đa thức $p$ và quan sát sự thay đổi của MSE.
+Trong thí nghiệm này, chúng tôi mở rộng không gian đặc trưng theo dạng đa thức:
+\[
+\phi(x) = [1, x, x^2, ..., x^p]
+\]
+
+và khảo sát ảnh hưởng của bậc $p$ lên hiệu năng mô hình.
 
 \begin{figure}[h]
     \centering
@@ -16,17 +34,44 @@ Trong thí nghiệm này, chúng tôi thay đổi bậc đa thức $p$ và quan 
     \label{fig:poly_curve}
 \end{figure}
 
-\paragraph{Phân tích:}
+\paragraph{Phân tích chi tiết:}
 
-Khi $p = 1$, mô hình đơn giản và cho kết quả tương đối tốt với MSE thấp ($0.5349$).
-Tuy nhiên, khi tăng $p$, MSE tăng đột biến, đặc biệt từ $p \ge 3$, cho thấy mô hình trở nên
-không ổn định và dễ bị overfitting nghiêm trọng. Điều này thể hiện rõ khi $p = 9$,
-MSE tăng lên mức rất lớn, phản ánh sự khuếch đại sai số do độ phức tạp quá cao.
+Khi $p = 1$, mô hình tương đương hồi quy tuyến tính đơn giản, đạt MSE thấp khoảng $0.5349$,
+cho thấy giả thiết tuyến tính ban đầu phù hợp tương đối với dữ liệu.
+
+Tuy nhiên, khi tăng $p$, ma trận thiết kế $X^TX$ trở nên ngày càng kém điều kiện (ill-conditioned),
+do sự xuất hiện của các cột $x^p$ có độ lớn tăng theo cấp số nhân:
+\[
+|x^p| \gg |x^{p-1}|
+\]
+
+Điều này dẫn đến hiện tượng khuếch đại sai số trong nghiệm:
+\[
+\hat{w} = (X^TX)^{-1}X^Ty
+\]
+
+Kết quả thực nghiệm cho thấy:
+\begin{itemize}
+    \item $p = 2$: MSE tăng nhẹ nhưng vẫn ổn định ($2.0967$)
+    \item $p = 3$: MSE tăng đột biến ($65.1358$)
+    \item $p \ge 4$: MSE bùng nổ theo cấp số mũ (lên tới $10^{12}$)
+\end{itemize}
+
+Hiện tượng này phản ánh rõ ràng sự mất ổn định số học (numerical instability)
+và overfitting nghiêm trọng do mô hình cố gắng nội suy chính xác từng điểm dữ liệu.
+
+Ngoài ra, Polynomial basis còn chịu ảnh hưởng mạnh bởi hiện tượng Runge phenomenon,
+gây dao động lớn ở biên miền dữ liệu.
 
 %------------------------------------------------
 \paragraph{2. RBF Basis (theo số tâm $M$)}
 
-Trong thí nghiệm này, chúng tôi thay đổi số lượng tâm RBF $M$.
+Trong mô hình RBF, hàm cơ sở được định nghĩa:
+\[
+\phi_i(x) = \exp\left(-\frac{\|x - c_i\|^2}{2\sigma^2}\right)
+\]
+
+Trong đó $c_i$ là các tâm (centers) và $\sigma$ điều khiển độ lan tỏa.
 
 \begin{figure}[h]
     \centering
@@ -35,17 +80,42 @@ Trong thí nghiệm này, chúng tôi thay đổi số lượng tâm RBF $M$.
     \label{fig:rbf_curve}
 \end{figure}
 
-\paragraph{Phân tích:}
+\paragraph{Phân tích chi tiết:}
 
-Khi số lượng tâm nhỏ ($M=5$), mô hình chưa đủ linh hoạt nên MSE còn cao ($1.0185$).
-Khi tăng $M$, MSE giảm dần và đạt giá trị tốt nhất quanh $M = 85$--$95$ (khoảng $0.39$--$0.41$).
-Điều này cho thấy mô hình RBF cải thiện khả năng biểu diễn dữ liệu khi tăng số lượng hàm cơ sở,
-mà không gây ra overfitting nghiêm trọng trong phạm vi khảo sát.
+Khi số lượng tâm nhỏ ($M=5$), mô hình có bias cao do không gian biểu diễn còn hạn chế,
+dẫn đến MSE tương đối lớn ($1.0185$).
+
+Khi tăng $M$, không gian hàm cơ sở trở nên giàu biểu diễn hơn, giúp giảm bias:
+\[
+\text{Bias} \downarrow \quad \text{when } M \uparrow
+\]
+
+Đồng thời, do tính chất local support của RBF, các hàm cơ sở có độ tương quan thấp:
+\[
+\text{Cov}(\phi_i, \phi_j) \approx 0 \quad (i \neq j)
+\]
+
+Điều này giúp kiểm soát variance hiệu quả.
+
+Kết quả thực nghiệm:
+\begin{itemize}
+    \item MSE giảm đều từ $1.0185 \rightarrow 0.3966$
+    \item Không xuất hiện hiện tượng bùng nổ sai số
+    \item Mô hình đạt tối ưu quanh $M = 85$--$95$
+\end{itemize}
+
+Như vậy, RBF thể hiện tính ổn định cao nhờ cấu trúc kernel cục bộ,
+giúp cân bằng tốt giữa bias và variance.
 
 %------------------------------------------------
 \paragraph{3. Fourier Basis (theo số hàm cơ sở $M$)}
 
-Trong thí nghiệm này, chúng tôi thay đổi số lượng hàm cơ sở Fourier $M$.
+Fourier basis mở rộng hàm theo miền tần số:
+\[
+\phi_k(x) = \sin(kx), \quad \cos(kx)
+\]
+
+với $k$ đóng vai trò tần số (frequency component).
 
 \begin{figure}[h]
     \centering
@@ -54,25 +124,55 @@ Trong thí nghiệm này, chúng tôi thay đổi số lượng hàm cơ sở Fo
     \label{fig:fourier_curve}
 \end{figure}
 
-\paragraph{Phân tích:}
+\paragraph{Phân tích chi tiết:}
 
-Khi $M$ nhỏ, mô hình bị underfitting (MSE $\approx 0.55$).
-Khi tăng $M$ lên khoảng $3$--$5$, MSE giảm xuống mức thấp nhất ($\approx 0.42$),
-cho thấy mô hình đạt trạng thái cân bằng tốt giữa bias và variance.
+Khi $M$ nhỏ, mô hình chỉ biểu diễn được các thành phần tần số thấp,
+tương ứng với hàm trơn (low-frequency signal), dẫn đến underfitting:
+\[
+\text{MSE} \approx 0.55
+\]
 
-Tuy nhiên, khi $M > 6$, MSE tăng nhanh (đặc biệt tại $M=8$ trở đi),
-phản ánh hiện tượng overfitting rõ rệt, trong đó mô hình bắt đầu học nhiễu trong dữ liệu huấn luyện.
+Khi $M$ tăng lên khoảng $3$--$5$, mô hình đạt trạng thái tối ưu:
+\[
+\text{MSE}_{min} \approx 0.42
+\]
+
+Tại đây, mô hình cân bằng tốt giữa:
+\begin{itemize}
+    \item thành phần tín hiệu (signal)
+    \item và độ phức tạp biểu diễn
+\end{itemize}
+
+Tuy nhiên, khi $M > 6$, các thành phần tần số cao (high-frequency components)
+bắt đầu chi phối mô hình. Điều này dẫn đến việc mô hình học cả nhiễu (noise fitting),
+gây ra hiện tượng spectral overfitting.
+
+Thực nghiệm cho thấy:
+\begin{itemize}
+    \item $M=8$: MSE tăng mạnh ($10.8597$)
+    \item $M=9$: MSE bùng nổ ($381.1882$)
+    \item $M=10$: MSE cực lớn ($3791.8363$)
+\end{itemize}
+
+Hiện tượng này tương tự Gibbs phenomenon trong phân tích Fourier,
+khi khai triển chuỗi Fourier với số hạng hữu hạn trên dữ liệu có nhiễu.
 
 %------------------------------------------------
 \paragraph{Nhận xét tổng quát}
 
-Từ ba thí nghiệm, có thể rút ra kết luận:
+Từ ba nhóm mô hình, có thể rút ra các kết luận quan trọng:
 
 \begin{itemize}
-    \item Polynomial Basis: nhạy cảm cao với độ phức tạp, dễ overfitting mạnh.
-    \item RBF Basis: ổn định hơn, cải thiện dần khi tăng số tâm.
-    \item Fourier Basis: đạt hiệu quả tốt ở mức trung bình nhưng dễ overfit khi tăng $M$ quá lớn.
+    \item \textbf{Polynomial Basis}: có độ nhạy cao với bậc $p$, dễ gây mất ổn định số học
+    và overfitting nghiêm trọng do tính toàn cục của các hàm cơ sở.
+
+    \item \textbf{RBF Basis}: thể hiện tính ổn định cao nhờ tính cục bộ hóa (localization),
+    giúp kiểm soát tốt variance và giảm thiểu hiện tượng overfitting.
+
+    \item \textbf{Fourier Basis}: hiệu quả tốt trong miền tần số thấp nhưng dễ bị
+    overfitting khi mở rộng sang miền tần số cao do học cả nhiễu.
 \end{itemize}
 
-Kết quả này khẳng định vai trò quan trọng của việc lựa chọn độ phức tạp mô hình,
-nhằm cân bằng giữa bias và variance theo nguyên lý \textit{bias-variance tradeoff}.
+Tổng thể, các kết quả thực nghiệm khẳng định rằng việc tăng độ phức tạp mô hình
+không đảm bảo cải thiện hiệu năng, mà cần tuân theo nguyên lý \textit{bias-variance tradeoff}
+và đặc tính cấu trúc của không gian hàm cơ sở (function space geometry).
