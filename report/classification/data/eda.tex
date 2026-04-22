@@ -75,3 +75,44 @@ Biến \textenglish{Horizontal\_Distance\_To\_Fire\_Points} có giá trị trung
 Tổng thể, các biến định lượng trong bộ dữ liệu thể hiện sự đa dạng về phạm vi
 giá trị và mức độ biến thiên, phản ánh đặc trưng địa hình và sinh thái phức tạp
 của khu vực nghiên cứu.
+
+\paragraph{Phân phối biến mục tiêu}
+
+\subsubsection{Phân tích phân bố biến mục tiêu}
+
+\tablename~\ref{tab:covtype-target-count} và
+\figurename~\ref{fig:covtype-target-count-plot} cho thấy được phân phối của
+biến mục tiêu trong bộ dữ liệu Forest CoverType.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Thống kê số lượng từng lớp của biến mục tiêu trong bộ dữ liệu Forest
+  CoverType}
+  \label{tab:covtype-target-count}
+  \import{\tablespath}{covtype-target-count}
+\end{table}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{covtype-target-distribution}
+  \caption{Biểu đồ đếm tần suất biến mục tiêu trong bộ dữ liệu Forest
+  CoverType}
+  \label{fig:covtype-target-count-plot}
+\end{figure}
+
+Biến mục tiêu \textenglish{Cover\_Type} trong bộ dữ liệu biểu diễn loại thảm
+thực vật rừng và bao gồm 7 lớp khác nhau, tương ứng với các kiểu rừng chính
+trong khu vực nghiên cứu.
+
+Kết quả thống kê cho thấy phân bố các lớp là không cân bằng. Lớp 2 chiếm tỷ lệ
+lớn nhất với 48.76\%, tiếp theo là lớp 1 với 36.46\%. Hai lớp này chiếm phần
+lớn tổng số quan sát, cho thấy dữ liệu bị lệch mạnh về hai loại rừng chủ đạo.
+
+Các lớp còn lại có tỷ lệ thấp hơn đáng kể. Cụ thể, lớp 3 chiếm 6.15\%, lớp 7
+chiếm 3.53\%, lớp 6 chiếm 2.99\%, lớp 5 chiếm 1.63\%, và lớp 4 chỉ chiếm
+0.47\%, là lớp hiếm nhất trong bộ dữ liệu.
+
+Sự mất cân bằng này cho thấy bài toán phân loại rừng là một bài toán đa lớp
+không cân bằng, trong đó một số lớp chiếm ưu thế rõ rệt so với các lớp còn lại.
+Điều này có thể ảnh hưởng đến hiệu năng của các mô hình học máy, đặc biệt là xu
+hướng thiên lệch về các lớp phổ biến nếu không có biện pháp xử lý phù hợp.
