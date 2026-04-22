@@ -142,7 +142,7 @@ def df_to_tblr(df):
         for _, row in df.iterrows()
     ]
 
-    colspec = "|".join(["l"] * len(df.columns))
+    colspec = "l" * len(df.columns)
 
     return f"""\\begin{{tblr}}{{
   width=\\textwidth,
