@@ -1,0 +1,78 @@
+\subsubsection{So sánh LDA và QDA}
+
+Linear Discriminant Analysis (LDA) và Quadratic Discriminant Analysis (QDA)
+đều là các phương pháp phân loại dựa trên mô hình xác suất, với giả định rằng
+dữ liệu của mỗi lớp tuân theo phân phối Gaussian đa biến. Điểm khác biệt cốt
+lõi giữa hai phương pháp nằm ở giả định về ma trận hiệp phương sai, dẫn đến sự
+khác biệt về dạng biên quyết định, số lượng tham số và khả năng tổng quát hóa.
+
+\paragraph{So sánh tổng quan}
+
+\tablename~\ref{tab:lda-qda-comparison} trình bày các đặc điểm chính của hai
+phương pháp.
+
+\begin{table}[htbp]
+\centering
+\begin{tblr}{
+  width=\textwidth,
+  colspec={|l|l|l|},
+  row{1} = {font=\bfseries, bg=gray!15},
+  hlines,
+  vlines
+}
+Tiêu chí & LDA & QDA \\
+Giả định hiệp phương sai & Chung ($\boldsymbol{\Sigma}$) & Riêng
+($\boldsymbol{\Sigma}_k$) \\
+Biên quyết định & Tuyến tính & Phi tuyến (bậc hai) \\
+Số tham số & Ít & Nhiều \\
+Nguy cơ overfitting & Thấp & Cao \\
+Yêu cầu dữ liệu & Ít & Nhiều \\
+Độ linh hoạt & Thấp & Cao \\
+\end{tblr}
+\caption{So sánh giữa LDA và QDA}
+\label{tab:lda-qda-comparison}
+\end{table}
+
+\paragraph{Phân tích theo số mẫu và số chiều}
+Hiệu quả của LDA và QDA phụ thuộc mạnh vào mối quan hệ giữa số mẫu $n$ và số
+chiều $d$ của dữ liệu:
+
+\begin{itemize}
+  \item \textbf{Trường hợp $n \gg d$:}
+  \begin{itemize}
+    \item Khi số mẫu lớn hơn nhiều so với số chiều, việc ước lượng các ma trận
+    hiệp phương sai riêng $\boldsymbol{\Sigma}_k$ trong QDA trở nên chính xác.
+    \item Khi đó, QDA có thể tận dụng sự linh hoạt của mình để mô hình hóa tốt
+    các biên quyết định phi tuyến, thường cho hiệu năng cao hơn LDA.
+  \end{itemize}
+
+  \item \textbf{Trường hợp $n$ nhỏ hoặc $n \approx d$:}
+  \begin{itemize}
+    \item Việc ước lượng $\boldsymbol{\Sigma}_k$ trong QDA trở nên không ổn
+    định và dễ dẫn đến ma trận suy biến.
+    \item LDA có lợi thế vì chỉ cần ước lượng một ma trận hiệp phương sai
+    chung $\boldsymbol{\Sigma}$, do đó ít tham số hơn và ổn định hơn.
+    \item Trong trường hợp này, LDA thường tổng quát hóa tốt hơn.
+  \end{itemize}
+
+  \item \textbf{Trường hợp $d \gg n$:}
+  \begin{itemize}
+    \item Cả LDA và QDA đều gặp khó khăn trong việc ước lượng ma trận hiệp
+    phương sai.
+    \item Tuy nhiên, QDA bị ảnh hưởng nghiêm trọng hơn do cần ước lượng nhiều
+    ma trận $\boldsymbol{\Sigma}_k$.
+    \item Vì vậy, LDA thường là lựa chọn phù hợp hơn.
+  \end{itemize}
+\end{itemize}
+
+\paragraph{Kết luận}
+Tóm lại, việc lựa chọn giữa LDA và QDA phụ thuộc vào đặc điểm của dữ liệu:
+\begin{itemize}
+  \item LDA phù hợp khi dữ liệu nhỏ, số chiều cao hoặc các lớp có phương sai
+  tương tự nhau.
+  \item QDA phù hợp khi dữ liệu đủ lớn và tồn tại sự khác biệt rõ rệt giữa
+  phân phối của các lớp.
+\end{itemize}
+
+Sự lựa chọn này phản ánh sự đánh đổi giữa độ phức tạp của mô hình và khả năng
+tổng quát hóa.
