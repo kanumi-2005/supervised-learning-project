@@ -2,135 +2,112 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LinearRegression
+from sklearn.pipeline import Pipeline
 
-from code.Part1_Regression.dataset import CaliforniaHousingDataset as Dataset
-from code.Part1_Regression.nonlinear_basis.polynomial import PolynomialBasis
-from code.Part1_Regression.nonlinear_basis.rbf import RBF
-from code.Part1_Regression.nonlinear_basis.fourier import FourierBasis
-from code.Part1_Regression.pipeline import get_pipeline
-
-# =========================
-# UTILS
-# =========================
-def compute_mse(y_true, y_pred):
-    return np.mean((y_true - y_pred) ** 2)
-
-# =========================
-# POLYNOMIAL VALIDATION CURVE
-# =========================
-def run_polynomial(X_train, y_train, X_test, y_test):
-    degrees = list(range(1, 11))
-    mse_list = []
-
-    for deg in degrees:
-        poly = PolynomialBasis(degree=deg)
-
-        X_train_p = poly.transform(X_train)
-        X_test_p = poly.transform(X_test)
-
-        model = get_pipeline(LinearRegression())  # KHÔNG cần bias tay
-        model.fit(X_train_p, y_train)
-
-        pred = model.predict(X_test_p)
-        mse = compute_mse(y_test, pred)
-
-        mse_list.append(mse)
-        print(f"[Polynomial] Degree {deg}: MSE = {mse:.4f}")
-
-    return degrees, mse_list
+from dataset import CaliforniaHousingDataset as Dataset
+from nonlinear_basis.polynomial import PolynomialBasis
+from nonlinear_basis.rbf import RBF
+from nonlinear_basis.fourier import FourierBasis
 
 
-# =========================
-# RBF VALIDATION CURVE
-# =========================
-def run_rbf(X_train, y_train, X_test, y_test):
-    centers_list = [5, 10, 20, 30, 50]
-    mse_list = []
+class ValidationExperiment:
 
-    for k in centers_list:
-        rbf = RBF(n_centers=k)
-        rbf.fit(X_train)
+    def __init__(self):
+        self.X_train = None
+        self.y_train = None
+        self.X_val = None
+        self.y_val = None
 
-        X_train_r = rbf.transform(X_train)
-        X_test_r = rbf.transform(X_test)
+    # =========================
+    # UTILS
+    # =========================
+    def compute_mse(self, y_true, y_pred):
+        return np.mean((y_true - y_pred) ** 2)
 
-        model = get_pipeline(LinearRegression())
-        model.fit(X_train_r, y_train)
+    # =========================
+    # DATA
+    # =========================
+    def load_data(self):
+        d = Dataset()
+        d.split()
 
-        pred = model.predict(X_test_r)
-        mse = compute_mse(y_test, pred)
+        self.X_train, self.y_train = d.X_train, d.y_train
+        self.X_val, self.y_val = d.X_val, d.y_val
 
-        mse_list.append(mse)
-        print(f"[RBF] Centers {k}: MSE = {mse:.4f}")
+        self.y_train = self.y_train.ravel()
+        self.y_val = self.y_val.ravel()
 
-    return centers_list, mse_list
+        scaler = StandardScaler()
+        self.X_train = scaler.fit_transform(self.X_train)
+        self.X_val = scaler.transform(self.X_val)
 
+    # =========================
+    # GENERIC RUN
+    # =========================
+    def run(self, basis_class, param_name, param_values):
+        mses = []
 
-# =========================
-# FOURIER VALIDATION CURVE
-# =========================
-def run_fourier(X_train, y_train, X_test, y_test):
-    degrees = [1, 2, 3, 5, 7, 10]
-    mse_list = []
+        for val in param_values:
+            model = Pipeline([
+                ("basis", basis_class(**{param_name: val})),
+                ("model", LinearRegression())
+            ])
 
-    for d in degrees:
-        fourier = FourierBasis(d)
+            model.fit(self.X_train, self.y_train)
+            y_pred = model.predict(self.X_val)
 
-        X_train_f = fourier.transform(X_train)
-        X_test_f = fourier.transform(X_test)
+            mse = self.compute_mse(self.y_val, y_pred)
+            mses.append(mse)
 
-        model = get_pipeline(LinearRegression())
-        model.fit(X_train_f, y_train)
+            print(f"{param_name}={val} → MSE={mse:.4f}")
 
-        pred = model.predict(X_test_f)
-        mse = compute_mse(y_test, pred)
+        return list(param_values), mses
 
-        mse_list.append(mse)
-        print(f"[Fourier] Degree {d}: MSE = {mse:.4f}")
+    # =========================
+    # WRAPPERS
+    # =========================
+    def run_polynomial(self):
+        return self.run(PolynomialBasis, "degree", range(1, 11))
 
-    return degrees, mse_list
+    def run_rbf(self):
+        return self.run(RBF, "n_centers", range(5, 105, 10))
 
+    def run_fourier(self):
+        return self.run(FourierBasis, "n_terms", range(1, 11))
 
-# =========================
-# PLOT
-# =========================
-def plot_all(poly_x, poly_y, rbf_x, rbf_y, fourier_x, fourier_y):
-    plt.figure()
+    # =========================
+    # PLOT
+    # =========================
+    def plot(self, x, y, title, xlabel):
+        plt.figure()
 
-    plt.plot(poly_x, poly_y, marker='o', label="Polynomial")
-    plt.plot(rbf_x, rbf_y, marker='s', label="RBF")
-    plt.plot(fourier_x, fourier_y, marker='^', label="Fourier")
+        plt.plot(x, y, marker='o', label="Validation MSE")
 
-    plt.xlabel("Model Complexity")
-    plt.ylabel("MSE")
-    plt.title("Validation Curve: Basis Functions Comparison")
-    plt.legend()
-    plt.grid(True)
+        # highlight best
+        best_idx = np.argmin(y)
+        plt.scatter(x[best_idx], y[best_idx], s=100, label=f"Best: {x[best_idx]}")
 
-    plt.show()
+        plt.xlabel(xlabel)
+        plt.ylabel("MSE")
+        plt.title(title)
 
+        plt.legend()
+        plt.grid(True)
+        plt.tight_layout()
+        plt.show()
 
-# =========================
-# MAIN
-# =========================
-if __name__ == "__main__":
+    # =========================
+    # RUN ALL
+    # =========================
+    def run_all(self):
+        # Polynomial
+        x, y = self.run_polynomial()
+        self.plot(x, y, "Polynomial Validation Curve", "Degree")
 
-    # ===== LOAD DATA =====
-    d = Dataset()
-    d.split()
+        # RBF
+        x, y = self.run_rbf()
+        self.plot(x, y, "RBF Validation Curve", "Number of Centers")
 
-    X_train, y_train = d.X_train, d.y_train
-    X_test, y_test = d.X_test, d.y_test
-
-    # ===== SCALE =====
-    scaler = StandardScaler()
-    X_train = scaler.fit_transform(X_train)
-    X_test = scaler.transform(X_test)
-
-    # ===== RUN =====
-    poly_x, poly_y = run_polynomial(X_train, y_train, X_test, y_test)
-    rbf_x, rbf_y = run_rbf(X_train, y_train, X_test, y_test)
-    fourier_x, fourier_y = run_fourier(X_train, y_train, X_test, y_test)
-
-    # ===== PLOT =====
-    plot_all(poly_x, poly_y, rbf_x, rbf_y, fourier_x, fourier_y)
+        # Fourier
+        x, y = self.run_fourier()
+        self.plot(x, y, "Fourier Validation Curve", "Degree")

@@ -2,13 +2,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LinearRegression
-from code.Part1_Regression.nonlinear_basis.rbf import RBF
-from code.Part1_Regression.nonlinear_basis.fourier import FourierBasis
-from code.Part1_Regression.nonlinear_basis.polynomial import PolynomialBasis
+from nonlinear_basis.rbf import RBF
+from nonlinear_basis.fourier import FourierBasis
+from nonlinear_basis.polynomial import PolynomialBasis
 
-from code.Part1_Regression.dataset import CaliforniaHousingDataset as Dataset
-from code.Part1_Regression.linear_regression.wls import WLS
-from code.Part1_Regression.pipeline import get_pipeline
+from dataset import CaliforniaHousingDataset as Dataset
+from linear_regression.wls import WLS
+from pipeline import get_pipeline
 
 
 # =========================
