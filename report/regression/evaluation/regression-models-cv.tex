@@ -1,0 +1,30 @@
+\paragraph{Đánh giá qua cross-validation}
+
+\tablename~\ref{tab:regression-models-cv-part1}
+và~\ref{tab:regression-models-cv-part2} cho kết quả đánh giá trung bình và độ
+lệch chuẩn của từng chỉ số MSE, MAE, RMSE và R2 thông qua cross-validation.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Kết quả các chi số của các mô hình hồi quy qua cross-validation
+  (phần 1)}
+  \label{tab:regression-models-cv-part1}
+  \import{\tablespath}{regression-models-cv-part1}
+\end{table}
+
+\begin{table}[htbp]
+  \centering
+  \caption{Kết quả các chi số của các mô hình hồi quy qua cross-validation
+  (phần 2)}
+  \label{tab:regression-models-cv-part2}
+  \import{\tablespath}{regression-models-cv-part2}
+\end{table}
+
+Bảng kết quả cho thấy sự khác biệt rõ rệt giữa các nhóm mô hình tuyến tính,
+chính quy hoá, và các phương pháp mở rộng đặc trưng phi tuyến.
+
+\input{linear-regression-cv}
+\par
+\input{regularization-cv}
+\par
+\input{nonlinear-basis-cv}

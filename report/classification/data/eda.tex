@@ -1,0 +1,118 @@
+\subsubsection{Phân tích khám phá}
+
+\paragraph{Thống kê mô tả}
+
+\tablename~\ref{tab:covtype-desc-part1}, \ref{tab:covtype-desc-part2},
+\ref{tab:covtype-desc-part3}, và~\ref{tab:covtype-desc-part4} cho ta thấy thống
+kê mô tả các biến định lượng của bộ dữ liệu Forest CoverType.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Thống kê mô tả các biến định lượng của bộ dữ liệu Forest CoverType
+  (phần 1)}
+  \label{tab:covtype-desc-part1}
+  \import{\tablespath}{covtype-desc-part1}
+\end{table}
+
+\begin{table}[htbp]
+  \centering
+  \caption{Thống kê mô tả các biến định lượng của bộ dữ liệu Forest CoverType
+  (phần 2)}
+  \label{tab:covtype-desc-part2}
+  \import{\tablespath}{covtype-desc-part2}
+\end{table}
+
+\begin{table}[htbp]
+  \centering
+  \caption{Thống kê mô tả các biến định lượng của bộ dữ liệu Forest CoverType
+  (phần 3)}
+  \label{tab:covtype-desc-part3}
+  \import{\tablespath}{covtype-desc-part3}
+\end{table}
+
+\begin{table}[htbp]
+  \centering
+  \caption{Thống kê mô tả các biến định lượng của bộ dữ liệu Forest CoverType
+  (phần 4)}
+  \label{tab:covtype-desc-part4}
+  \import{\tablespath}{covtype-desc-part4}
+\end{table}
+
+Kết quả thống kê mô tả cho các biến định lượng trong bộ dữ liệu cho thấy sự
+phân bố đa dạng về thang đo và độ biến thiên giữa các đặc trưng địa hình.
+
+Biến \textenglish{Elevation} có giá trị trung bình khoảng 2959.37 với độ lệch
+chuẩn 279.98, cho thấy sự chênh lệch đáng kể về độ cao giữa các khu vực quan
+sát.
+
+Biến \textenglish{Aspect} dao động trong khoảng từ 0 đến 360, phản ánh hướng
+địa hình phân bố trên toàn bộ không gian góc phương vị.
+
+Biến \textenglish{Slope} có giá trị trung bình 14.10 và độ lệch chuẩn 7.49,
+cho thấy phần lớn khu vực có độ dốc thấp đến trung bình, tuy nhiên vẫn tồn tại
+các khu vực có độ dốc lớn.
+
+Khoảng cách đến nguồn nước gần nhất
+(\textenglish{Horizontal\_Distance\_To\_Hydrology}) có giá trị trung bình
+269.43, trong khi khoảng cách theo phương thẳng đứng có trung bình 46.42 và
+dao động từ -173 đến 601, phản ánh sự biến thiên địa hình theo độ cao tương
+đối.
+
+Khoảng cách đến đường giao thông gần nhất
+(\textenglish{Horizontal\_Distance\_To\_Roadways}) có giá trị trung bình
+2350.15 với độ lệch chuẩn lớn (1559.25), cho thấy mức độ phân tán không gian
+đáng kể giữa các khu vực rừng và hệ thống giao thông.
+
+Các biến \textenglish{Hillshade\_9am}, \textenglish{Hillshade\_Noon} và
+\textenglish{Hillshade\_3pm} nằm trong khoảng từ 0 đến 254, thể hiện mức độ
+chiếu sáng tại các thời điểm khác nhau trong ngày. Giá trị trung bình lần lượt
+là 212.15, 223.32 và 142.53, cho thấy cường độ ánh sáng cao nhất vào buổi trưa.
+
+Biến \textenglish{Horizontal\_Distance\_To\_Fire\_Points} có giá trị trung bình
+1980.29 với độ lệch chuẩn 1324.20, phản ánh sự khác biệt lớn về khoảng cách
+đến các điểm cháy rừng giữa các khu vực.
+
+Tổng thể, các biến định lượng trong bộ dữ liệu thể hiện sự đa dạng về phạm vi
+giá trị và mức độ biến thiên, phản ánh đặc trưng địa hình và sinh thái phức tạp
+của khu vực nghiên cứu.
+
+\paragraph{Phân phối biến mục tiêu}
+
+\subsubsection{Phân tích phân bố biến mục tiêu}
+
+\tablename~\ref{tab:covtype-target-count} và
+\figurename~\ref{fig:covtype-target-count-plot} cho thấy được phân phối của
+biến mục tiêu trong bộ dữ liệu Forest CoverType.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Thống kê số lượng từng lớp của biến mục tiêu trong bộ dữ liệu Forest
+  CoverType}
+  \label{tab:covtype-target-count}
+  \import{\tablespath}{covtype-target-count}
+\end{table}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{covtype-target-distribution}
+  \caption{Biểu đồ đếm tần suất biến mục tiêu trong bộ dữ liệu Forest
+  CoverType}
+  \label{fig:covtype-target-count-plot}
+\end{figure}
+
+Biến mục tiêu \textenglish{Cover\_Type} trong bộ dữ liệu biểu diễn loại thảm
+thực vật rừng và bao gồm 7 lớp khác nhau, tương ứng với các kiểu rừng chính
+trong khu vực nghiên cứu.
+
+Kết quả thống kê cho thấy phân bố các lớp là không cân bằng. Lớp 2 chiếm tỷ lệ
+lớn nhất với 48.76\%, tiếp theo là lớp 1 với 36.46\%. Hai lớp này chiếm phần
+lớn tổng số quan sát, cho thấy dữ liệu bị lệch mạnh về hai loại rừng chủ đạo.
+
+Các lớp còn lại có tỷ lệ thấp hơn đáng kể. Cụ thể, lớp 3 chiếm 6.15\%, lớp 7
+chiếm 3.53\%, lớp 6 chiếm 2.99\%, lớp 5 chiếm 1.63\%, và lớp 4 chỉ chiếm
+0.47\%, là lớp hiếm nhất trong bộ dữ liệu.
+
+Sự mất cân bằng này cho thấy bài toán phân loại rừng là một bài toán đa lớp
+không cân bằng, trong đó một số lớp chiếm ưu thế rõ rệt so với các lớp còn lại.
+Điều này có thể ảnh hưởng đến hiệu năng của các mô hình học máy, đặc biệt là xu
+hướng thiên lệch về các lớp phổ biến nếu không có biện pháp xử lý phù hợp.

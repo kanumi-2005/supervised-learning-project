@@ -1,0 +1,12 @@
+Mô hình Polynomial cải thiện nhẹ chỉ số MAE ($0.5201$) và cũng giống WLS chưa
+thực sự ý nghĩa. Đổi lại, độ lệch chuẩn trên MSE và R2 lại rất lớn
+($\sigma_{\text{MSE}}$ là $0.5260$ lớn hơn độ lệch chuẩn của OLS khoảng $13.7$
+lần). Điều này cho thấy mô hình không ổn định và cũng có dấu hiệu quá khớp nhẹ.
+
+RBF thì vẫn giống như trên tập đánh giá có chỉ số kém hơn OLS. Với độ lệch
+chuẩn thấp, mô hình khá ổn định nhưng khả năng giải thích thì bị giới hạn.
+
+Với Fourier, mô hình cho kết quả không ổn định khi mà MSE có trung bình cao
+(khoảng $1.06$) và độ lệch chuẩn rất lớn (khoảng $2$). Các chỉ số khác tương tự
+hầu như đều kém hơn so với OLS. Xem xét với kết quả trên tập kiểm tra, ta thấy
+có dấu hiệu quá khớp rõ ràng hơn.

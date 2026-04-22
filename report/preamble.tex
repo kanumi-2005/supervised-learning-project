@@ -8,7 +8,7 @@
 \setdefaultlanguage{vietnamese}
 \setotherlanguage{english}
 
-\usepackage[skip=6pt]{caption}  % trong preamble
+\usepackage[skip=4pt]{caption}  % trong preamble
 \captionsetup[table]{position=above}
 % Import
 \usepackage{import}
@@ -54,3 +54,4 @@
 \graphicspath{{\resourcespath/images/}}
 \edef\tablespath{\resourcespath/tables}
 \edef\imagespath{\resourcespath/images}
+\DeclareRobustCommand{\_}{\textunderscore\allowbreak}

@@ -1,0 +1,12 @@
+\begin{tblr}{
+  width=\textwidth,
+  colspec={llll},
+  row{1} = {font=\bfseries, bg=gray!15},
+  hlines,
+  vlines
+}
+Model A & Model B & p-value (t-test) & p-value (Wilcoxon) \\
+Ridge & RBF Ridge & $1.99 \times 10^{-13}$ & 0.001953 \\
+Ridge & Polynomial Ridge & 0.5153 & 0.4316 \\
+RBF Ridge & Polynomial Ridge & 0.2299 & 0.0020
+\end{tblr}

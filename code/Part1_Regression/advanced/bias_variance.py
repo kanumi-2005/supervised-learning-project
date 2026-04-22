@@ -60,7 +60,7 @@ class BiasVarianceAnalyzer(BaseEstimator):
         ax.plot(self.lambdas_, self.variance_, label="Variance")
 
         ax.set_xscale("log")
-        ax.set_xlabel("Regularization strength (λ)")
+        ax.set_xlabel(r"$log_{10}(\lambda)$")
         ax.set_ylabel("Error")
         ax.set_title("Bias–Variance vs Regularization Path")
         ax.legend(loc="best")

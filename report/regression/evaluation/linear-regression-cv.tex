@@ -1,0 +1,15 @@
+Nhìn chung, các mô hình tuyến tính cơ bản như OLS và MBGD đạt hiệu năng tốt
+nhất và ổn định nhất, với MSE trung bình khoảng 0.53 và R2 xấp xỉ 0.59. Điều
+này cho thấy baseline linear model đã capture được phần lớn cấu trúc tuyến tính
+trong dữ liệu.
+
+MBGD cho kết quả gần như tương đương OLS, chứng tỏ quá trình tối ưu bằng
+mini-batch gradient descent đã hội tụ tốt và không gây suy giảm chất lượng mô
+hình.
+
+WLS không cải thiện mà còn kém hơn với OLS về các chỉ số MSE, RMSE và R2 với
+trung bình lỗi cao hơn, khả năng giải thích kém hơn và độ lệch chuẩn cao hơn
+đáng kể (như với MSE thì trung bình tăng hơn OLS $0.0875$, độ lệch chuẩn
+tăng gấp 4 lần từ $0.0384$ lên $0.1587$). Chỉ số MAE tốt hơn một
+chút có thể do trọng số nên mô hình ổn định với nhiễu hơn, nhưng chênh lệch
+chưa thực sự thuyết phục.

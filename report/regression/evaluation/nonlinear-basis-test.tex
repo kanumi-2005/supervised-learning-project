@@ -1,0 +1,12 @@
+Mô hình Polynomial cải thiện tương đối so với OLS với MSE giảm từ $0.5253$ xuống
+$0.494$ và R2 tăng từ $0.6097$ lên $0.633$. Điều này cũng cho thấy giữa biến
+mục tiêu và các đặc trưng có yếu tố phi tuyến nhẹ.
+
+Mô hình RBF tệ hơn OLS nhưng vẫn tốt hơn Regularization. Điều này có thể do các
+tham số chưa được điều chỉnh tốt hoặc dữ liệu không khớp với mối quan hệ của
+RBF.
+
+Fourier cho thấy sự cải thiện rõ rệt so với OLS. Đây cũng là mô hình cho kết
+quả trên tập kiểm tra tốt nhất với MSE là $0.3873$ và R2 cao nhất với $0.7123$.
+Điều này có thể do dữ liệu có mẫu (pattern) lặp lại và Fourier có thể xấp xỉ
+tốt hơn Polynomial với điều này.

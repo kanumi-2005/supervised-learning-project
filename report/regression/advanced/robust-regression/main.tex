@@ -42,3 +42,36 @@ So với OLS, IRLS làm giảm đáng kể ảnh hưởng của các điểm ngo
 giảm trọng số của các quan sát có sai số lớn. Điều này giúp mô hình ổn định hơn
 trong các tập dữ liệu có nhiễu không thoả giả thiết Guass--Markov hoặc chứa
 ngoại lai, đồng thời cải thiện khả năng tổng quát hóa trong thực tế.
+
+\paragraph{Kiểm tra độ nhạy với ngoại lai}
+
+\tablename~\ref{tab:regression-irls-outliers-sensitivity-part1}
+và~\ref{tab:regression-irls-outliers-sensitivity-part2} cho thấy sự khác biệt
+rõ rệt giữa OLS và các phương pháp Robust (IRLS với Huber và Student-t) khi dữ
+liệu bị nhiễu bởi ngoại lai. Dữ liệu được tạo nhiễu bằng cách lấy ngẫu nhiên
+10\% dữ liệu và cộng vào 5 lần độ lệch chuẩn của dữ liệu ban đầu.
+
+\begin{table}[htbp]
+  \centering
+  \caption{So sánh độ nhạy với ngoại lai của các mô hình OLS, IRLS (Huber và
+  Student-t) (phần 1)}
+  \label{tab:regression-irls-outliers-sensitivity-part1}
+  \import{\tablespath}{regression-irls-outliers-sensitivity-part1}
+\end{table}
+
+\begin{table}[htbp]
+  \centering
+  \caption{So sánh độ nhạy với ngoại lai của các mô hình OLS, IRLS (Huber và
+  Student-t) (phần 2)}
+  \label{tab:regression-irls-outliers-sensitivity-part2}
+  \import{\tablespath}{regression-irls-outliers-sensitivity-part2}
+\end{table}
+
+Với mô hình OLS, khi thêm nhiễu vào dữ liệu huấn luyện, các chỉ số tăng
+mạnh. Cụ thể, MSE tăng từ $0.5253$ đến $0.8t95$ (lên đến $63.62\%$). Tương tự,
+MAE gần $50\%$. Điều này cho thấy OLS rất nhạy với ngoại lai.
+
+Trong khi đó, các mô hình Robust có sự thay đổi các chỉ số rất nhỏ (dưới 5\%).
+Việc dùng phân phối Student-t cho độ ổn định nhỉnh hơn một chút so với Huber
+loss (độ nhạy $0.0106$ so với $0.176$ đối với MSE và $0.03$ so với $0.0487$ với
+MAE).

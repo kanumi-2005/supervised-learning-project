@@ -1,0 +1,12 @@
+\begin{tblr}{
+  width=\textwidth,
+  colspec={llll},
+  row{1} = {font=\bfseries, bg=gray!15},
+  hlines,
+  vlines
+}
+Model & MAE\_clean & MAE\_noisy & MAE\_sensitivity \\
+OLS & 0.5299 & 0.7942 & 0.4988 \\
+IRLS (Huber) & 0.5129 & 0.5379 & 0.0487 \\
+IRLS (Student-t) & 0.4901 & 0.5048 & 0.03 \\
+\end{tblr}
