@@ -1,0 +1,71 @@
+\subsubsection{Thí nghiệm và kết quả}
+\paragraph{Fisher ratio}
+
+Để đánh giá mức độ phân biệt của từng đặc trưng, ta sử dụng tiêu chí Fisher
+ratio. Giá trị Fisher ratio càng lớn cho thấy đặc trưng đó có khả năng phân
+tách các lớp càng tốt.
+
+\tablename~\ref{tab:fisher-top-features} trình bày 5 đặc trưng có giá trị
+Fisher ratio cao nhất.
+\begin{table}[htbp]
+\centering
+\begin{tblr}{
+  width=\textwidth,
+  colspec={|l|l|},
+  row{1} = {font=\bfseries, bg=gray!15},
+  hlines,
+  vlines
+}
+Feature & Fisher Ratio \\
+Elevation & 1.6043 \\
+Wilderness\_Area\_3 & 1.1836 \\
+Soil\_Type\_9 & 0.2889 \\
+Soil\_Type\_3 & 0.1328 \\
+Soil\_Type\_37 & 0.1295 \\
+\end{tblr}
+\caption{Top 5 đặc trưng theo Fisher ratio}
+\label{tab:fisher-top-features}
+\end{table}
+
+Từ kết quả trên, có thể thấy rằng đặc trưng \textit{Elevation} có giá trị
+Fisher ratio cao nhất, cho thấy đây là biến quan trọng nhất trong việc phân
+biệt các lớp. Điều này gợi ý rằng độ cao có ảnh hưởng đáng kể đến sự khác biệt
+giữa các nhóm dữ liệu.
+
+Ngoài ra, các đặc trưng như \textit{Wilderness\_Area\_3} cũng có giá trị tương
+đối cao, cho thấy vai trò đáng kể trong việc phân tách lớp. Ngược lại, các đặc
+trưng thuộc nhóm \textit{Soil Type} có giá trị Fisher ratio thấp hơn, cho thấy
+khả năng phân biệt yếu hơn khi xét riêng lẻ.
+
+\paragraph{Nhận xét}
+Kết quả này cho thấy rằng chỉ một số ít đặc trưng đóng vai trò quan trọng
+trong việc phân loại, trong khi nhiều đặc trưng khác có đóng góp hạn chế. Điều
+này gợi ý rằng có thể áp dụng các phương pháp lựa chọn đặc trưng (feature
+selection) để giảm số chiều của dữ liệu mà vẫn giữ được hiệu năng của mô hình.
+
+Tuy nhiên, cần lưu ý rằng Fisher ratio đánh giá từng đặc trưng một cách độc
+lập, do đó không phản ánh được mối quan hệ hoặc tương tác giữa các đặc trưng.
+Vì vậy, việc kết hợp với các phương pháp khác (như Lasso hoặc các mô hình học
+máy) có thể mang lại cái nhìn toàn diện hơn.
+
+\paragraph{Đường biên quyết định của LDA}
+
+\figurename~\ref{fig:lda-decision-boundary} minh họa đường biên quyết định của
+mô hình LDA sau khi chiếu dữ liệu xuống không gian hai chiều. Có thể thấy rằng
+các biên quyết định của LDA là các đường thẳng, phù hợp với giả định rằng các
+lớp chia sẻ cùng ma trận hiệp phương sai. Điều này dẫn đến việc không gian đặc
+trưng được chia thành các vùng tuyến tính, mỗi vùng tương ứng với một lớp.
+Trong hình, các lớp dữ liệu có xu hướng phân bố dọc theo một cấu trúc gần
+tuyến tính, do đó LDA vẫn có khả năng phân tách tương đối tốt ở một số vùng.
+Tuy nhiên, ở các khu vực mà các lớp chồng lấn mạnh hoặc có cấu trúc phi tuyến,
+các biên tuyến tính của LDA không đủ linh hoạt để phân tách hoàn toàn, dẫn đến
+sự xen lẫn giữa các lớp. Điều này phản ánh hạn chế của LDA là mô hình có độ
+linh hoạt thấp (high bias), nên mặc dù ổn định và tổng quát hóa tốt, nhưng có
+thể không đạt hiệu năng tối ưu khi dữ liệu có ranh giới phân lớp phức tạp.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{lda-2d-decision-boundary}
+  \caption{Đường biên quyết định của LDA trong không gian hai chiều}
+  \label{fig:lda-decision-boundary}
+\end{figure}

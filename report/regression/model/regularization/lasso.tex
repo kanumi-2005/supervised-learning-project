@@ -4,16 +4,16 @@
 Khác với Ridge Regression sử dụng chuẩn $L_2$, Lasso Regression sử dụng chuẩn
 $L_1$ cho vector trọng số. Hạng tử điều chỉnh có dạng:
 \begin{equation}
-  E_W(\mathbf{w}) = \|\mathbf{w}\|_1
+  E_W(\boldsymbol{w}) = \|\boldsymbol{w}\|_1
 \end{equation}
 Hạng tử này là tổng giá trị tuyệt đối của các trọng số. Việc sử dụng chuẩn
-$L_1$ cũng nhằm \"phạt\" các trọng số lớn, tuy nhiên theo cách khác với Ridge.
+$L_1$ cũng nhằm ``phạt'' các trọng số lớn, tuy nhiên theo cách khác với Ridge.
 
 \subparagraph{Hàm mục tiêu}
 Hàm mục tiêu của Lasso Regression được viết như sau:
 \begin{equation}
-  E(\mathbf{w}) = \frac{1}{2} \|\mathbf{Xw} - \mathbf{t}\|^2 + \lambda \|
-  \mathbf{w}\|_1.
+  E(\boldsymbol{w}) = \frac{1}{2} \|\boldsymbol{X}\boldsymbol{w} -
+  \boldsymbol{t}\|^2 + \lambda \|\boldsymbol{w}\|_1.
 \end{equation}
 \subparagraph{Nghiệm giải}
 Không giống như Ridge Regression, Lasso Regression
@@ -39,9 +39,10 @@ Nhờ đó, Lasso có thể được sử dụng như một phương pháp
 \subparagraph{Diễn giải trực quan}
 Có thể hiểu Lasso Regression là bài toán tối ưu với ràng buộc:
 \begin{equation}
-  \min_{\mathbf{w}} \|\mathbf{Xw} - \mathbf{t}\|^2 \quad \text{với} \quad \|
-  \mathbf{w}\|_1 \leq C.
+  \min_{\boldsymbol{w}} \|\boldsymbol{X}\boldsymbol{w} - \boldsymbol{t}\|^2
+  \quad \text{với} \quad\|\boldsymbol{w}\|_1 \leq C.
 \end{equation}
-Miền ràng buộc $\|\mathbf{w}\|_1 \leq C$ có dạng hình thoi (diamond). Khi kết
-hợp với các đường đồng mức của hàm lỗi, nghiệm tối ưu thường rơi vào các đỉnh
-của hình thoi, dẫn đến nhiều hệ số bằng 0.
+
+Miền ràng buộc $\|\boldsymbol{w}\|_1 \leq C$ có dạng hình thoi (diamond). Khi
+kết hợp với các đường đồng mức của hàm lỗi, nghiệm tối ưu thường rơi vào các
+đỉnh của hình thoi, dẫn đến nhiều hệ số bằng 0.

@@ -1,12 +1,11 @@
 \paragraph{Ý tưởng}
-Để điểu khiển hiện tượng quá khớp (\textit{overfitting}), ta thêm vào hạng tử điều
-chỉnh vào hàm lỗi
-hàm lỗi sao cho hàm lỗi tổng cần được tối thiểu hoá có dạng:
+Để điểu khiển hiện tượng quá khớp (\textit{overfitting}), ta thêm vào hạng tử
+điều chỉnh vào hàm lỗi sao cho hàm lỗi tổng cần được tối thiểu hoá có dạng:
 \begin{equation}
-  E_D(w) + \lambda E_W(w),
+  E_D(\boldsymbol{w}) + \lambda E_W(\boldsymbol{w}),
 \end{equation}
 trong đó $\lambda$ là hệ số điều chỉnh (regularization coefficient) dùng để
 kiểm soát
-mức độ quan trọng tương đối giữa sai số phụ thuộc dữ liệu $E_D(w)$ và hạng tử
-điều chỉnh $E_W(w)$.
-Sau đây là các hàm $E_W(w)$ hay được dùng.
+mức độ quan trọng tương đối giữa sai số phụ thuộc dữ liệu
+$E_D(\boldsymbol{w})$ và hạng tử điều chỉnh $E_W(\boldsymbol{w})$. Sau đây là
+các hàm $E_W(\boldsymbol{w})$ hay được dùng.
