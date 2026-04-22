@@ -1,0 +1,78 @@
+\subsubsection{Validation Curve}
+
+Để đánh giá ảnh hưởng của độ phức tạp mô hình, chúng tôi xây dựng validation curve
+cho ba nhóm mô hình: Polynomial Basis, RBF và Fourier Basis. Hiệu năng mô hình được đo
+bằng sai số bình phương trung bình (MSE) trên tập huấn luyện và tập validation.
+
+%------------------------------------------------
+\paragraph{1. Polynomial Basis (theo bậc đa thức $p$)}
+
+Trong thí nghiệm này, chúng tôi thay đổi bậc đa thức $p$ và quan sát sự thay đổi của MSE.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.75\linewidth]{poly_validation_curve.png}
+    \caption{Validation curve: MSE theo bậc đa thức $p$}
+    \label{fig:poly_curve}
+\end{figure}
+
+\paragraph{Phân tích:}
+
+Khi $p = 1$, mô hình đơn giản và cho kết quả tương đối tốt với MSE thấp ($0.5349$).
+Tuy nhiên, khi tăng $p$, MSE tăng đột biến, đặc biệt từ $p \ge 3$, cho thấy mô hình trở nên
+không ổn định và dễ bị overfitting nghiêm trọng. Điều này thể hiện rõ khi $p = 9$,
+MSE tăng lên mức rất lớn, phản ánh sự khuếch đại sai số do độ phức tạp quá cao.
+
+%------------------------------------------------
+\paragraph{2. RBF Basis (theo số tâm $M$)}
+
+Trong thí nghiệm này, chúng tôi thay đổi số lượng tâm RBF $M$.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.75\linewidth]{rbf_validation_curve.png}
+    \caption{Validation curve: MSE theo số tâm RBF}
+    \label{fig:rbf_curve}
+\end{figure}
+
+\paragraph{Phân tích:}
+
+Khi số lượng tâm nhỏ ($M=5$), mô hình chưa đủ linh hoạt nên MSE còn cao ($1.0185$).
+Khi tăng $M$, MSE giảm dần và đạt giá trị tốt nhất quanh $M = 85$--$95$ (khoảng $0.39$--$0.41$).
+Điều này cho thấy mô hình RBF cải thiện khả năng biểu diễn dữ liệu khi tăng số lượng hàm cơ sở,
+mà không gây ra overfitting nghiêm trọng trong phạm vi khảo sát.
+
+%------------------------------------------------
+\paragraph{3. Fourier Basis (theo số hàm cơ sở $M$)}
+
+Trong thí nghiệm này, chúng tôi thay đổi số lượng hàm cơ sở Fourier $M$.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.75\linewidth]{fourier_validation_curve.png}
+    \caption{Validation curve: MSE theo số hàm cơ sở Fourier}
+    \label{fig:fourier_curve}
+\end{figure}
+
+\paragraph{Phân tích:}
+
+Khi $M$ nhỏ, mô hình bị underfitting (MSE $\approx 0.55$).
+Khi tăng $M$ lên khoảng $3$--$5$, MSE giảm xuống mức thấp nhất ($\approx 0.42$),
+cho thấy mô hình đạt trạng thái cân bằng tốt giữa bias và variance.
+
+Tuy nhiên, khi $M > 6$, MSE tăng nhanh (đặc biệt tại $M=8$ trở đi),
+phản ánh hiện tượng overfitting rõ rệt, trong đó mô hình bắt đầu học nhiễu trong dữ liệu huấn luyện.
+
+%------------------------------------------------
+\paragraph{Nhận xét tổng quát}
+
+Từ ba thí nghiệm, có thể rút ra kết luận:
+
+\begin{itemize}
+    \item Polynomial Basis: nhạy cảm cao với độ phức tạp, dễ overfitting mạnh.
+    \item RBF Basis: ổn định hơn, cải thiện dần khi tăng số tâm.
+    \item Fourier Basis: đạt hiệu quả tốt ở mức trung bình nhưng dễ overfit khi tăng $M$ quá lớn.
+\end{itemize}
+
+Kết quả này khẳng định vai trò quan trọng của việc lựa chọn độ phức tạp mô hình,
+nhằm cân bằng giữa bias và variance theo nguyên lý \textit{bias-variance tradeoff}.

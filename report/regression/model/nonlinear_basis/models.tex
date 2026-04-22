@@ -1,0 +1,73 @@
+\subsubsection{Các mô hình hàm cơ sở phi tuyến}
+
+Tất cả các mô hình đều tuân theo dạng tổng quát:
+
+\begin{equation}
+f(\mathbf{x}, \mathbf{w}) = \mathbf{w}^T \Phi(\mathbf{x})
+\end{equation}
+
+trong đó $\Phi(\mathbf{x})$ được xây dựng từ các hệ cơ sở khác nhau.
+
+\paragraph{Mô hình đa thức (Polynomial Basis):}
+Mô hình đa thức mở rộng vector đầu vào thành các lũy thừa phi tuyến:
+
+\begin{equation}
+\Phi(\mathbf{x}) = [1, x, x^2, \dots, x^p]
+\end{equation}
+
+Đây là dạng đơn giản nhất, giúp mô hình xấp xỉ các quan hệ phi tuyến mượt.
+
+\textbf{Ưu điểm:}
+\begin{itemize}
+    \item Dễ cài đặt
+    \item Diễn giải tốt
+\end{itemize}
+
+\textbf{Nhược điểm:}
+\begin{itemize}
+    \item Dễ overfitting khi bậc lớn
+    \item Không ổn định với dữ liệu lớn
+\end{itemize}
+
+\paragraph{Mô hình RBF (Radial Basis Function):}
+Mô hình RBF sử dụng các hàm Gaussian làm cơ sở:
+
+\begin{equation}
+\phi_j(\mathbf{x}) =
+\exp\left(-\frac{\|\mathbf{x} - \mathbf{c}_j\|^2}{2\sigma^2}\right)
+\end{equation}
+
+Trong đó $\mathbf{c}_j$ là các tâm và $\sigma$ điều khiển độ lan tỏa.
+
+Mô hình tập trung vào khoảng cách trong không gian đầu vào, giúp biểu diễn tốt cấu trúc phi tuyến cục bộ.
+
+\textbf{Ưu điểm:}
+\begin{itemize}
+    \item Xấp xỉ tốt dữ liệu phi tuyến
+    \item Linh hoạt theo phân bố dữ liệu
+\end{itemize}
+
+\paragraph{Mô hình Fourier Basis:}
+Mô hình Fourier biểu diễn dữ liệu bằng các hàm sin/cos:
+
+\begin{equation}
+\Phi(\mathbf{x}) =
+[\sin(\omega_1 x), \cos(\omega_1 x), \dots, \sin(\omega_k x), \cos(\omega_k x)]
+\end{equation}
+
+Biến đổi dữ liệu sang miền tần số, phù hợp với dữ liệu có tính chu kỳ.
+
+\textbf{Ưu điểm:}
+\begin{itemize}
+    \item Trực giao tốt
+    \item Ổn định số học cao
+\end{itemize}
+
+\paragraph{So sánh tổng quát:}
+Ba nhóm mô hình có đặc điểm khác nhau:
+
+\begin{itemize}
+    \item Polynomial: đơn giản nhưng dễ overfit
+    \item RBF: mạnh với dữ liệu cục bộ
+    \item Fourier: tốt cho dữ liệu tuần hoàn
+\end{itemize}

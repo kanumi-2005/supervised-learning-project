@@ -1,0 +1,58 @@
+% \paragraph{Nguyên lý ánh xạ không gian đặc trưng:}
+% Bản chất của phương pháp hàm cơ sở là việc thay thế vector đầu vào
+% $\mathbf{x} \in \mathbb{R}^d$ bằng một vector đặc trưng mới:
+
+% \begin{equation}
+% \Phi(\mathbf{x}) =
+% \begin{bmatrix}
+% \phi_1(\mathbf{x}), \phi_2(\mathbf{x}), \dots, \phi_M(\mathbf{x})
+% \end{bmatrix}^T
+% \end{equation}
+
+% Trong đó $\phi_j(\mathbf{x})$ là các hàm phi tuyến cố định.
+
+% Mô hình hồi quy trở thành:
+
+% \begin{equation}
+% f(\mathbf{x}, \mathbf{w}) = \mathbf{w}^T \Phi(\mathbf{x})
+% = \sum_{j=1}^{M} w_j \phi_j(\mathbf{x})
+% \end{equation}
+
+% Nhờ ánh xạ này, bài toán phi tuyến trong không gian gốc được biến thành bài toán tuyến tính theo tham số $\mathbf{w}$ trong không gian đặc trưng.
+
+% ---
+
+% \paragraph{Tính chất tối ưu và biểu diễn tuyến tính:}
+% Do mô hình tuyến tính theo tham số, hàm mất mát bình phương trung bình vẫn giữ tính lồi.
+% Do đó nghiệm tối ưu có dạng đóng:
+
+% \begin{equation}
+% \mathbf{w}^* = (\mathbf{\Phi}^T \mathbf{\Phi})^{-1} \mathbf{\Phi}^T \mathbf{y}
+% \end{equation}
+
+% Điều này giúp việc huấn luyện trở thành một bài toán đại số tuyến tính thay vì tối ưu phi tuyến.
+
+% ---
+
+% \paragraph{Phân tích độ phức tạp và tính trực giao:}
+% Ma trận thiết kế được định nghĩa bởi:
+
+% \begin{equation}
+% \mathbf{\Phi}_{ij} = \phi_j(\mathbf{x}_i)
+% \end{equation}
+
+% Nếu các hàm cơ sở có tương quan cao, ma trận $\mathbf{\Phi}^T \mathbf{\Phi}$ có thể trở nên suy biến (ill-conditioned),
+% làm giảm độ ổn định của nghiệm.
+
+% Ngược lại, các hệ cơ sở trực giao (ví dụ Fourier trong không gian $L^2$) giúp cải thiện đáng kể tính ổn định số học.
+
+% ---
+
+% \paragraph{Định lý xấp xỉ phổ quát:}
+% Với một số lượng đủ lớn các hàm cơ sở phù hợp, ta có thể xấp xỉ bất kỳ hàm liên tục $g(\mathbf{x})$:
+
+% \begin{equation}
+% |f(\mathbf{x}) - g(\mathbf{x})| < \epsilon, \quad \forall \mathbf{x} \in \Omega
+% \end{equation}
+
+% Điều này cho thấy mô hình hàm cơ sở phi tuyến có năng lực biểu diễn tương đương với các mô hình xấp xỉ hàm mạnh như mạng neural một lớp ẩn, nhưng huấn luyện đơn giản hơn do có nghiệm dạng đóng.
