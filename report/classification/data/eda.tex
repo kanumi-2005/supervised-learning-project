@@ -211,3 +211,32 @@ vực này thấp (được nói ở phần giới thiệu) có có diện tích
 
 Các loại đất \textenglish{Soil\_Type\_28} và \textenglish{Soil\_Type\_22} có số
 lượng lớn hơn hẳn các loại đất khác.
+
+\paragraph{Phân bố từng từng đặc trưng định lượng theo từng lớp của biến mục
+tiêu}
+
+\figurename~\ref{fig:covtype-numeric-features-vs-target-group1}
+và~\ref{fig:covtype-numeric-features-vs-target-group2} cho ta thấy phân bố từng
+đặc trưng theo từng lớp của biến mục tiêu trong bộ dữ liệu Forest CoverType.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{covtype-numeric-features-vs-target-group1}
+  \caption{Biểu đồ hộp từng đặc trưng định lượng theo từng lớp của biến mục
+  tiêu trong bộ dữ liệu Forest CoverType (phần 1)}
+  \label{fig:covtype-numeric-features-vs-target-group1}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{covtype-numeric-features-vs-target-group2}
+  \caption{Biểu đồ hộp từng đặc trưng định lượng theo từng lớp của biến mục
+  tiêu trong bộ dữ liệu Forest CoverType (phần 2)}
+  \label{fig:covtype-numeric-features-vs-target-group2}
+\end{figure}
+
+Qua 2 hình, ta thấy biến \textenglish{Elevation} có sự phân bố khác nhau tương
+đối giữa các lớp. Điều này gợi ý rằng độ cao có thể là một đặc trưng quan trọng
+trong việc phân biệt các loại rừng phủ.
+
+Các đặc trưng khác thì chưa thấy sự phân biệt nào rõ ràng.
