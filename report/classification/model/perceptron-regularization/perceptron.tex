@@ -1,0 +1,107 @@
+\subsection{Perceptron}
+
+\paragraph{Giới thiệu}
+
+Perceptron là một trong những mô hình phân loại tuyến tính đơn giản nhất, được đề xuất bởi Rosenblatt. Mô hình này nhằm tìm một siêu phẳng để phân tách dữ liệu thành hai lớp.
+
+\paragraph{Mô hình toán học}
+
+Cho dữ liệu huấn luyện:
+\[
+\mathcal{D} = \{(\mathbf{x}_i, y_i)\}_{i=1}^{N}, \quad y_i \in \{-1, +1\}
+\]
+
+Hàm dự đoán của Perceptron:
+\[
+\hat{y} = \text{sign}(\mathbf{w}^T \mathbf{x} + b)
+\]
+
+Trong đó:
+\begin{itemize}
+    \item $\mathbf{w}$ là vector trọng số
+    \item $b$ là bias
+\end{itemize}
+
+\paragraph{Thuật toán học}
+
+Perceptron cập nhật tham số khi dự đoán sai:
+
+\[
+\mathbf{w} \leftarrow \mathbf{w} + \eta y_i \mathbf{x}_i
+\]
+\[
+b \leftarrow b + \eta y_i
+\]
+
+Trong đó $\eta$ là learning rate.
+
+\paragraph{Tính chất}
+
+\begin{itemize}
+    \item Hội tụ nếu dữ liệu \textbf{linearly separable}
+    \item Không hội tụ nếu dữ liệu \textbf{không tuyến tính}
+\end{itemize}
+
+\paragraph{Thực nghiệm}
+
+\textbf{Mô tả dữ liệu:}
+\begin{itemize}
+    \item \textbf{Linear data}: sinh bằng hàm \texttt{make\_blobs}
+    \item \textbf{Non-linear data}: sinh bằng hàm \texttt{make\_circles}
+\end{itemize}
+
+\textbf{Cài đặt:}
+\begin{verbatim}
+# Linear data
+X_linear, y_linear = make_blobs(n_samples=200, centers=2)
+y_linear = np.where(y_linear == 0, -1, 1)
+
+model1 = Perceptron(lr=0.01, epochs=50)
+model1.fit(X_linear, y_linear)
+
+# Non-linear data
+X_non, y_non = make_circles(n_samples=200, noise=0.1)
+y_non = np.where(y_non == 0, -1, 1)
+
+model2 = Perceptron(lr=0.01, epochs=50)
+model2.fit(X_non, y_non)
+\end{verbatim}
+
+\paragraph{Kết quả}
+
+Hình \ref{fig:perceptron_result} minh họa kết quả huấn luyện Perceptron trên hai loại dữ liệu: tuyến tính và phi tuyến.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{perceptron_result.png}
+    \caption{Kết quả Perceptron trên dữ liệu tuyến tính và phi tuyến}
+    \label{fig:perceptron_result}
+\end{figure}
+
+Quan sát từ hình vẽ:
+
+\begin{itemize}
+    \item \textbf{Dữ liệu tuyến tính (trên trái):} Hai lớp được phân tách rõ ràng, và Perceptron nhanh chóng tìm được một đường thẳng phân chia hiệu quả. Đường quyết định (decision boundary) phù hợp với cấu trúc dữ liệu.
+    
+    \item \textbf{Dữ liệu phi tuyến (trên phải):} Các điểm dữ liệu có cấu trúc dạng vòng tròn, không thể phân tách bằng một đường thẳng. Do đó, đường quyết định của Perceptron không thể mô tả đúng ranh giới giữa hai lớp.
+    
+    \item \textbf{Đồ thị lỗi – dữ liệu tuyến tính (dưới trái):} Số lỗi giảm nhanh về 0 chỉ sau vài epoch, cho thấy mô hình hội tụ thành công.
+    
+    \item \textbf{Đồ thị lỗi – dữ liệu phi tuyến (dưới phải):} Số lỗi dao động mạnh qua các epoch và không giảm về 0, chứng tỏ mô hình không hội tụ.
+\end{itemize}
+
+\paragraph{Phân tích}
+
+Kết quả thực nghiệm phản ánh rõ bản chất của Perceptron:
+
+\begin{itemize}
+    \item Khi dữ liệu \textbf{linearly separable}, Perceptron có thể tìm được nghiệm tối ưu và hội tụ nhanh chóng.
+    
+    \item Ngược lại, với dữ liệu \textbf{không tuyến tính}, không tồn tại siêu phẳng phân tách hoàn hảo, dẫn đến việc thuật toán liên tục cập nhật mà không đạt trạng thái ổn định.
+\end{itemize}
+
+Đặc biệt, sự dao động của hàm lỗi trong trường hợp phi tuyến cho thấy Perceptron bị “kẹt” trong quá trình cập nhật, không thể giảm sai số xuống mức tối thiểu.
+
+\paragraph{Kết luận}
+
+Thực nghiệm xác nhận rằng Perceptron chỉ phù hợp với các bài toán phân loại tuyến tính. Đối với dữ liệu có cấu trúc phức tạp hơn, cần sử dụng các phương pháp mạnh hơn như kernel methods hoặc neural networks để mô hình hóa ranh giới quyết định phi tuyến.
