@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from sklearn.base import BaseEstimator, RegressorMixin
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_absolute_error
-from code.Part1_Regression.dataset import CaliforniaHousingDataset as Dataset
+from dataset import CaliforniaHousingDataset as Dataset
 
 class BayesianLinearRegression(BaseEstimator, RegressorMixin):
     def __init__(self, alpha = 1.0, beta = 10.0):
