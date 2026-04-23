@@ -3,103 +3,90 @@ from sklearn.metrics import classification_report, accuracy_score
 from sklearn.model_selection import train_test_split
 from dataset import CovtypeDataset
 from sklearn.preprocessing import StandardScaler
+from ..base.basegdmodel import BaseGDModel
 
-class WeightedSoftmaxClassier:
-    def __init__(self,lr = 0.01,epochs = 1000):
+
+import numpy as np
+
+class WeightedSoftmaxClassier(BaseGDModel):
+    def __init__(self, lr=0.01, epochs=1000):
         self.lr = lr
         self.epochs = epochs
 
-    def _softmax(self,z):
-        exp_z = np.exp(z - np.max(z,axis=1,keepdims=True))
+    # SOFTMAX
+    def _softmax(self, z):
+        z = z - np.max(z, axis=1, keepdims=True)
+        exp_z = np.exp(z)
         return exp_z / np.sum(exp_z, axis=1, keepdims=True)
-    def _one_hot(self,y,K):
-        one_hot = np.zeros((len(y),K))
+
+    # ONE HOT
+    def _one_hot(self, y, K):
+        y = np.asarray(y).astype(int)
+
+        one_hot = np.zeros((len(y), K))
         one_hot[np.arange(len(y)), y] = 1
         return one_hot
-    def _compute_class_weights(self,y,K):
-        N = len(y)
-        class_counts = np.bincount(y, minlength=K)
-        weights = N / (class_counts + 1e-8)   # tránh chia 0
-        return weights 
-    def fit(self,X,y):
-        N,D = X.shape
-        K = len(np.unique(y))
 
-        self.W = np.zeros((D,K))
+    # CLASS WEIGHT
+    def _compute_class_weights(self, y, K):
+        counts = np.bincount(y, minlength=K)
+        weights = len(y) / (counts + 1e-8)
+        return weights
+
+    # FIT
+    def fit(self, X, y):
+        X = np.asarray(X)
+        y = np.asarray(y).astype(int)
+
+        N, D = X.shape
+
+        self.classes_ = np.unique(y)
+        self.class_to_idx = {c: i for i, c in enumerate(self.classes_)}
+        y = np.array([self.class_to_idx[yy] for yy in y])
+
+        K = len(self.classes_)
+
+        # init params
+        self.W = np.zeros((D, K))
         self.b = np.zeros(K)
 
         y_onehot = self._one_hot(y, K)
         class_weights = self._compute_class_weights(y, K)
 
+        # reshape for broadcasting
+        cw = class_weights.reshape(1, -1)
+
         for epoch in range(self.epochs):
-            # Forward
+
+            # forward
             logits = X @ self.W + self.b
             y_pred = self._softmax(logits)
 
-            # ===== Weighted Loss =====
+            # loss
             loss = -np.sum(
-                y_onehot * np.log(y_pred + 1e-8) * class_weights
+                y_onehot * np.log(y_pred + 1e-8) * cw
             ) / N
 
-            # ===== Gradient =====
-            error = (y_pred - y_onehot) * class_weights
+            # gradient
+            error = (y_pred - y_onehot) * cw
 
             dW = X.T @ error / N
             db = np.sum(error, axis=0) / N
 
-            # Update
+            # update
             self.W -= self.lr * dW
             self.b -= self.lr * db
 
             if epoch % 100 == 0:
                 print(f"Epoch {epoch}, Loss: {loss:.4f}")
 
+        return self
+
     def predict(self, X):
         logits = X @ self.W + self.b
-        y_pred = self._softmax(logits)
-        return np.argmax(y_pred, axis=1)
-    
-if __name__ == "__main__":
+        probs = self._softmax(logits)
+        y_pred = np.argmax(probs, axis=1)
 
-    # ===== Load dataset =====
-    d = CovtypeDataset()
-    X = d.X
-    y = d.y - 1   
-
-    # ===== Split =====
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.2, random_state=42, stratify=y
-    )
-    # ===== Normalize (RẤT QUAN TRỌNG) =====
-    scaler = StandardScaler()
-    X_train = scaler.fit_transform(X_train)
-    X_test = scaler.transform(X_test)
-
-    # ===== Model no weight =====
-    print("========== WITHOUT CLASS WEIGHT ==========")
-    model_no_weight = WeightedSoftmaxClassier(lr=0.05, epochs=500)
-
-    model_no_weight._compute_class_weights = lambda y, K: np.ones(K)
-
-    model_no_weight.fit(X_train, y_train)
-    y_pred_no = model_no_weight.predict(X_test)
-
-    print("Accuracy:", accuracy_score(y_test, y_pred_no))
-    print(classification_report(y_test, y_pred_no, digits=4))
-
-    # ===== Model contain weight =====
-    print("\n========== WITH CLASS WEIGHT ==========")
-    model_weight = WeightedSoftmaxClassier(lr=0.05, epochs=500)
-
-    model_weight.fit(X_train, y_train)
-    y_pred_w = model_weight.predict(X_test)
-
-    print("Accuracy:", accuracy_score(y_test, y_pred_w))
-    print(classification_report(y_test, y_pred_w, digits=4))
-
-    # ===== In class weights =====
-    print("\n========== CLASS WEIGHTS ==========")
-    K = len(np.unique(y_train))
-    weights = model_weight._compute_class_weights(y_train, K)
-    for i, w in enumerate(weights):
-        print(f"Class {i}: weight = {w:.4f}")
+        # map về label gốc
+        inv_map = {v: k for k, v in self.class_to_idx.items()}
+        return np.array([inv_map[i] for i in y_pred])
