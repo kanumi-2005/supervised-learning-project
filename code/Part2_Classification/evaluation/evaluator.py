@@ -9,7 +9,7 @@ from sklearn.metrics import (
     confusion_matrix,
     roc_auc_score
 )
-from sklearn.model_selection import KFold, cross_validate
+from sklearn.model_selection import StratifiedKFold, cross_validate
 from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
 from statsmodels.stats.contingency_tables import mcnemar
@@ -66,9 +66,21 @@ class Evaluator:
 
     def evaluate(self, y_true, y_pred, y_proba=None, average="macro"):
         acc = accuracy_score(y_true, y_pred)
-        precision = precision_score(y_true, y_pred, average=average, zero_division=0)
-        recall = recall_score(y_true, y_pred, average=average, zero_division=0)
-        f1 = f1_score(y_true, y_pred, average=average, zero_division=0)
+
+        # ===== averaged metrics =====
+        precision_avg = precision_score(y_true, y_pred, average=average,
+                                        zero_division=0)
+        recall_avg = recall_score(y_true, y_pred, average=average,
+                                  zero_division=0)
+        f1_avg = f1_score(y_true, y_pred, average=average, zero_division=0)
+
+        # ===== per-class metrics =====
+        precision_per_class = precision_score(y_true, y_pred, average=None,
+                                              zero_division=0)
+        recall_per_class = recall_score(y_true, y_pred, average=None,
+                                        zero_division=0)
+        f1_per_class = f1_score(y_true, y_pred, average=None, zero_division=0)
+
         cm = confusion_matrix(y_true, y_pred)
 
         roc_auc = None
@@ -80,16 +92,22 @@ class Evaluator:
 
         metrics = {
             "Accuracy": acc,
-            "Precision": precision,
-            "Recall": recall,
-            "F1": f1,
+
+            f"Precision ({average})": precision_avg,
+            f"Recall ({average})": recall_avg,
+            f"F1 ({average})": f1_avg,
+
+            "Precision (per-class)": precision_per_class,
+            "Recall (per-class)": recall_per_class,
+            "F1 (per-class)": f1_per_class,
+
             "ROC AUC": roc_auc,
             "Confusion Matrix": cm
         }
 
         self._log({
             "type": "metrics",
-            **{k: v for k, v in metrics.items() if k != "Confusion Matrix"}
+            **{k: v for k, v in metrics.items()}
         })
 
         return metrics
@@ -122,18 +140,18 @@ class Evaluator:
 
     # ====================== CROSS VALIDATION ======================
 
-    def cross_validate(self, model, X, y):
+    def cross_validate(self, model, X, y, average="macro"):
         self._log({"type": "cv_start"})
 
         self._log_model_info(model)
 
-        kf = KFold(
+        kf = StratifiedKFold(
             n_splits=self.n_splits,
             shuffle=True,
             random_state=self.random_state
         )
 
-        splits = list(kf.split(X))
+        splits = list(kf.split(X, y))
 
         for i, (train_idx, val_idx) in enumerate(splits):
             self._log({
@@ -149,34 +167,34 @@ class Evaluator:
             y,
             scoring=[
                 "accuracy",
-                "precision_macro",
-                "recall_macro",
-                "f1_macro"
+                f"precision_{average}",
+                f"recall_{average}",
+                f"f1_{average}"
             ],
             cv=splits,
             n_jobs=-1
         )
 
         acc = scores["test_accuracy"]
-        prec = scores["test_precision_macro"]
-        rec = scores["test_recall_macro"]
-        f1 = scores["test_f1_macro"]
+        prec = scores[f"test_precision_{average}"]
+        rec = scores[f"test_recall_{average}"]
+        f1 = scores[f"test_f1_{average}"]
 
         for i in range(len(acc)):
             self._log({
                 "type": "fold_metrics",
                 "fold": i,
                 "Accuracy": acc[i],
-                "Precision": prec[i],
-                "Recall": rec[i],
-                "F1": f1[i]
+                f"Precision ({average})": prec[i],
+                f"Recall ({average})": rec[i],
+                f"F1 ({average})": f1[i]
             })
 
         return {
             "Accuracy": (np.mean(acc), np.std(acc)),
-            "Precision": (np.mean(prec), np.std(prec)),
-            "Recall": (np.mean(rec), np.std(rec)),
-            "F1": (np.mean(f1), np.std(f1))
+            f"Precision ({average})": (np.mean(prec), np.std(prec)),
+            f"Recall ({average})": (np.mean(rec), np.std(rec)),
+            f"F1 ({average})": (np.mean(f1), np.std(f1))
         }
 
     # ====================== COMPARE TEST ======================
@@ -200,16 +218,32 @@ class Evaluator:
                 average
             )
 
-            results.append({
+            row = {
                 "Model": name,
-                **metrics
-            })
+                "Accuracy": metrics["Accuracy"],
+
+                f"Precision ({average})": metrics[f"Precision ({average})"],
+                f"Recall ({average})": metrics[f"Recall ({average})"],
+                f"F1 ({average})": metrics[f"F1 ({average})"],
+
+                "ROC AUC": metrics.get("ROC AUC", None),
+
+                # ===== FULL PER-CLASS (FLAT) =====
+                "Precision_per_class": metrics["Precision (per-class)"],
+                "Recall_per_class": metrics["Recall (per-class)"],
+                "F1_per_class": metrics["F1 (per-class)"],
+
+                # ===== CONFUSION MATRIX =====
+                "Confusion Matrix": metrics["Confusion Matrix"]
+            }
+
+            results.append(row)
 
         return pd.DataFrame(results)
 
     # ====================== COMPARE CV ======================
 
-    def compare_models_cv(self, models, X, y):
+    def compare_models_cv(self, models, X, y, average="macro"):
         results = []
 
         for name, model in models.items():
@@ -218,14 +252,26 @@ class Evaluator:
                 "model": name
             })
 
-            scores = self.cross_validate(model, X, y)
+            scores = self.cross_validate(model, X, y, average=average)
 
             results.append({
                 "Model": name,
-                "Accuracy": f"{scores['Accuracy'][0]:.4f} ± {scores['Accuracy'][1]:.4f}",
-                "Precision": f"{scores['Precision'][0]:.4f} ± {scores['Precision'][1]:.4f}",
-                "Recall": f"{scores['Recall'][0]:.4f} ± {scores['Recall'][1]:.4f}",
-                "F1": f"{scores['F1'][0]:.4f} ± {scores['F1'][1]:.4f}"
+
+                "Accuracy":
+                    f"{scores['Accuracy'][0]:.4f} ± " \
+                    f"{scores['Accuracy'][1]:.4f}",
+
+                f"Precision ({average})":
+                    f"{scores[f'Precision ({average})'][0]:.4f} ± " \
+                    "{scores[f'Precision ({average})'][1]:.4f}",
+
+                f"Recall ({average})":
+                    f"{scores[f'Recall ({average})'][0]:.4f} ± " \
+                    f"{scores[f'Recall ({average})'][1]:.4f}",
+
+                f"F1 ({average})":
+                    f"{scores[f'F1 ({average})'][0]:.4f} ± " \
+                    f"{scores[f'F1 ({average})'][1]:.4f}",
             })
 
         return pd.DataFrame(results)
