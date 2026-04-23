@@ -1,0 +1,20 @@
+\paragraph{Jacobian của softmax}
+
+Xét vector logits $\boldsymbol{a} = (a_1, a_2, \dots, a_K)^{\intercal}$. Hàm
+softmax được định nghĩa bởi \begin{equation}
+  y_k = \frac{\exp(a_k)}{\sum_{j=1}^{K} \exp(a_j)}, \quad k = 1, \dots, K.
+\end{equation} Đạo hàm riêng của phần tử đầu ra theo logits được cho bởi
+\begin{equation}
+  \frac{\partial y_i}{\partial a_j} = \frac{\partial}{\partial a_j} \biggl(
+  \frac{\exp(a_i)}{\sum_{k=1}^{K} \exp(a_k)} \biggr).
+\end{equation} Đặt $Z = \sum_{k=1}^{K} \exp(a_k)$, khi đó $y_i =
+\frac{\exp(a_i)}{Z}$, ta có \begin{equation}
+  \frac{\partial y_i}{\partial a_j} = \frac{Z \exp(a_i)\delta_{ij} -
+  \exp(a_i)\exp(a_j)}{Z^2}.
+\end{equation} Suy ra \begin{equation}
+  \frac{\partial y_i}{\partial a_j} = y_i(\delta_{ij} - y_j),
+\end{equation} trong đó $\delta_{ij}$ là delta Kronecker. Từ đó Jacobian của
+softmax được viết dưới dạng ma trận \begin{equation}
+  \boldsymbol{J} = \mathrm{diag}(\boldsymbol{y}) -
+  \boldsymbol{y}\boldsymbol{y}^{\intercal}.
+\end{equation}

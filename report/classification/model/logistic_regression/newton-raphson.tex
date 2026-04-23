@@ -1,0 +1,33 @@
+\paragraph{Thuật toán Newton--Raphson/IRLS}
+
+Hồi quy Logistic không tồn tại nghiệm dạng đóng cho bài toán tối ưu tham số.
+Tuy nhiên, hàm mất mát cross-entropy là hàm lồi và khả vi hai lần, do đó có thể
+sử dụng phương pháp Newton--Raphson dựa trên khai triển Taylor bậc hai.
+
+Trong mỗi bước lặp, tham số được cập nhật theo công thức: \begin{equation}
+  \boldsymbol{w}^{(t+1)} = \boldsymbol{w}^{(t)} - \boldsymbol{H}^{-1} \nabla E,
+\end{equation} trong đó gradient có dạng: \begin{equation}
+  \nabla E = \boldsymbol{\Phi}^{\intercal}(\boldsymbol{y} - \boldsymbol{t}),
+\end{equation} và Hessian được viết dưới dạng: \begin{equation}
+  \boldsymbol{H} = \boldsymbol{\Phi}^{\intercal} \boldsymbol{R}
+  \boldsymbol{\Phi} + \lambda \boldsymbol{I},
+\end{equation} với: \begin{equation}
+  \boldsymbol{R} = \mathrm{diag}\big(y_1(1-y_1), \dots, y_N(1-y_N)\big).
+\end{equation}
+
+Thuật toán này còn được gọi là IRLS (Iterative Reweighted Least Squares), do có
+thể viết lại dưới dạng bài toán bình phương tối thiểu có trọng số:
+\begin{equation}
+  \boldsymbol{w}^{(t+1)} =
+  (\boldsymbol{\Phi}^{\intercal} \boldsymbol{R} \boldsymbol{\Phi})^{-1}
+  \boldsymbol{\Phi}^{\intercal} \boldsymbol{R} \boldsymbol{z},
+\end{equation} với: \begin{equation}
+  \boldsymbol{z} = \boldsymbol{\Phi}\boldsymbol{w} +
+  \boldsymbol{R}^{-1}(\boldsymbol{y}-\boldsymbol{p}).
+\end{equation}
+
+IRLS thường hội tụ trong $O(\log(1/\varepsilon))$ bước, nhanh hơn Gradient
+Descent cần $O(1/\varepsilon)$ bước. Tuy nhiên, chi phí mỗi bước cao do cần
+tính nghịch đảo Hessian, với độ phức tạp xấp xỉ: \begin{equation}
+  O(NM^2 + M^3),
+\end{equation} trong đó $N$ là số mẫu và $M$ là số đặc trưng.
