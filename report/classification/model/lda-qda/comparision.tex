@@ -1,4 +1,4 @@
-\subsubsection{So sánh LDA và QDA}
+\paragraph{So sánh LDA và QDA}
 
 Linear Discriminant Analysis (LDA) và Quadratic Discriminant Analysis (QDA)
 đều là các phương pháp phân loại dựa trên mô hình xác suất, với giả định rằng
@@ -6,34 +6,19 @@ dữ liệu của mỗi lớp tuân theo phân phối Gaussian đa biến. Đi�
 lõi giữa hai phương pháp nằm ở giả định về ma trận hiệp phương sai, dẫn đến sự
 khác biệt về dạng biên quyết định, số lượng tham số và khả năng tổng quát hóa.
 
-\paragraph{So sánh tổng quan}
+\subparagraph{So sánh tổng quan}
 
 \tablename~\ref{tab:lda-qda-comparison} trình bày các đặc điểm chính của hai
 phương pháp.
 
 \begin{table}[htbp]
-\centering
-\begin{tblr}{
-  width=\textwidth,
-  colspec={|l|l|l|},
-  row{1} = {font=\bfseries, bg=gray!15},
-  hlines,
-  vlines
-}
-Tiêu chí & LDA & QDA \\
-Giả định hiệp phương sai & Chung ($\boldsymbol{\Sigma}$) & Riêng
-($\boldsymbol{\Sigma}_k$) \\
-Biên quyết định & Tuyến tính & Phi tuyến (bậc hai) \\
-Số tham số & Ít & Nhiều \\
-Nguy cơ overfitting & Thấp & Cao \\
-Yêu cầu dữ liệu & Ít & Nhiều \\
-Độ linh hoạt & Thấp & Cao \\
-\end{tblr}
-\caption{So sánh giữa LDA và QDA}
-\label{tab:lda-qda-comparison}
+  \centering
+  \caption{So sánh giữa LDA và QDA}
+  \label{tab:lda-qda-comparison}
+  \import{\tablespath}{lda-qda-comparison}
 \end{table}
 
-\paragraph{Phân tích theo số mẫu và số chiều}
+\subparagraph{Phân tích theo số mẫu và số chiều}
 Hiệu quả của LDA và QDA phụ thuộc mạnh vào mối quan hệ giữa số mẫu $n$ và số
 chiều $d$ của dữ liệu:
 
@@ -65,7 +50,7 @@ chiều $d$ của dữ liệu:
   \end{itemize}
 \end{itemize}
 
-\paragraph{Kết luận}
+\subparagraph{Kết luận}
 Tóm lại, việc lựa chọn giữa LDA và QDA phụ thuộc vào đặc điểm của dữ liệu:
 \begin{itemize}
   \item LDA phù hợp khi dữ liệu nhỏ, số chiều cao hoặc các lớp có phương sai
