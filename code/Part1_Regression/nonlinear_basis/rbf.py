@@ -1,8 +1,9 @@
 import numpy as np
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.cluster import KMeans
+from ..base.basemodel import BaseModel
 
-class RBF(BaseEstimator, TransformerMixin):
+class RBF(BaseModel, TransformerMixin):
     def __init__(self, n_centers=10, gamma=0.1, seed=42, include_bias=False):
         self.n_centers = n_centers
         self.gamma = gamma

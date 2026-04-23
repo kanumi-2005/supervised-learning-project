@@ -1,9 +1,10 @@
 import numpy as np
 from itertools import combinations
 from sklearn.base import BaseEstimator, TransformerMixin
+from ..base.basemodel import BaseModel
 
 
-class InteractionBasis(BaseEstimator, TransformerMixin):
+class InteractionBasis(BaseModel, TransformerMixin):
     """
     Tạo các đặc trưng tương tác dạng x_i * x_j
 

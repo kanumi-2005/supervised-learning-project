@@ -1,7 +1,9 @@
 import numpy as np
 from sklearn.base import BaseEstimator, TransformerMixin
+from ..base.basemodel import BaseModel
 
-class PolynomialBasis(BaseEstimator, TransformerMixin):
+
+class PolynomialBasis(BaseModel, TransformerMixin):
     def __init__(self, degree=5):
         self.degree = degree
 
