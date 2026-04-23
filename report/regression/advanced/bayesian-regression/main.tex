@@ -1,0 +1,131 @@
+\subsubsection{Bayesian Linear Regression}
+
+Trong khi hồi quy tuyến tính truyền thống (OLS) tìm kiếm một bộ tham số tối ưu duy nhất thông qua việc cực tiểu hóa hàm mất mát, Bayesian Regression tiếp cận bài toán bằng cách tích hợp tri thức tiền nghiệm (prior knowledge) và dữ liệu thực nghiệm để thu được một phân phối xác suất trên không gian tham số. Phương pháp này cho phép mô hình hóa không chỉ giá trị dự báo mà còn cả độ tin cậy của dự báo đó.
+
+\paragraph{Mô hình xác suất và Likelihood}
+
+Xét tập dữ liệu $\mathcal{D} = \{(\mathbf{x}_i, y_i)\}_{i=1}^n$ với $\mathbf{x}_i \in \mathbb{R}^d$. Giả định mối liên hệ tuyến tính bị nhiễu bởi một thành phần nhiễu trắng Gaussian:
+\[
+y = \mathbf{w}^\top \mathbf{x} + \epsilon, \quad \epsilon \sim \mathcal{N}(0, \beta^{-1})
+\]
+Trong đó $\beta$ là độ chụm (precision) của nhiễu. Hàm hợp lý (likelihood) của toàn bộ tập dữ liệu được mô tả bởi phân phối chuẩn đa biến:
+\[
+p(\mathbf{y} \mid \mathbf{X}, \mathbf{w}, \beta) = \prod_{i=1}^n \mathcal{N}(y_i \mid \mathbf{w}^\top \mathbf{x}_i, \beta^{-1}) = \mathcal{N}(\mathbf{y} \mid \mathbf{X}\mathbf{w}, \beta^{-1}\mathbf{I})
+\]
+
+\paragraph{Phân phối Tiền nghiệm (Prior) và Ý nghĩa của Sự điều chuẩn}
+
+Chúng ta đặt một phân phối tiền nghiệm Gaussian lên các tham số $\mathbf{w}$ để thể hiện niềm tin ban đầu về cấu trúc mô hình:
+\[
+p(\mathbf{w} \mid \alpha) = \mathcal{N}(\mathbf{w} \mid \mathbf{0}, \alpha^{-1}\mathbf{I})
+\]
+Việc sử dụng kỳ vọng bằng $\mathbf{0}$ đóng vai trò như một cơ chế điều chuẩn (regularization) tự nhiên. Trong ngôn ngữ tối ưu hóa, việc tìm cực đại hậu nghiệm (MAP) với prior này tương đương chính xác với hồi quy Ridge ($L_2$ regularization), nơi $\alpha/\beta$ đóng vai trò là hệ số phạt.
+
+\paragraph{Suy diễn Hậu nghiệm (Posterior Inference)}
+
+Nhờ tính liên hợp của phân phối Gaussian, phân phối hậu nghiệm — sự kết hợp giữa niềm tin tiền nghiệm và bằng chứng từ dữ liệu — cũng là một phân phối Gaussian:
+\[
+p(\mathbf{w} \mid \mathbf{y}, \mathbf{X}, \alpha, \beta) \propto p(\mathbf{y} \mid \mathbf{X}, \mathbf{w}, \beta) p(\mathbf{w} \mid \alpha) = \mathcal{N}(\mathbf{w} \mid \mathbf{m}_n, \mathbf{S}_n)
+\]
+Các tham số của phân phối hậu nghiệm được xác định qua hệ phương trình:
+\[
+\mathbf{S}_n^{-1} = \alpha\mathbf{I} + \beta\mathbf{X}^\top\mathbf{X}, \quad \mathbf{m}_n = \beta\mathbf{S}_n\mathbf{X}^\top\mathbf{y}
+\]
+Ở đây, ma trận độ chụm hậu nghiệm $\mathbf{S}_n^{-1}$ là tổng của độ chụm tiền nghiệm và thông tin thu hồi từ dữ liệu.
+
+\paragraph{Phân phối Dự báo (Predictive Distribution)}
+
+Để dự báo nhãn $y^\ast$ cho một quan sát mới $\mathbf{x}^\ast$, thay vì chỉ sử dụng vector trung bình $\mathbf{m}_n$, ta tích phân trên toàn bộ không gian tham số (marginalization):
+\[
+p(y^\ast \mid \mathbf{x}^\ast, \mathcal{D}) = \int p(y^\ast \mid \mathbf{x}^\ast, \mathbf{w}) p(\mathbf{w} \mid \mathcal{D}) d\mathbf{w} = \mathcal{N}(y^\ast \mid \mathbf{m}_n^\top \mathbf{x}^\ast, \sigma_N^2(\mathbf{x}^\ast))
+\]
+Trong đó, phương sai dự báo được phân tách thành hai thành phần cốt lõi:
+\[
+\sigma_N^2(\mathbf{x}^\ast) = \underbrace{\frac{1}{\beta}}_{\text{Aleatoric}} + \underbrace{\mathbf{x}^{\ast\top}\mathbf{S}_n\mathbf{x}^\ast}_{\text{Epistemic}}
+\]
+\begin{itemize}
+    \item \textbf{Aleatoric Uncertainty:} Nhiễu nội tại của dữ liệu, không thể giảm bớt bằng cách thêm dữ liệu huấn luyện.
+    \item \textbf{Epistemic Uncertainty:} Sự bất định về tham số mô hình. Thành phần này sẽ lớn tại những vùng không gian $\mathbf{x}^\ast$ thưa thớt dữ liệu huấn luyện và thu hẹp dần khi lượng dữ liệu tăng lên.
+\end{itemize}
+
+\paragraph{Nhận xét bản chất}
+
+Bayesian Regression không chỉ đơn thuần là một công cụ dự báo, mà là một khung tư duy thống kê chặt chẽ:
+\begin{enumerate}
+    \item \textbf{Tính toán xác suất:} Nó thay thế các câu trả lời "đơn trị" bằng "khoảng tin cậy", cho phép quản trị rủi ro trong các quyết định quan trọng.
+    \item \textbf{Khả năng học trực tuyến (Online Learning):} Phân phối hậu nghiệm tại bước này có thể trở thành phân phối tiền nghiệm cho bước tiếp theo khi có dữ liệu mới, giúp mô hình cập nhật liên tục mà không cần huấn luyện lại từ đầu.
+    \item \textbf{Tự điều chuẩn tối ưu:} Thông qua việc tối ưu hóa Marginal Likelihood (Evidence), mô hình có thể tự tìm ra các siêu tham số $\alpha, \beta$ tối ưu mà không cần tới tập validation tách biệt.
+\end{enumerate}
+
+\paragraph{Nhận xét lý thuyết}
+
+Bayesian Regression cung cấp một cách tiếp cận đầy đủ hơn so với hồi quy tuyến tính truyền thống.
+Không chỉ đưa ra dự đoán điểm, mô hình còn ước lượng được độ bất định thông qua phân phối dự đoán.
+
+Phương pháp này đặc biệt phù hợp trong các bài toán có dữ liệu nhiễu hoặc kích thước mẫu nhỏ,
+nơi việc đánh giá độ tin cậy của dự đoán là quan trọng.
+
+Tuy nhiên, chi phí tính toán cao hơn do cần xử lý ma trận nghịch đảo trong không gian tham số.
+
+% =========================================================
+\paragraph{Kết quả thực nghiệm của Bayesian Linear Regression}
+
+Trong thực nghiệm này, mô hình Bayesian Linear Regression (BLR) được cấu hình với các tham số tiền định (hyperparameters) nhằm cân bằng giữa tri thức ưu tiên và dữ liệu thực tế:
+\[
+\alpha = 1.0 \quad (\text{Prior precision}), \quad \beta = 10.0 \quad (\text{Noise precision})
+\]
+Việc lựa chọn $\beta = 10.0$ tương ứng với giả định nhiễu quan sát có phương sai $\sigma^2 = 0.1$, cho thấy mô hình tin cậy khá cao vào chất lượng dữ liệu huấn luyện.
+
+\paragraph{Phân tích phân phối hậu nghiệm (Posterior Analysis)}
+
+Khác với Hồi quy Tuyến tính thông thường chỉ tìm điểm tối ưu (Point Estimation), BLR xác định toàn bộ phân phối xác suất của trọng số $\mathbf{w}$ dưới dạng Gaussian đa biến:
+\[
+p(\mathbf{w} \mid \mathbf{X}, \mathbf{y}) = \mathcal{N}(\mathbf{\mu}_N, \Sigma_N)
+\]
+
+Trong đó:
+\begin{itemize}
+    \item $\mathbf{\mu}_N \in \mathbb{R}^{9 \times 1}$: Vector kỳ vọng hậu nghiệm, đại diện cho bộ trọng số hội tụ sau khi quan sát dữ liệu.
+    \item $\Sigma_N \in \mathbb{R}^{9 \times 1}$: Ma trận hiệp phương sai, thể hiện độ bất định và mối tương quan giữa 9 đặc trưng đầu vào.
+\end{itemize}
+
+\paragraph{Phân phối dự đoán và Độ bất định (Predictive Distribution)}
+
+Khả năng vượt trội của BLR nằm ở việc cung cấp phân phối dự đoán cho các điểm dữ liệu mới $x^\ast$:
+\[
+p(y^\ast \mid \mathbf{x}^\ast, \mathbf{X}, \mathbf{y}) = \mathcal{N}(\mathbf{\mu}_N^T \mathbf{x}^\ast, \sigma_N^2(\mathbf{x}^\ast))
+\]
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.85\linewidth]{bayesian_regression_result.png}
+    \caption{Kết quả dự đoán của BLR: Đường trung bình (Mean) và dải tin cậy $\pm 2\sigma$}
+    \label{fig:blr_result}
+\end{figure}
+
+Phân tích trực quan từ Hình \ref{fig:blr_result}:
+\begin{itemize}
+    \item \textbf{Đường màu xanh (Predictive Mean):} Phản ánh xu hướng trung tâm của giá nhà. Có thể thấy tại các vùng dữ liệu tập trung (mật độ điểm cao), đường này đi qua trung tâm của đám mây điểm một cách ổn định.
+    \item \textbf{Vùng màu cam (Epistemic Uncertainty):} Thể hiện khoảng tin cậy $\pm 2\sigma$ (xấp xỉ 95\% xác suất). Tại các vùng biên hoặc nơi dữ liệu thưa thớt (trục hoành $> 10$), dải màu cam mở rộng rõ rệt. Đây là minh chứng cho việc mô hình tự lượng hóa sự "thiếu tự tin" khi dự báo ở những không gian chưa có nhiều thông tin huấn luyện.
+\end{itemize}
+
+\paragraph{Đánh giá hiệu năng}
+
+Sai số bình phương trung bình (MSE) thu được trên tập kiểm tra:
+\[
+\text{MSE} = 0.524602
+\]
+Mức sai số này cho thấy mô hình có khả năng khớp tốt với dữ liệu thực tế trong khi vẫn duy trì được tính tổng quát hóa.
+
+\paragraph{Biện luận thực nghiệm}
+
+Từ kết quả thu được, chúng ta rút ra các nhận định quan trọng:
+\begin{itemize}
+    \item \textbf{Khả năng tự điều chuẩn (Self-regularization):} Tham số $\alpha$ đóng vai trò như một bộ điều chuẩn $L_2$. Với $\alpha=1.0$, mô hình ngăn chặn hiệu quả hiện tượng các trọng số quá lớn, giúp MSE đạt mức thấp mà không bị Overfitting.
+    \item \textbf{Xử lý nhiễu và dữ liệu chặn (Capped Data):} Biểu đồ cho thấy có một dải dữ liệu bị chặn tại ngưỡng giá bằng 5.0. Dù dữ liệu nhiễu này gây áp lực lên mô hình, BLR nhờ có thành phần $\beta$ (noise precision) vẫn duy trì được đường dự đoán xu hướng mà không bị kéo lệch cực đoan bởi các điểm outlier.
+    \item \textbf{Tin cậy trong ra quyết định:} Việc cung cấp $\sigma_N^2$ cho phép người dùng không chỉ biết giá nhà dự kiến mà còn biết "độ rủi ro" của dự báo đó, một yếu tố mà các mô hình hồi quy truyền thống thường bỏ qua.
+\end{itemize}
+
+\paragraph{Tổng kết}
+
+Thực nghiệm khẳng định Bayesian Linear Regression là công cụ mạnh mẽ cho bài toán dự báo giá nhà. Nó không chỉ đảm bảo độ chính xác (MSE thấp) mà còn cung cấp một khung lý thuyết vững chắc để quản trị độ bất định trong dữ liệu, giúp tăng tính minh bạch và tin cậy cho các hệ thống hỗ trợ ra quyết định.
