@@ -1,0 +1,39 @@
+Đối với bài toán phân lớp nhị phân, mô hình xây dựng một hàm tuyến tính:
+\begin{equation}
+  a(\boldsymbol{x}) = \boldsymbol{w}^{\intercal} \boldsymbol{x} + w_0,
+\end{equation}
+
+sau đó ánh xạ giá trị này thông qua hàm sigmoid: \begin{equation}
+  \sigma(a) = \frac{1}{1 + e^{-a}}.
+\end{equation}
+
+Khi đó đầu ra của mô hình được viết là: \begin{equation}
+  y = \sigma(\boldsymbol{w}^{\intercal} \boldsymbol{x} + w_0).
+\end{equation}
+
+Đối với bài toán phân lớp đa lớp, mô hình sử dụng một vector điểm số (logits)
+cho từng lớp: \begin{equation}
+  a_k(\boldsymbol{x}) = \boldsymbol{w}_k^{\intercal} \boldsymbol{x} + w_{k0},
+  \quad k = 1, \dots, K.
+\end{equation}
+
+Các giá trị này được chuẩn hóa thông qua hàm softmax: \begin{equation}
+  y_k = \frac{\exp(a_k)}{\sum_{j=1}^{K} \exp(a_j)}.
+\end{equation}
+
+Hàm mất mát được sử dụng trong huấn luyện là hàm cross-entropy:
+\begin{equation}
+  E(\boldsymbol{W}) = - \sum_{n=1}^{N} \sum_{k=1}^{K}t_{nk} \log y_{nk},
+\end{equation} trong đó $t_{nk}$ là nhãn one-hot và $y_{nk}$ là đầu ra của mô
+hình.
+
+Gradient của hàm mất mát theo tham số $\boldsymbol{w}_k$ được tính như sau:
+\begin{equation}
+  \nabla_{\boldsymbol{w}_k} E =
+  \sum_{n=1}^{N} (y_{nk} - t_{nk}) \boldsymbol{x}_n,
+\end{equation} trong đó $y_{nk}$ là đầu ra tại lớp $k$ của mẫu thứ $n$.
+
+
+Mô hình Logistic Regression có thể được xem như một mô hình tuyến tính kết hợp
+với một hàm kích hoạt phi tuyến, cho phép xây dựng ranh giới quyết định phức
+tạp hơn trong không gian đặc trưng thông qua tối ưu hóa hàm mất mát lồi.

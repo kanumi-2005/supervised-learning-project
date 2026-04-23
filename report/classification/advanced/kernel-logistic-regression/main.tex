@@ -1,0 +1,124 @@
+\subsubsection{Kernel Logistic Regression}
+
+\paragraph{Ý tưởng}
+Kernel Logistic Regression là mở rộng của Logistic Regression nhằm
+xử lý các bài toán phân loại phi tuyến thông qua \textit{kernel trick}.
+Thay vì học một vector trọng số trong không gian đặc trưng ban đầu,
+mô hình được biểu diễn trong dạng đối ngẫu (dual form), trong đó hàm
+quyết định phụ thuộc vào các điểm huấn luyện thông qua một hàm kernel.
+
+Hàm quyết định của mô hình được viết dưới dạng:
+\begin{equation}
+  f(x) = \sum_{i=1}^{n} \alpha_i t_i K(\boldsymbol{x}_i, \boldsymbol{x}),
+\end{equation}
+trong đó $\alpha_i$ là các tham số cần học, $t_i \in \{-1, 1\}$ là nhãn
+huấn luyện, và $K(\boldsymbol{x}_i, x)$ là hàm kernel.
+
+Trong trường hợp sử dụng kernel Gaussian RBF, ta có:
+\begin{equation}
+  K(\boldsymbol{x}, \boldsymbol{x'}) = \exp\left(-\gamma \|\boldsymbol{x} -
+  \boldsymbol{x}'\|^2\right).
+\end{equation}
+
+Xác suất dự đoán được mô hình hóa thông qua hàm sigmoid:
+\begin{equation}
+  P(t=1 \mid x) = \sigma(f(\boldsymbol{x}) = \frac{1}{1 +
+  \exp(-f(\boldsymbol{x}))}.
+\end{equation}
+
+Hàm mất mát của Kernel Logistic Regression là log-loss trong không
+gian kernel, kết hợp với regularization:
+\begin{equation}
+  \mathcal{L}(\boldsymbol{\alpha})
+  = \sum_{i=1}^{n}
+  \log\left(1 + \exp\left(-t_i f(\boldsymbol{x}_i)\right)\right)
+  + \lambda \, \boldsymbol{\alpha}^\intercal \boldsymbol{K}
+  \boldsymbol{\alpha},
+\end{equation}
+trong đó $\boldsymbol{K}$ là ma trận kernel với
+$K_{ij} = K(\boldsymbol{x}_i, \boldsymbol{x}_j)$.
+
+Việc tối ưu mô hình được thực hiện trong không gian đối ngẫu, thay vì
+tối ưu trực tiếp trên vector trọng số như Logistic Regression tuyến
+tính. Điều này cho phép mô hình học được các ranh giới quyết định phi
+tuyến thông qua ánh xạ ngầm sang không gian đặc trưng có chiều cao
+(thậm chí vô hạn chiều).
+
+\paragraph{So sánh Logistic Regression và Kernel Logistic Regression}
+Logistic Regression là mô hình tuyến tính, trong đó hàm quyết định
+được biểu diễn dưới dạng:
+\begin{equation}
+  f(\boldsymbol{x}) = \boldsymbol{w}^\intercal \boldsymbol{x} + b.
+\end{equation}
+
+Do đó, ranh giới quyết định của mô hình luôn là một siêu phẳng trong
+không gian đầu vào. Điều này khiến Logistic Regression phù hợp với
+các bài toán có cấu trúc tuyến tính hoặc gần tuyến tính, nhưng gặp
+hạn chế lớn khi dữ liệu có phân bố phi tuyến.
+
+Ngược lại, Kernel Logistic Regression thay thế tích vô hướng trực tiếp
+bằng hàm kernel:
+\begin{equation}
+  f(\boldsymbol{x}) = \sum_{i=1}^{n} \alpha_i t_i K(\boldsymbol{x}_i,
+  \boldsymbol{x}).
+\end{equation}
+
+Nhờ kernel trick, mô hình có thể ánh xạ ngầm dữ liệu sang không gian
+đặc trưng có chiều cao hơn, giúp biểu diễn được các quan hệ phi tuyến
+phức tạp mà không cần tính toán tường minh ánh xạ.
+
+Về mặt hình học, Logistic Regression tạo ra ranh giới quyết định
+tuyến tính, trong khi Kernel Logistic Regression có thể tạo ra ranh
+giới cong linh hoạt tùy thuộc vào lựa chọn kernel (ví dụ RBF kernel).
+
+Về độ phức tạp, Logistic Regression có chi phí tính toán thấp hơn và
+mở rộng tốt với dữ liệu lớn. Ngược lại, Kernel Logistic Regression
+phụ thuộc vào ma trận kernel kích thước $n \times n$, dẫn đến chi phí
+tính toán và bộ nhớ cao hơn.
+
+Tóm lại, Logistic Regression phù hợp với dữ liệu tuyến tính và bài
+toán lớn, trong khi Kernel Logistic Regression phù hợp với dữ liệu
+phi tuyến nhưng đánh đổi về chi phí tính toán.
+
+\paragraph{So sánh trên dữ liệu không phân chia tuyến tính}
+\figurename~\ref{fig:logistic-regression-xor} và
+\figurename~\ref{fig:kernel-logistic-regression-xor} thể hiện đường biên quyết
+định của Logistic Regression và Kernel Logistic Regression trên dữ liệu không
+phân chia tuyến tính. Dễ thấy với Logistic Regression thì đường biên này là
+một đường thẳng do đó vẫn còn nhiều điểm không thể phân loại đúng. Trong khi
+đó Kernel Logistic Regression có đường biên quyết định là đường cong phi tuyến
+do đó có thể phân loại được những điểm này và gần như phân loại đúng tất cả
+trừ vài điểm dữ liệu nhiễu.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{logistic-regression-xor}
+  \caption{Đường biên quyết định của Logistic Regression cho dữ liệu không
+  phân chia tuyến tính}
+  \label{fig:logistic-regression-xor}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{kernel-logistic-regression-xor}
+  \caption{Đường biên quyết định của Kernel Logistic Regression cho dữ liệu
+  không phân chia tuyến tính}
+  \label{fig:kernel-logistic-regression-xor}
+\end{figure}
+
+\paragraph{Kết luận}
+Từ kết quả thực nghiệm, có thể thấy rằng Logistic Regression chỉ
+phù hợp với các bài toán có ranh giới quyết định tuyến tính, do
+giới hạn trong việc học một siêu phẳng trong không gian đầu vào.
+
+Ngược lại, Kernel Logistic Regression có khả năng mô hình hóa các
+quan hệ phi tuyến nhờ kernel trick, cho phép xây dựng ranh giới
+quyết định linh hoạt hơn và phù hợp với các cấu trúc dữ liệu phức
+tạp như XOR.
+
+Tuy nhiên, khả năng biểu diễn mạnh hơn cũng đi kèm với chi phí tính
+toán cao hơn và độ nhạy với tham số kernel, đặc biệt là trong các
+trường hợp dữ liệu có nhiễu hoặc số lượng mẫu lớn.
+
+Do đó, việc lựa chọn giữa hai mô hình cần cân bằng giữa độ phức tạp
+của dữ liệu và yêu cầu về hiệu năng tính toán.

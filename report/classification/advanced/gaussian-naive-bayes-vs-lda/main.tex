@@ -1,0 +1,70 @@
+\subsubsection{Gaussian Naive Bayes vs. LDA}
+\paragraph{Lý thuyết}
+Gaussian Naive Bayes (GNB) và Linear Discriminant Analysis (LDA) đều là các mô
+hình phân loại dựa trên xác suất, nhưng khác nhau ở mức độ giả thiết về phân
+phối dữ liệu.
+
+Gaussian Naive Bayes giả định rằng các đặc trưng độc lập có điều kiện theo
+lớp:
+\begin{equation}
+  p(\boldsymbol{x} \mid t=k)
+  = \prod_{j=1}^{d} p(x_j \mid t=k),
+\end{equation}
+với mỗi đặc trưng tuân theo phân phối Gaussian:
+\begin{equation}
+  p(x_j \mid t=k)
+  = \mathcal{N}(\mu_{kj}, \sigma_{kj}^2).
+\end{equation}
+
+Do giả thiết độc lập, ma trận hiệp phương sai của mỗi lớp là ma trận đường
+chéo, không mô hình hóa tương quan giữa các đặc trưng.
+
+Ngược lại, LDA giả định rằng dữ liệu mỗi lớp tuân theo phân phối Gaussian đa
+biến với cùng ma trận hiệp phương sai:
+\begin{equation}
+  p(\boldsymbol{x} \mid t=k)
+  = \mathcal{N}(\boldsymbol{\mu}_k, \boldsymbol{\Sigma}).
+\end{equation}
+
+Điều này cho phép LDA mô hình hóa mối tương quan giữa các đặc trưng, vì
+$\boldsymbol{\Sigma}$ không bị ràng buộc là đường chéo.
+
+Hàm phân biệt của LDA có dạng:
+\begin{equation}
+  \delta_k(\boldsymbol{x}) =
+  \boldsymbol{x}^\intercal \boldsymbol{\Sigma}^{-1} \boldsymbol{\mu}_k
+  - \frac{1}{2}
+  \boldsymbol{\mu}_k^\intercal \boldsymbol{\Sigma}^{-1}
+  \boldsymbol{\mu}_k
+  + \log \pi_k.
+\end{equation}
+
+Từ đó, biên quyết định của LDA là tuyến tính, trong khi GNB tạo biên phi tuyến
+do giả thiết độc lập từng chiều.
+
+\paragraph{Thực nghiệm}
+Trong thực tế, hiệu năng của Gaussian Naive Bayes và LDA phụ thuộc mạnh vào
+đặc điểm dữ liệu.
+
+Gaussian Naive Bayes thường hoạt động tốt hơn LDA trong các trường hợp:
+\begin{itemize}
+  \item Số lượng mẫu nhỏ so với số chiều dữ liệu
+  \item Các đặc trưng gần như độc lập hoặc đã được tiền xử lý
+  \item Dữ liệu dạng sparse như văn bản (bag-of-words, TF-IDF)
+\end{itemize}
+
+Trong các trường hợp này, việc ước lượng ma trận hiệp phương sai trong LDA trở
+nên không ổn định, trong khi GNB chỉ cần ước lượng trung bình và phương sai
+từng chiều.
+
+Ngược lại, LDA thường cho kết quả tốt hơn khi:
+\begin{itemize}
+  \item Các đặc trưng có tương quan đáng kể
+  \item Số lượng mẫu đủ lớn để ước lượng tốt
+  \item Cấu trúc dữ liệu gần với giả định Gaussian đa biến
+\end{itemize}
+
+Tóm lại, GNB có giả thiết mạnh hơn nhưng ít tham số hơn, giúp ổn định trong
+các bài toán dữ liệu nhỏ hoặc nhiều chiều. Trong khi đó, LDA tổng quát hơn và
+khai thác tốt mối quan hệ giữa các đặc trưng khi dữ liệu đủ lớn và phù hợp giả
+định.

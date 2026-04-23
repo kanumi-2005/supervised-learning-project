@@ -1,9 +1,9 @@
-\subsubsection{Quadratic Discriminant Analysis}
+\paragraph{Quadratic Discriminant Analysis}
 Quadratic Discriminant Analysis (QDA) là một phương pháp phân loại dựa trên mô
 hình xác suất, tương tự như LDA, nhưng cho phép mỗi lớp có ma trận hiệp phương
 sai riêng. Điều này giúp QDA linh hoạt hơn trong việc mô hình hóa dữ liệu.
 
-\paragraph{Góc nhìn xác suất}
+\subparagraph{Góc nhìn xác suất}
 QDA giả định rằng dữ liệu của mỗi lớp tuân theo phân phối Gaussian đa biến:
 \begin{equation}
   \boldsymbol{x} \mid t = k \sim \mathcal{N}(\boldsymbol{\mu}_k,
@@ -22,14 +22,14 @@ Hàm phân biệt khi đó có dạng:
 Do sự khác biệt giữa các $\boldsymbol{\Sigma}_k$, biên quyết định của QDA là
 phi tuyến (cụ thể là bậc hai).
 
-\paragraph{Góc nhìn hình học}
+\subparagraph{Góc nhìn hình học}
 Từ góc nhìn hình học, QDA không tìm một phép chiếu tuyến tính chung như LDA,
 mà thay vào đó học trực tiếp các biên quyết định phi tuyến giữa các lớp. Các
 biên này thường có dạng các mặt bậc hai (quadratic surfaces), cho phép mô hình
 thích ứng tốt hơn với dữ liệu có cấu trúc phức tạp và phân phối khác nhau giữa
 các lớp.
 
-\paragraph{Nhận xét}
+\subparagraph{Nhận xét}
 QDA phù hợp khi dữ liệu có cấu trúc phức tạp và phương sai giữa các lớp khác
 nhau đáng kể. Tuy nhiên, do số lượng tham số cần ước lượng lớn hơn (mỗi lớp
 một ma trận hiệp phương sai), QDA yêu cầu nhiều dữ liệu hơn để đạt hiệu quả

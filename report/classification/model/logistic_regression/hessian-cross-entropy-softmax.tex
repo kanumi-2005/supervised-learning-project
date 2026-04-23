@@ -1,0 +1,72 @@
+\paragraph{Hessian của hàm mất mát theo trọng số trong softmax}
+
+Ta xét quan hệ giữa logits và trọng số: \begin{equation}
+  \boldsymbol{a}_n = \boldsymbol{W}^\intercal \boldsymbol{\phi}_n.
+\end{equation}
+
+\subparagraph{Gradient theo logits}
+
+Với hàm mất mát cross-entropy: \begin{equation}
+  E_n = - \sum_{k=1}^{K} t_{nk} \log y_{nk},
+\end{equation} ta có đạo hàm theo logits: \begin{equation}
+  \frac{\partial E_n}{\partial a_{nk}} = y_{nk} - t_{nk}.
+\end{equation}
+
+\subparagraph{Hessian theo logits}
+
+Lấy đạo hàm thêm lần nữa theo $a_{nl}$: \begin{equation}
+  \frac{\partial^2 E_n}{\partial a_{nk} \partial a_{nl}} = \frac{\partial
+  y_{nk}}{\partial a_{nl}}.
+\end{equation}
+
+Với hàm softmax: \begin{equation}
+  y_{nk} = \frac{\exp(a_{nk})}{\sum_{j} \exp(a_{nj})},
+\end{equation} ta có: \begin{equation}
+  \frac{\partial y_{nk}}{\partial a_{nl}} = y_{nk}(\delta_{kl} - y_{nl}).
+\end{equation}
+
+Do đó, Hessian theo logits có dạng: \begin{equation}
+  \boldsymbol{H}_n^{(a)} = \frac{\partial^2 E_n}{\partial \boldsymbol{a}_n
+  \partial \boldsymbol{a}_n^\intercal} = \mathrm{diag}(\boldsymbol{y}_n) -
+  \boldsymbol{y}_n \boldsymbol{y}_n^\intercal.
+\end{equation}
+
+\subparagraph{Chuyển sang Hessian theo trọng số}
+
+Áp dụng quy tắc móc xích bậc hai: \begin{equation}
+  \boldsymbol{H} = \sum_{n=1}^{N} \Bigl( \frac{\partial
+  \boldsymbol{a}_n}{\partial \boldsymbol{W}} \Bigr)^\intercal
+  \boldsymbol{H}_n^{(a)} \Bigl( \frac{\partial \boldsymbol{a}_n}{\partial
+  \boldsymbol{W}} \Bigr).
+\end{equation}
+
+Do $\boldsymbol{a}_n$ là hàm tuyến tính theo $\boldsymbol{W}$, đạo hàm bậc hai
+của $\boldsymbol{a}_n$ bằng 0.
+
+Với: \begin{equation}
+  \frac{\partial \boldsymbol{a}_n}{\partial \boldsymbol{W}} =
+  \boldsymbol{\phi}_n,
+\end{equation} suy ra: \begin{equation}
+  \boldsymbol{H} = \sum_{n=1}^{N} \boldsymbol{\phi}_n
+  \boldsymbol{\phi}_n^\intercal \otimes \boldsymbol{H}_n^{(a)},
+\end{equation} trong đó $\otimes$ kí hiệu tích Kronecker.
+
+\subparagraph{Dạng block của Hessian}
+
+Hessian có thể được biểu diễn dưới dạng ma trận block, với mỗi block $(k,l)$:
+\begin{equation}
+  \boldsymbol{H}_{kl} = \sum_{n=1}^{N} y_{nk}(\delta_{kl} - y_{nl})\,
+  \boldsymbol{\phi}_n \boldsymbol{\phi}_n^\intercal,
+\end{equation} trong đó $\delta_{kl}$ là delta Kronecker.
+
+\subparagraph{Dạng ma trận gọn}
+
+Gọi $\boldsymbol{\Phi} \in \mathbb{R}^{N \times D}$ là ma trận thiết kế. Khi
+đó: \begin{equation}
+  \boldsymbol{H} = (\boldsymbol{I}_K\otimes\boldsymbol{\Phi})^\intercal
+  \boldsymbol{R} (\boldsymbol{I}_K\otimes\boldsymbol{\Phi}),
+\end{equation} trong đó $\boldsymbol{R}$ là ma trận block-diagonal:
+\begin{equation}
+  \boldsymbol{R} = \blockdiag(\boldsymbol{H}_1^{(a)}, \dots,
+  \boldsymbol{H}_N^{(a)}).
+\end{equation}

@@ -1,5 +1,5 @@
-\subsubsection{Thí nghiệm và kết quả}
-\paragraph{Fisher ratio}
+\paragraph{Thí nghiệm và kết quả}
+\subparagraph{Fisher ratio}
 
 Để đánh giá mức độ phân biệt của từng đặc trưng, ta sử dụng tiêu chí Fisher
 ratio. Giá trị Fisher ratio càng lớn cho thấy đặc trưng đó có khả năng phân
@@ -8,23 +8,10 @@ tách các lớp càng tốt.
 \tablename~\ref{tab:fisher-top-features} trình bày 5 đặc trưng có giá trị
 Fisher ratio cao nhất.
 \begin{table}[htbp]
-\centering
-\begin{tblr}{
-  width=\textwidth,
-  colspec={|l|l|},
-  row{1} = {font=\bfseries, bg=gray!15},
-  hlines,
-  vlines
-}
-Feature & Fisher Ratio \\
-Elevation & 1.6043 \\
-Wilderness\_Area\_3 & 1.1836 \\
-Soil\_Type\_9 & 0.2889 \\
-Soil\_Type\_3 & 0.1328 \\
-Soil\_Type\_37 & 0.1295 \\
-\end{tblr}
-\caption{Top 5 đặc trưng theo Fisher ratio}
-\label{tab:fisher-top-features}
+  \centering
+  \caption{Top 5 đặc trưng theo Fisher ratio}
+  \label{tab:fisher-top-features}
+  \import{\tablespath}{fisher-top-features}
 \end{table}
 
 Từ kết quả trên, có thể thấy rằng đặc trưng \textit{Elevation} có giá trị
@@ -37,7 +24,7 @@ Ngoài ra, các đặc trưng như \textit{Wilderness\_Area\_3} cũng có giá t
 trưng thuộc nhóm \textit{Soil Type} có giá trị Fisher ratio thấp hơn, cho thấy
 khả năng phân biệt yếu hơn khi xét riêng lẻ.
 
-\paragraph{Nhận xét}
+\subparagraph{Nhận xét}
 Kết quả này cho thấy rằng chỉ một số ít đặc trưng đóng vai trò quan trọng
 trong việc phân loại, trong khi nhiều đặc trưng khác có đóng góp hạn chế. Điều
 này gợi ý rằng có thể áp dụng các phương pháp lựa chọn đặc trưng (feature
@@ -48,7 +35,7 @@ lập, do đó không phản ánh được mối quan hệ hoặc tương tác g
 Vì vậy, việc kết hợp với các phương pháp khác (như Lasso hoặc các mô hình học
 máy) có thể mang lại cái nhìn toàn diện hơn.
 
-\paragraph{Đường biên quyết định của LDA}
+\subparagraph{Đường biên quyết định của LDA}
 
 \figurename~\ref{fig:lda-decision-boundary} minh họa đường biên quyết định của
 mô hình LDA sau khi chiếu dữ liệu xuống không gian hai chiều. Có thể thấy rằng
