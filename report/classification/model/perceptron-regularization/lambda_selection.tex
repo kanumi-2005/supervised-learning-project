@@ -1,0 +1,185 @@
+\subsubsection{Lựa chọn siêu tham số $\lambda$ bằng Stratified K-Fold Cross Validation}
+
+\paragraph{Động cơ và bài toán}
+
+Trong các mô hình học máy có regularization như Logistic Regression hay Ridge Regression, siêu tham số $\lambda$ đóng vai trò kiểm soát độ phức tạp của mô hình thông qua việc phạt các tham số lớn. Dưới góc nhìn tối ưu hóa, bài toán học có thể được biểu diễn như sau:
+\[
+\min_{\mathbf{w}} \; \frac{1}{N} \sum_{i=1}^{N} \ell(y_i, f_{\mathbf{w}}(x_i)) + \lambda \Omega(\mathbf{w})
+\]
+
+Trong đó:
+\begin{itemize}
+    \item $\ell(\cdot)$ là hàm mất mát
+    \item $\Omega(\mathbf{w})$ là hàm regularization (ví dụ: $\|\mathbf{w}\|^2$)
+    \item $\lambda$ điều khiển mức độ đánh đổi giữa \textit{data fitting} và \textit{generalization}
+\end{itemize}
+
+Cụ thể, khi $\lambda$ nhỏ, mô hình ưu tiên khớp sát dữ liệu huấn luyện, dễ dẫn đến overfitting (variance cao). Ngược lại, khi $\lambda$ lớn, mô hình bị ép đơn giản hóa, dẫn đến underfitting (bias cao). Do đó, việc lựa chọn $\lambda$ tối ưu thực chất là tìm điểm cân bằng trong trade-off giữa bias và variance.
+
+\paragraph{Ước lượng rủi ro tổng quát hóa}
+
+Mục tiêu cuối cùng của mô hình là tối thiểu hóa rủi ro kỳ vọng trên phân phối dữ liệu thực:
+\[
+R(\lambda) = \mathbb{E}_{(x,y)\sim \mathcal{D}} \left[ \ell(y, f_{\lambda}(x)) \right]
+\]
+
+Tuy nhiên, do phân phối $\mathcal{D}$ không biết trước, ta cần một phương pháp ước lượng thực nghiệm. K-Fold Cross Validation cung cấp một cơ chế hiệu quả để xấp xỉ đại lượng này.
+
+Cụ thể, tập dữ liệu được chia thành $K$ phần rời nhau:
+\[
+\mathcal{D} = \bigcup_{k=1}^{K} \mathcal{D}_k
+\]
+
+Tại mỗi lần lặp, mô hình được huấn luyện trên $\mathcal{D} \setminus \mathcal{D}_k$ và đánh giá trên $\mathcal{D}_k$. Khi đó, ước lượng rủi ro được tính:
+\[
+\hat{R}_{CV}(\lambda) = \frac{1}{K} \sum_{k=1}^{K} \mathcal{L}^{(k)}(\lambda)
+\]
+
+Giá trị $\lambda$ tối ưu được xác định theo:
+\[
+\lambda^* = \arg\min_{\lambda} \hat{R}_{CV}(\lambda)
+\]
+
+\paragraph{Stratified K-Fold và tính ổn định}
+
+Trong bài toán phân loại, đặc biệt khi dữ liệu mất cân bằng, việc chia fold ngẫu nhiên có thể làm sai lệch phân phối nhãn giữa các fold. Điều này dẫn đến ước lượng rủi ro có phương sai cao và không ổn định.
+
+Để khắc phục, ta sử dụng Stratified K-Fold, đảm bảo rằng:
+\[
+P(y \mid \mathcal{D}_k) \approx P(y), \quad \forall k
+\]
+
+Nhờ đó, mỗi fold là một đại diện tốt của toàn bộ dataset, giúp giảm phương sai của $\hat{R}_{CV}$ và cải thiện độ tin cậy của quá trình lựa chọn siêu tham số.
+
+\paragraph{Hàm đánh giá}
+
+Trong thực nghiệm này, chúng tôi sử dụng log loss (cross-entropy loss):
+\[
+\mathcal{L}(y, \hat{p}) = - \frac{1}{N} \sum_{i=1}^{N} \left[ y_i \log \hat{p}_i + (1 - y_i) \log (1 - \hat{p}_i) \right]
+\]
+
+Log loss là một hàm mất mát lồi và có các đặc tính quan trọng:
+\begin{itemize}
+    \item Là \textit{strictly proper scoring rule}, đảm bảo tối ưu khi xác suất dự đoán đúng với phân phối thật
+    \item Nhạy với độ tự tin của mô hình, phạt mạnh các dự đoán sai nhưng có xác suất cao
+    \item Tương đương với việc tối đa hóa likelihood trong mô hình xác suất
+\end{itemize}
+
+Do đó, log loss không chỉ đo độ chính xác mà còn phản ánh chất lượng dự đoán xác suất.
+
+\paragraph{Quy trình lựa chọn $\lambda$}
+
+Dựa trên các nguyên lý trên, quy trình lựa chọn $\lambda$ được thực hiện như sau:
+
+\begin{enumerate}
+    \item Xác định một tập hữu hạn các giá trị ứng viên $\{\lambda_1, \dots, \lambda_M\}$
+    
+    \item Với mỗi $\lambda_m$:
+    \begin{itemize}
+        \item Thực hiện Stratified K-Fold (k = 5)
+        \item Tại mỗi fold:
+        \begin{itemize}
+            \item Huấn luyện mô hình trên tập train
+            \item Đánh giá log loss trên tập validation
+        \end{itemize}
+    \end{itemize}
+    
+    \item Tính trung bình log loss trên 5 fold để thu được $\hat{R}_{CV}(\lambda_m)$
+    
+    \item Chọn giá trị tối ưu:
+    \[
+    \lambda^* = \arg\min_{\lambda_m} \hat{R}_{CV}(\lambda_m)
+    \]
+\end{enumerate}
+
+\paragraph{Thiết lập thực nghiệm}
+
+Thực nghiệm được tiến hành trên tập dữ liệu Covtype với kích thước:
+\[
+N = 581{,}012, \quad D = 54
+\]
+
+Phân phối lớp cho thấy dữ liệu bị mất cân bằng đáng kể, trong đó một số lớp chiếm ưu thế rõ rệt. Để đơn giản hóa bài toán, chúng tôi chuyển đổi về bài toán phân loại nhị phân bằng cách ánh xạ:
+\[
+y = 
+\begin{cases}
+1 & \text{nếu lớp gốc = 1} \\
+0 & \text{ngược lại}
+\end{cases}
+\]
+
+Tập giá trị $\lambda$ được xét:
+\[
+\lambda \in \{0.001, 0.01, 0.1, 1, 10\}
+\]
+
+Việc lựa chọn $\lambda$ được thực hiện thông qua Stratified 5-Fold Cross Validation với thước đo log loss.
+
+\paragraph{Kết quả thực nghiệm}
+
+Kết quả log loss trung bình trên 5 fold được trình bày như sau:
+\[
+\begin{aligned}
+\lambda = 0.001 & \quad \rightarrow \quad \mathcal{L} = 0.6290 \\
+\lambda = 0.01  & \quad \rightarrow \quad \mathcal{L} = 0.6290 \\
+\lambda = 0.1   & \quad \rightarrow \quad \mathcal{L} = 0.6290 \\
+\lambda = 1     & \quad \rightarrow \quad \mathcal{L} = 0.6290 \\
+\lambda = 10    & \quad \rightarrow \quad \mathcal{L} = 0.6292
+\end{aligned}
+\]
+
+Giá trị tối ưu được chọn:
+\[
+\lambda^* = 0.01, \quad \mathcal{L}_{min} \approx 0.6290
+\]
+
+\paragraph{Phân tích}
+
+Một quan sát quan trọng là log loss gần như không thay đổi đáng kể trong khoảng:
+\[
+\lambda \in [0.001, 1]
+\]
+
+Điều này cho thấy:
+\begin{itemize}
+    \item Mô hình tương đối \textbf{ổn định} với regularization trong khoảng này
+    \item Dữ liệu có thể có \textbf{tín hiệu tuyến tính mạnh}, khiến nghiệm tối ưu không quá nhạy với $\lambda$
+\end{itemize}
+
+Khi $\lambda$ tăng lên 10 (regularization mạnh), log loss tăng nhẹ, cho thấy:
+\begin{itemize}
+    \item Mô hình bắt đầu bị \textit{underfitting}
+    \item Các tham số bị co lại quá mức, làm giảm khả năng biểu diễn
+\end{itemize}
+
+\paragraph{Diễn giải dưới góc nhìn bias--variance}
+
+Kết quả này phản ánh rõ đặc điểm của trade-off bias--variance:
+\begin{itemize}
+    \item $\lambda$ nhỏ $\rightarrow$ variance cao, bias thấp
+    \item $\lambda$ lớn $\rightarrow$ variance thấp, bias cao
+\end{itemize}
+
+Tuy nhiên, trong bài toán này:
+\begin{itemize}
+    \item Sai số gần như không thay đổi $\Rightarrow$ mô hình đang ở vùng \textit{bias--variance balance}
+    \item Điều này thường xảy ra khi kích thước dữ liệu lớn ($N \gg D$)
+\end{itemize}
+
+\paragraph{Nhận xét}
+
+\begin{itemize}
+    \item Việc chọn $\lambda^* = 0.01$ là hợp lý vì đạt log loss nhỏ nhất.
+    
+    \item Tuy nhiên, do sự khác biệt giữa các giá trị là rất nhỏ, có thể kết luận rằng:
+    \begin{itemize}
+        \item Regularization không phải là yếu tố chi phối chính trong bài toán này
+        \item Chất lượng mô hình chủ yếu phụ thuộc vào dữ liệu và đặc trưng
+    \end{itemize}
+    
+    \item Trong các trường hợp như vậy, việc mở rộng không gian đặc trưng (feature engineering) hoặc sử dụng mô hình phi tuyến có thể mang lại cải thiện đáng kể hơn so với việc tinh chỉnh $\lambda$.
+\end{itemize}
+
+\paragraph{Kết luận}
+
+Kết quả thực nghiệm cho thấy Logistic Regression với regularization $L_2$ hoạt động ổn định trên tập dữ liệu Covtype. Việc lựa chọn $\lambda$ thông qua cross-validation giúp đảm bảo khả năng tổng quát hóa, tuy nhiên ảnh hưởng của $\lambda$ trong bài toán này là tương đối hạn chế do kích thước dữ liệu lớn và cấu trúc tuyến tính rõ ràng của bài toán.

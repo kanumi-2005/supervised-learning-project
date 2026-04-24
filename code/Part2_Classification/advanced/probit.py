@@ -65,7 +65,8 @@ class ProbitClassifier(ClassifierMixin, BaseGDModel):
         p = np.clip(p, eps, 1 - eps)
 
         # gradient of negative log-likelihood
-        grad = ((p - y_bin) * pdf / (p * (1 - p))) @ X_design
+        diff = (p - y_bin) * (pdf / (p * (1 - p)))
+        grad = X_design.T @ diff
         return grad / n_samples
 
     def _update_params(self, grad, iteration):
