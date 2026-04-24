@@ -1,0 +1,148 @@
+\subsection{Regularization trong Logistic Regression}
+
+\paragraph{Giới thiệu}
+
+Trong Logistic Regression, regularization đóng vai trò quan trọng trong việc kiểm soát độ phức tạp của mô hình và cải thiện khả năng tổng quát hóa. Bằng cách bổ sung một hạng phạt vào hàm mất mát, mô hình bị ràng buộc không học các tham số quá lớn, từ đó giảm hiện tượng overfitting và tăng tính ổn định khi làm việc với dữ liệu thực tế.
+
+\paragraph{Hàm mất mát có regularization}
+
+Hàm mất mát tổng quát của Logistic Regression với regularization được viết dưới dạng:
+
+\[
+\mathcal{L}(\mathbf{w}, b) =
+- \sum_{i=1}^{N}
+\left[
+y_i \log \hat{y}_i + (1 - y_i) \log (1 - \hat{y}_i)
+\right]
++ \lambda \, \Omega(\mathbf{w})
+\]
+
+Trong đó $\Omega(\mathbf{w})$ là hạng phạt và $\lambda > 0$ điều khiển mức độ regularization. Giá trị $\lambda$ càng lớn thì ràng buộc càng mạnh, dẫn đến mô hình đơn giản hơn.
+
+\paragraph{L2 Regularization}
+
+Với L2 regularization, hạng phạt được xác định bởi chuẩn $\ell_2$:
+
+\[
+\Omega(\mathbf{w}) = \|\mathbf{w}\|_2^2
+\]
+
+Khi đó:
+\[
+\mathcal{L}_{L2} =
+\mathcal{L} + \lambda \|\mathbf{w}\|_2^2
+\]
+
+L2 regularization làm giảm giá trị của các trọng số một cách trơn tru và liên tục, giúp mô hình ổn định hơn trước nhiễu và hiện tượng đa cộng tuyến. Tuy nhiên, do không triệt tiêu hoàn toàn các trọng số, mô hình vẫn giữ lại toàn bộ đặc trưng.
+
+\paragraph{L1 Regularization}
+
+Với L1 regularization, hạng phạt sử dụng chuẩn $\ell_1$:
+
+\[
+\Omega(\mathbf{w}) = \|\mathbf{w}\|_1 = \sum_{j=1}^{d} |w_j|
+\]
+
+Khi đó:
+\[
+\mathcal{L}_{L1} =
+\mathcal{L} + \lambda \|\mathbf{w}\|_1
+\]
+
+Đặc điểm nổi bật của L1 regularization là khả năng đưa nhiều trọng số về đúng bằng 0, từ đó tạo ra mô hình thưa (sparse). Điều này cho phép mô hình tự động thực hiện lựa chọn đặc trưng và giảm đáng kể độ phức tạp.
+
+\paragraph{Trực giác hình học}
+
+Sự khác biệt giữa L1 và L2 có thể được lý giải thông qua miền ràng buộc trong không gian tham số:
+
+\begin{itemize}
+    \item L2 regularization tương ứng với miền ràng buộc dạng hình cầu, dẫn đến nghiệm tối ưu phân bố đều trên các trọng số.
+    \item L1 regularization tương ứng với miền ràng buộc dạng hình thoi, khiến nghiệm tối ưu thường rơi vào các đỉnh, nơi một số trọng số bằng 0.
+\end{itemize}
+
+\paragraph{Thiết lập thí nghiệm}
+
+Để đánh giá tác động của các kỹ thuật regularization, chúng tôi tiến hành so sánh hai mô hình Logistic Regression sử dụng L1 và L2 regularization trên cùng một tập dữ liệu.
+
+Tập dữ liệu được chia thành hai phần: tập huấn luyện dùng để học tham số và tập kiểm tra dùng để đánh giá khả năng tổng quát hóa của mô hình.
+
+\paragraph{Cấu hình mô hình}
+
+Hai mô hình được thiết lập với các cấu hình như sau:
+
+\begin{itemize}
+    \item \textbf{L1 Regularization:}
+    \begin{itemize}
+        \item Hệ số điều chuẩn: $C = 0.01$, tương ứng với mức regularization mạnh nhằm khuyến khích sparsity
+        \item Thuật toán tối ưu: \textit{SAGA}, phù hợp với các bài toán có thành phần không trơn như chuẩn $\ell_1$
+        \item Số vòng lặp tối đa: 2000 để đảm bảo hội tụ
+    \end{itemize}
+
+    \item \textbf{L2 Regularization:}
+    \begin{itemize}
+        \item Hệ số điều chuẩn: sử dụng giá trị mặc định, tương ứng với mức regularization trung bình
+        \item Thuật toán tối ưu: \textit{LBFGS}, một phương pháp quasi-Newton hiệu quả cho các hàm mất mát trơn
+        \item Số vòng lặp tối đa: 1000
+    \end{itemize}
+\end{itemize}
+
+\paragraph{Tiêu chí đánh giá}
+
+Hiệu năng của mô hình được đánh giá thông qua hai tiêu chí:
+
+\begin{itemize}
+    \item \textbf{Accuracy:} đo lường tỷ lệ dự đoán đúng trên tập kiểm tra, phản ánh khả năng phân loại của mô hình.
+    
+    \item \textbf{Sparsity:} được định nghĩa là tỷ lệ các trọng số có giá trị gần bằng 0:
+    \[
+    \text{Sparsity} = \frac{1}{d} \sum_{j=1}^{d} \mathbb{I}(|w_j| < \epsilon), \quad \epsilon = 10^{-6}
+    \]
+    Chỉ số này phản ánh mức độ đơn giản của mô hình và khả năng loại bỏ các đặc trưng không quan trọng.
+\end{itemize}
+
+\paragraph{Mục tiêu thí nghiệm}
+
+Thí nghiệm được thiết kế nhằm làm rõ:
+\begin{itemize}
+    \item Ảnh hưởng của L1 và L2 regularization đến hiệu năng phân loại
+    \item Khả năng tạo sparsity của L1 so với L2
+    \item Sự đánh đổi giữa độ chính xác và độ phức tạp của mô hình
+\end{itemize}
+
+\paragraph{Kết quả}
+
+Kết quả thực nghiệm được trình bày trong Bảng \ref{tab:l1_l2_result}.
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{lcc}
+\hline
+\textbf{Mô hình} & \textbf{Accuracy} & \textbf{Sparsity} \\
+\hline
+L1 Regularization & 0.7988 & 0.30 \\
+L2 Regularization & 0.7989 & 0.00 \\
+\hline
+\end{tabular}
+\caption{So sánh Logistic Regression với L1 và L2 regularization}
+\label{tab:l1_l2_result}
+\end{table}
+
+\paragraph{Phân tích}
+
+Kết quả cho thấy hai mô hình đạt độ chính xác gần như tương đương, cho thấy việc lựa chọn loại regularization không ảnh hưởng đáng kể đến hiệu năng dự đoán trong trường hợp này. Tuy nhiên, sự khác biệt rõ rệt xuất hiện ở cấu trúc tham số của mô hình.
+
+Cụ thể, L1 regularization tạo ra mô hình thưa với khoảng 30\% trọng số bị triệt tiêu, trong khi L2 regularization giữ lại toàn bộ các trọng số. Điều này cho thấy L1 không chỉ đóng vai trò regularization mà còn thực hiện lựa chọn đặc trưng một cách hiệu quả.
+
+Từ góc nhìn bias–variance trade-off, L1 regularization có xu hướng tăng bias nhưng giảm đáng kể độ phức tạp của mô hình, trong khi L2 regularization giữ được sự cân bằng tốt hơn giữa bias và variance bằng cách phân phối trọng số đều hơn.
+
+\paragraph{Kết luận}
+
+Từ các kết quả thực nghiệm, có thể rút ra một số nhận định quan trọng về vai trò của regularization trong Logistic Regression. Trước hết, cả hai mô hình sử dụng L1 và L2 regularization đều đạt độ chính xác gần như tương đương trên tập kiểm tra, cho thấy trong bối cảnh dữ liệu hiện tại, việc lựa chọn loại regularization không ảnh hưởng đáng kể đến hiệu năng dự đoán tổng thể.
+
+Tuy nhiên, sự khác biệt cốt lõi giữa hai phương pháp thể hiện rõ ở cấu trúc của vector trọng số. Cụ thể, L1 regularization tạo ra mô hình thưa với tỷ lệ đáng kể các trọng số bị triệt tiêu hoàn toàn, trong khi L2 regularization duy trì tất cả các trọng số ở mức giá trị nhỏ nhưng khác 0. Điều này phản ánh đúng bản chất lý thuyết của hai phương pháp: L1 thực hiện lựa chọn đặc trưng một cách ngầm định, còn L2 chủ yếu đóng vai trò làm mượt và phân bố lại tầm quan trọng giữa các đặc trưng.
+
+Từ góc nhìn bias–variance trade-off, L1 regularization có xu hướng làm tăng bias do loại bỏ một phần thông tin từ dữ liệu, nhưng đồng thời giúp giảm phương sai và đơn giản hóa mô hình. Ngược lại, L2 regularization duy trì đầy đủ các đặc trưng nên có khả năng giữ bias thấp hơn, đồng thời giảm variance thông qua việc co nhỏ các trọng số. Sự khác biệt này dẫn đến việc mỗi phương pháp phù hợp với những bối cảnh khác nhau.
+
+Về mặt ứng dụng, L1 regularization đặc biệt hữu ích trong các bài toán có số chiều lớn hoặc khi cần mô hình dễ diễn giải, chẳng hạn trong các hệ thống yêu cầu tính minh bạch cao. Trong khi đó, L2 regularization phù hợp hơn khi các đặc trưng đều mang thông tin hữu ích và mục tiêu là tối đa hóa hiệu năng một cách ổn định.
+
+Tổng thể, thí nghiệm cho thấy rằng việc lựa chọn phương pháp regularization không chỉ phụ thuộc vào độ chính xác mà còn cần cân nhắc đến cấu trúc mô hình, khả năng diễn giải và đặc điểm của dữ liệu. Điều này nhấn mạnh vai trò của regularization như một công cụ quan trọng không chỉ để cải thiện hiệu năng mà còn để kiểm soát và hiểu rõ hơn hành vi của mô hình học máy.
