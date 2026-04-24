@@ -1,0 +1,221 @@
+\subsubsection{Phân tích VC Dimension và Structural Risk Minimization}
+
+\paragraph{VC Dimension của bộ phân lớp tuyến tính}
+
+Xét lớp giả thuyết $\mathcal{H}$ gồm các bộ phân lớp tuyến tính trong không gian $\mathbb{R}^D$:
+\[
+f(\mathbf{x}) = \text{sign}(\mathbf{w}^T \mathbf{x} + b)
+\]
+
+VC dimension (Vapnik–Chervonenkis dimension) của $\mathcal{H}$ là số lượng điểm lớn nhất có thể được \textit{shatter} bởi lớp giả thuyết này. Một tập điểm được gọi là shatter nếu với mọi cách gán nhãn nhị phân, luôn tồn tại một siêu phẳng phân tách đúng.
+
+Một kết quả kinh điển trong lý thuyết học máy cho thấy:
+\[
+\text{VC}(\mathcal{H}) = D + 1
+\]
+
+Điều này có nghĩa là:
+\begin{itemize}
+    \item Với $D+1$ điểm tổng quát, luôn tồn tại một siêu phẳng phân tách mọi cách gán nhãn
+    \item Nhưng với $D+2$ điểm, không phải mọi cấu hình nhãn đều có thể phân tách tuyến tính
+\end{itemize}
+
+Do đó, VC dimension phản ánh trực tiếp độ phức tạp (capacity) của mô hình tuyến tính.
+
+\paragraph{Liên hệ với khả năng tổng quát hóa}
+
+Theo lý thuyết học thống kê, VC dimension cho phép xây dựng các chặn trên cho sai số tổng quát hóa. Cụ thể, với xác suất cao, ta có:
+\[
+R(f) \le \hat{R}(f) + O\left(\sqrt{\frac{\text{VC}(\mathcal{H})}{N}}\right)
+\]
+
+trong đó:
+\begin{itemize}
+    \item $R(f)$ là rủi ro thực (true risk)
+    \item $\hat{R}(f)$ là rủi ro thực nghiệm (empirical risk)
+    \item $N$ là số mẫu
+\end{itemize}
+
+Hệ quả quan trọng:
+\begin{itemize}
+    \item VC dimension càng lớn $\Rightarrow$ mô hình càng linh hoạt nhưng dễ overfitting
+    \item VC dimension nhỏ $\Rightarrow$ mô hình đơn giản nhưng có thể underfitting
+\end{itemize}
+
+Do đó, kiểm soát độ phức tạp mô hình là yếu tố then chốt để đảm bảo khả năng tổng quát hóa.
+
+\paragraph{Structural Risk Minimization (SRM)}
+
+Structural Risk Minimization (SRM) là một nguyên lý lựa chọn mô hình dựa trên việc cân bằng giữa:
+\begin{itemize}
+    \item Sai số huấn luyện (empirical risk)
+    \item Độ phức tạp mô hình (model capacity)
+\end{itemize}
+
+Ý tưởng cốt lõi của SRM là xây dựng một dãy các lớp giả thuyết lồng nhau:
+\[
+\mathcal{H}_1 \subset \mathcal{H}_2 \subset \cdots \subset \mathcal{H}_m
+\]
+
+trong đó độ phức tạp (ví dụ VC dimension) tăng dần. Sau đó chọn lớp tối ưu bằng cách tối thiểu hóa chặn trên của rủi ro:
+\[
+\hat{R}(f) + \Omega(\mathcal{H})
+\]
+
+với $\Omega(\mathcal{H})$ là hàm phạt phụ thuộc vào độ phức tạp của lớp giả thuyết.
+
+\paragraph{Liên hệ với Logistic Regression và tham số $C$}
+
+Trong Logistic Regression với regularization $L_2$, tham số $C$ (nghịch đảo của $\lambda$) đóng vai trò điều khiển độ phức tạp hiệu dụng của mô hình:
+\begin{itemize}
+    \item $C$ nhỏ $\Rightarrow$ regularization mạnh $\Rightarrow$ mô hình đơn giản
+    \item $C$ lớn $\Rightarrow$ regularization yếu $\Rightarrow$ mô hình phức tạp hơn
+\end{itemize}
+
+Mặc dù VC dimension lý thuyết của bộ phân lớp tuyến tính là $D+1$, nhưng regularization làm giảm \textit{effective capacity} của mô hình, từ đó cải thiện khả năng tổng quát hóa.
+
+Do đó, việc thay đổi $C$ có thể được xem như xây dựng một chuỗi các mô hình với độ phức tạp tăng dần, phù hợp với nguyên lý SRM.
+
+\paragraph{Kết quả thực nghiệm và phân tích SRM}
+
+Thực nghiệm được tiến hành trên tập dữ liệu Covtype với:
+\[
+D = 54, \quad \text{VC dimension} = D + 1 = 55
+\]
+
+Mô hình sử dụng là Logistic Regression với regularization $L_2$, trong đó tham số $C = \frac{1}{\lambda}$ điều khiển độ phức tạp hiệu dụng của mô hình. Các giá trị $C$ được lựa chọn theo thang log:
+\[
+C \in \{10^{-3}, 10^{-2}, 10^{-1}, 1, 10, 10^2\}
+\]
+
+\paragraph{Kết quả}
+
+Hiệu năng của mô hình được đo bằng accuracy trên tập train, validation và test:
+
+\[
+\begin{array}{c|c|c|c}
+C & \text{Train} & \text{Validation} & \text{Test} \\
+\hline
+0.001 & 0.7174 & 0.7161 & 0.7199 \\
+0.01  & 0.7234 & 0.7219 & 0.7257 \\
+0.1   & 0.7247 & 0.7228 & 0.7264 \\
+1     & 0.7246 & 0.7227 & 0.7265 \\
+10    & 0.7246 & 0.7229 & 0.7262 \\
+100   & 0.7246 & 0.7228 & 0.7264 \\
+\end{array}
+\]
+
+Giá trị tối ưu theo validation:
+\[
+C^* = 10, \quad \text{Validation Accuracy} = 0.7229
+\]
+
+\paragraph{Biểu diễn trực quan}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\linewidth]{srm_covtype.png}
+    \caption{Hiệu năng của Logistic Regression theo tham số $C$ trên tập Covtype.}
+    \label{fig:srm_covtype}
+\end{figure}
+
+\paragraph{Phân tích xu hướng}
+
+Từ Bảng kết quả và Hình \ref{fig:srm_covtype}, có thể rút ra các nhận xét quan trọng:
+
+\begin{itemize}
+    \item Khi $C$ nhỏ ($10^{-3}$), regularization mạnh làm mô hình bị \textit{underfitting}, thể hiện qua accuracy thấp trên cả train và validation.
+
+    \item Khi $C$ tăng từ $10^{-3}$ đến $10^{-1}$, accuracy tăng nhanh. Điều này cho thấy mô hình dần thoát khỏi trạng thái underfitting và học được cấu trúc dữ liệu hiệu quả hơn.
+
+    \item Từ $C \ge 10^{-1}$, các đường cong trong Hình \ref{fig:srm_covtype} bắt đầu \textbf{bão hòa}. Cụ thể:
+    \[
+    \text{Validation Accuracy} \approx 0.723
+    \]
+    cho thấy mô hình đã đạt đến giới hạn biểu diễn trong không gian đặc trưng tuyến tính.
+
+    \item Khoảng cách giữa đường train và validation rất nhỏ (dưới $0.002$), và đường test gần như trùng với validation, cho thấy:
+    \begin{itemize}
+        \item Không có hiện tượng overfitting đáng kể
+        \item Mô hình tổng quát hóa tốt
+    \end{itemize}
+
+    \item Khi $C$ lớn ($\ge 10$), việc tăng độ phức tạp không mang lại cải thiện đáng kể, thể hiện qua việc các đường cong gần như phẳng.
+\end{itemize}
+
+\paragraph{Diễn giải dưới góc nhìn SRM}
+
+Theo nguyên lý Structural Risk Minimization:
+\[
+R(f) \le \hat{R}(f) + \Omega(\mathcal{H})
+\]
+
+Trong đó:
+\begin{itemize}
+    \item $\hat{R}(f)$: sai số huấn luyện
+    \item $\Omega(\mathcal{H})$: độ phức tạp mô hình
+\end{itemize}
+
+Kết quả thực nghiệm cho thấy:
+
+\begin{itemize}
+    \item Khi $C$ nhỏ: $\Omega$ nhỏ nhưng $\hat{R}$ lớn $\Rightarrow$ underfitting
+    
+    \item Khi $C$ tăng: $\hat{R}$ giảm nhanh trong khi $\Omega$ tăng vừa phải
+    
+    \item Khi $C$ lớn: cả $\hat{R}$ và validation error gần như không đổi $\Rightarrow$ đạt cân bằng tối ưu giữa bias và variance
+\end{itemize}
+
+Điều này phản ánh chính xác cơ chế của SRM trong việc lựa chọn mô hình tối ưu.
+
+\paragraph{Vai trò của VC Dimension}
+
+Mặc dù VC dimension lý thuyết của mô hình là:
+\[
+\text{VC} = 55
+\]
+
+trong thực tế, hiệu năng tổng quát hóa còn phụ thuộc mạnh vào kích thước dữ liệu. Với $N$ rất lớn, ta có:
+\[
+O\left(\sqrt{\frac{\text{VC}}{N}}\right) \ll 1
+\]
+
+Do đó:
+\begin{itemize}
+    \item Sai số tổng quát hóa được kiểm soát chặt chẽ
+    \item Mô hình ít bị overfitting ngay cả khi giảm regularization
+\end{itemize}
+
+Ngoài ra, regularization đóng vai trò giảm \textit{effective capacity} của mô hình, mặc dù không làm thay đổi VC dimension lý thuyết.
+
+\paragraph{Nhận xét quan trọng}
+
+\begin{itemize}
+    \item Ảnh hưởng của $C$ chỉ rõ rệt trong giai đoạn đầu, sau đó giảm dần.
+    
+    \item Điều này cho thấy giới hạn chính của mô hình không nằm ở regularization mà ở:
+    \begin{itemize}
+        \item Giả định tuyến tính
+        \item Khả năng biểu diễn của đặc trưng
+    \end{itemize}
+
+    \item Việc tăng độ phức tạp mô hình (qua $C$) không thể vượt qua giới hạn này.
+\end{itemize}
+
+\paragraph{Kết luận}
+
+\begin{itemize}
+    \item Logistic Regression với regularization $L_2$ hoạt động ổn định trên dữ liệu lớn
+    
+    \item SRM giúp lựa chọn giá trị $C$ tối ưu một cách hiệu quả
+    
+    \item Tuy nhiên, khi dữ liệu đủ lớn, vai trò của regularization giảm đáng kể
+    
+    \item Để cải thiện hiệu năng hơn nữa, cần sử dụng:
+    \begin{itemize}
+        \item Mô hình phi tuyến
+        \item Hoặc feature engineering
+    \end{itemize}
+\end{itemize}
+
+
