@@ -1,7 +1,5 @@
 \subsubsection{Class-Weighted Loss}
-
-\paragraph{Động cơ}
-
+\paragraph{Lý thuyết}
 Trong các bài toán phân loại thực tế, dữ liệu thường không phân bố đồng đều giữa các lớp, dẫn đến hiện tượng \textit{class imbalance}. Khi đó, các lớp chiếm đa số (majority classes) có số lượng mẫu lớn sẽ chi phối quá trình tối ưu, khiến mô hình học được thiên lệch về phía các lớp này.
 
 Dưới góc nhìn tối ưu hóa, hàm mất mát thực nghiệm:
@@ -95,8 +93,6 @@ Cho thấy rằng:
 
 Do đó, decision boundary sẽ được điều chỉnh theo hướng cân bằng hơn giữa các lớp.
 
-\paragraph{Ưu điểm và hạn chế}
-
 \textbf{Ưu điểm:}
 \begin{itemize}
     \item Không cần thay đổi dữ liệu (không cần over/under-sampling)
@@ -111,6 +107,146 @@ Do đó, decision boundary sẽ được điều chỉnh theo hướng cân bằ
     \item Không xử lý tốt khi dữ liệu cực kỳ mất cân bằng
 \end{itemize}
 
+\paragraph{Thực nghiệm xử lý mất cân bằng lớp (Class Imbalance)}
+
+Tập dữ liệu Covtype có phân phối lớp không đồng đều, thể hiện rõ qua số lượng mẫu giữa các lớp:
+
+\[
+\text{Class distribution} = [211840, 283301, 35754, 2747, 9493, 17367, 20510]
+\]
+
+Sự mất cân bằng này dẫn đến việc mô hình có xu hướng ưu tiên các lớp chiếm đa số, làm suy giảm hiệu năng trên các lớp thiểu số.
+
+\paragraph{Các phương pháp so sánh}
+
+Ba mô hình được sử dụng để đánh giá ảnh hưởng của class imbalance:
+
+\begin{itemize}
+    \item \textbf{Logistic Regression (No Weight)}: mô hình chuẩn, không xử lý mất cân bằng
+    \item \textbf{Logistic Regression (Balanced)}: sử dụng \texttt{class\_weight='balanced'} trong thư viện sklearn
+    \item \textbf{Weighted Softmax (Custom)}: cài đặt thủ công hàm mất mát có trọng số lớp
+\end{itemize}
+
+\paragraph{Kết quả thực nghiệm}
+
+\[
+\begin{array}{l|c|c}
+\text{Model} & \text{Accuracy} & \text{Macro F1} \\
+\hline
+\text{Logistic (No Weight)} & 0.7263 & 0.5317 \\
+\text{Logistic (Balanced)}  & 0.5991 & 0.5063 \\
+\text{Weighted Softmax}     & 0.5969 & \approx 0.50 \\
+\end{array}
+\]
+
+\paragraph{Phân tích chi tiết}
+
+\begin{itemize}
+    \item \textbf{Logistic Regression (No Weight)}:
+    \begin{itemize}
+        \item Đạt accuracy cao nhất ($\approx 72.6\%$)
+        \item Tuy nhiên, hiệu năng trên các lớp nhỏ rất kém:
+        \begin{itemize}
+            \item Class 5: recall gần 0
+            \item Class 4, 6: recall thấp
+        \end{itemize}
+        \item Điều này cho thấy mô hình bị \textbf{bias mạnh về lớp lớn}
+    \end{itemize}
+
+    \item \textbf{Logistic Regression (Balanced)}:
+    \begin{itemize}
+        \item Accuracy giảm đáng kể ($\approx 59.9\%$)
+        \item Nhưng recall của các lớp nhỏ tăng mạnh:
+        \begin{itemize}
+            \item Class 5: từ $\approx 0.006 \rightarrow 0.78$
+            \item Class 4: từ $\approx 0.41 \rightarrow 0.86$
+        \end{itemize}
+        \item Đánh đổi rõ ràng giữa:
+        \begin{itemize}
+            \item Accuracy tổng thể
+            \item Khả năng nhận diện lớp thiểu số
+        \end{itemize}
+    \end{itemize}
+
+    \item \textbf{Weighted Softmax (Custom)}:
+    \begin{itemize}
+        \item Kết quả gần tương đương với Logistic Balanced
+        \item Xác nhận rằng:
+        \[
+        \text{Class-weighted loss} \approx \text{class\_weight trong sklearn}
+        \]
+        \item Một số sai khác nhỏ do:
+        \begin{itemize}
+            \item Thuật toán tối ưu (Gradient Descent vs LBFGS)
+            \item Learning rate và batch size
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+\paragraph{Phân tích trọng số lớp}
+
+Trọng số lớp được tính theo:
+\[
+c_k = \frac{N}{N_k}
+\]
+
+Một số giá trị tiêu biểu:
+
+\[
+\begin{array}{c|c}
+\text{Class} & \text{Weight} \\
+\hline
+4 & 211.53 \\
+5 & 61.20 \\
+6 & 33.45 \\
+7 & 28.33 \\
+\end{array}
+\]
+
+\begin{itemize}
+    \item Các lớp hiếm được gán trọng số rất lớn
+    \item Điều này buộc mô hình phải:
+    \begin{itemize}
+        \item Giảm lỗi trên lớp nhỏ
+        \item Chấp nhận tăng lỗi trên lớp lớn
+    \end{itemize}
+\end{itemize}
+
+\paragraph{Diễn giải dưới góc nhìn hàm mất mát}
+
+Hàm mất mát có trọng số:
+
+\[
+\mathcal{L} = - \sum_{i=1}^{N} c_{y_i} \log p(y_i \mid x_i)
+\]
+
+\begin{itemize}
+    \item Nếu $c_k$ lớn $\Rightarrow$ lỗi trên lớp $k$ bị phạt nặng hơn
+    \item Mô hình học cách cân bằng giữa các lớp
+\end{itemize}
+
+\paragraph{Nhận xét quan trọng}
+
+\begin{itemize}
+    \item Accuracy \textbf{không phải thước đo tốt} trong bài toán mất cân bằng
+    \item Macro F1 phản ánh tốt hơn hiệu năng tổng thể
+    \item Class weighting giúp:
+    \begin{itemize}
+        \item Tăng recall cho lớp hiếm
+        \item Giảm bias của mô hình
+    \end{itemize}
+\end{itemize}
+
 \paragraph{Kết luận}
 
-Class-weighted loss là một kỹ thuật đơn giản nhưng mạnh mẽ nhằm xử lý mất cân bằng dữ liệu bằng cách điều chỉnh trực tiếp hàm mục tiêu. Bằng việc tái cân bằng đóng góp của từng lớp trong quá trình tối ưu, phương pháp này giúp cải thiện đáng kể khả năng nhận diện lớp thiểu số, đồng thời vẫn giữ nguyên cấu trúc dữ liệu và mô hình.
+\begin{itemize}
+    \item Mô hình không sử dụng class weight đạt accuracy cao nhưng thiếu công bằng giữa các lớp
+    \item Class-weighted loss giúp cải thiện đáng kể khả năng nhận diện lớp thiểu số
+    \item Việc lựa chọn mô hình phụ thuộc vào mục tiêu:
+    \begin{itemize}
+        \item Nếu ưu tiên accuracy: dùng Logistic thường
+        \item Nếu ưu tiên fairness / recall lớp nhỏ: dùng weighted model
+    \end{itemize}
+\end{itemize}
+
+Kết quả này nhấn mạnh rằng trong các bài toán thực tế có mất cân bằng dữ liệu, việc thiết kế hàm mất mát phù hợp quan trọng không kém việc lựa chọn mô hình.
