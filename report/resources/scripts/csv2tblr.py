@@ -231,7 +231,7 @@ def main():
     # EXPORT TABLES
     # =========================
     if len(groups) == 1:
-        df_part = df
+        df_part = df.iloc[:, shared_group + groups[0]]
         out = f"{args.output_prefix}.tex"
         save_tex(df_part, out)
         print("Saved:", out)

@@ -1,0 +1,69 @@
+\paragraph{So sánh các chiến lược One-vs-Rest, One-vs-One và Softmax trực tiếp}
+
+\tablename~kết quả~\ref{tab:ovr-ovo-softmax-compare-test} cho thấy sự khác biệt
+rõ ràng giữa ba chiến lược phân loại đa lớp gồm One-vs-Rest (OvR), One-vs-One
+(OvO) và Softmax trực tiếp.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Các chỉ số đánh giá của 3 chiến lược One-vs-Rest, One-vs-One và
+  softmax trực tiếp trên tập kiểm tra của bộ dữ liệu Forest CoverType}
+  \label{tab:ovr-ovo-softmax-compare-test}
+  \import{\tablespath}{ovr-ovo-softmax-compare-test}
+
+\end{table}
+
+Về độ chính xác tổng thể (Accuracy), OvO Sigmoid đạt 0.7162, cao nhất nhưng chỉ
+nhỉnh hơn Softmax (0.7148) và OvR (0.7073) không đáng kể. Tuy nhiên, khi xét
+các chỉ số cân bằng hơn như Precision, Recall và F1-score macro, Softmax thể
+hiện hiệu quả ổn định và tốt nhất với Precision bằng 0.5901, Recall bằng 0.4306
+và F1-score bằng 0.4319.
+
+OvO Sigmoid cho thấy cải thiện nhẹ về Recall so với OvR (0.4249 so với 0.3959),
+đồng thời F1-score cũng cao hơn (0.4185 so với 0.3864), phản ánh khả năng cân
+bằng tốt hơn giữa các lớp so với OvR. OvR lại có hiệu suất thấp nhất ở cả
+Recall và F1-score, cho thấy hạn chế trong việc xử lý mất cân bằng giữa các lớp
+khi huấn luyện theo từng lớp độc lập.
+
+Nhìn chung, Softmax trực tiếp là lựa chọn ổn định hơn khi xét toàn bộ các chỉ
+số macro, nhờ khả năng tối ưu hóa đồng thời xác suất trên tất cả lớp, giúp giảm
+xung đột giữa các bộ phân loại nhị phân như trong OvR và OvO. OvO có ưu thế nhẹ
+về Accuracy nhưng không vượt trội đáng kể, trong khi OvR tỏ ra kém hiệu quả
+nhất trong bối cảnh bài toán này.
+
+\figurename~\ref{fig:ovr-ovo-softmax-prec-cm} độ chính xác trên từng lớp và ma
+trận nhầm lẫn trên tập kiểm tra của 3 chiến lược. Ta thấy rằng độ chính xác của
+Softmax khá ổn định. Trong khi đó, OvO gặp khó ở lớp 5 với độ chính xác
+bằng 0. Điều này cũng đã được thể hiện khi độ chính xác theo trung bình macro
+cuả OvO là thấp nhất (0.564). Còn OvR bị gặp khó ở lớp 4 khi độ chính xác tụt
+thấp hơn hẳn so với OvO và Softmax. Như nhìn chung, OvR có độ chính xác khá ổn
+định giữa các lớp. Nhìn chung, ma trận nhầm lẫn giữa 3 chiến lược khá tương
+đồng. OvR thì hay nhầm lẫn giữa lớp 7 thành 1 hơn. OvR và Softmax thì ít nhầm
+lẫn đặc biệt hơn.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{ovr-ovo-softmax-precision-confusion-matrix}
+  \caption{Biểu đồ độ chính xác từng lớp và ma trận nhầm lẫn của 3 chiến lược
+  OvR, OvO và Softmax trực tiếp trên tập kiểm tra của bộ dữ liệu Forest
+  CoverType}
+  \label{fig:ovr-ovo-softmax-prec-cm}
+\end{figure}
+
+Kết quả thực nghiệm cho thấy Softmax trực tiếp là phương pháp ổn định nhất khi
+xét theo các chỉ số macro, trong khi OvO Sigmoid đạt Accuracy cao nhất nhưng
+không vượt trội đáng kể và thiếu tính ổn định trên từng lớp. Đáng chú ý, OvO
+không cải thiện hiệu năng trên các lớp khó như kỳ vọng, thậm chí còn thất bại
+hoàn toàn ở một số lớp, cho thấy hạn chế của cách tiếp cận phân rã theo từng
+cặp trong bối cảnh dữ liệu có sự chồng lấn đa lớp. Trong khi đó, OvR Sigmoid
+cho kết quả tương đối ổn định nhưng mang tính bảo thủ, dẫn đến Recall và
+F1-score thấp hơn.
+
+Xét về mặt lý thuyết, OvR và OvO lần lượt yêu cầu $K$ và $K(K−1)/2$ mô hình,
+trong khi Softmax chỉ cần một mô hình duy nhất, mang lại lợi thế rõ rệt về chi
+phí tính toán. Tuy OvO có khả năng học ranh giới phân lớp chi tiết theo từng
+cặp, kết quả thực nghiệm cho thấy lợi thế này không được phát huy trong trường
+hợp cụ thể, có thể do cấu trúc dữ liệu không phù hợp với giả định phân rã cặp.
+
+Nhìn chung, Softmax là lựa chọn phù hợp nhất cho bài toán này nhờ sự cân bằng
+giữa hiệu năng và độ phức tạp.
