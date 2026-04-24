@@ -1,0 +1,37 @@
+Model A,Model B,p-value (t-test),p-value (Wilcoxon)
+OLS,MBGD,0.3277,0.2324
+OLS,WLS,0.0781,0.0645
+OLS,Ridge,0.0,0.002
+OLS,Lasso,0.0,0.002
+OLS,Elastic Net,0.0,0.002
+OLS,Polynomial,0.3746,0.625
+OLS,RBF,0.0,0.002
+OLS,Fourier,0.4487,0.084
+MBGD,WLS,0.0916,0.1934
+MBGD,Ridge,0.0,0.002
+MBGD,Lasso,0.0,0.002
+MBGD,Elastic Net,0.0,0.002
+MBGD,Polynomial,0.3846,0.625
+MBGD,RBF,0.0,0.002
+MBGD,Fourier,0.4501,0.084
+WLS,Ridge,0.001,0.0059
+WLS,Lasso,0.0,0.002
+WLS,Elastic Net,0.0,0.002
+WLS,Polynomial,0.654,0.1309
+WLS,RBF,0.095,0.1055
+WLS,Fourier,0.5336,0.084
+Ridge,Lasso,0.0,0.002
+Ridge,Elastic Net,0.0,0.002
+Ridge,Polynomial,0.2906,0.084
+Ridge,RBF,0.0,0.002
+Ridge,Fourier,0.7988,0.084
+Lasso,Elastic Net,0.0,0.002
+Lasso,Polynomial,0.0609,0.084
+Lasso,RBF,0.0,0.002
+Lasso,Fourier,0.9976,0.084
+Elastic Net,Polynomial,0.0289,0.084
+Elastic Net,RBF,0.0,0.002
+Elastic Net,Fourier,0.9058,0.084
+Polynomial,RBF,0.82,0.084
+Polynomial,Fourier,0.6112,0.084
+RBF,Fourier,0.63,0.084

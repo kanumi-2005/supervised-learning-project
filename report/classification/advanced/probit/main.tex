@@ -16,22 +16,22 @@ model). Cụ thể, ta giả sử tồn tại một biến ẩn \(z\) được s
   z = \boldsymbol{w}^{\intercal}\boldsymbol{x} + w_0 + \epsilon,
 \end{equation} trong đó nhiễu \(\epsilon \sim \mathcal{N}(0,1)\). Khi đó, nhãn
 quan sát được xác định theo quy tắc: \begin{equation}
-  y = \begin{cases}
+  t = \begin{cases}
     1 & \text{nếu $z > 0$}, \\
     0 & \text{ngược lại}.
   \end{cases}
 \end{equation} Từ đó suy ra xác suất có dạng: \begin{equation}
-  p(y = 1 \mid \boldsymbol{x}) = \mathbb{P}(z > 0)
+  p(t = 1 \mid \boldsymbol{x}) = \mathbb{P}(z > 0)
   = \Phi(\boldsymbol{w}^{\intercal}\boldsymbol{x} + w_0).
 \end{equation}
 
 Nhờ cấu trúc dựa trên Gaussian noise, mô hình Probit thường phù hợp hơn hồi quy
-logistic trong các trường hợp dữ liệu có nhãn bị nhiễu hoặc có giả định sai số
+Logistic trong các trường hợp dữ liệu có nhãn bị nhiễu hoặc có giả định sai số
 tuân theo phân phối chuẩn.
 
-\paragraph{So sánh với hồi quy logistic}
+\paragraph{So sánh với hồi quy Logistic}
 
-Phần này sẽ so sánh thực nghiệm của mô hình Probit với hồi quy logistic
+Phần này sẽ so sánh thực nghiệm của mô hình Probit với hồi quy Logistic
 (sigmoid). Dữ liệu được sử dụng là dữ liệu được sinh bằng hàm
 \texttt{make\_blobs} với 1000 điểm dữ liệu, tâm là $(-2, 0)$ và $(0, 1.5)$. Dữ
 liệu sau đó được biến đổi tuyến tính qua ma trận: \begin{equation}
@@ -45,8 +45,8 @@ liệu sau đó được biến đổi tuyến tính qua ma trận: \begin{equat
 
 \figurename~\ref{fig:sgd-decision-boundary},
 \ref{fig:sigmoid-decision-boundary}, và~\ref{fig:probit-decision-boundary}
-tương ứng là đường biên quyết định tương ứng của ba mô hình hồi quy logistic
-(scikit-learn), hồi quy logistic (tự cài đặt) và Probit.
+tương ứng là đường biên quyết định tương ứng của ba mô hình hồi quy Logistic
+(scikit-learn), hồi quy Logistic (tự cài đặt) và Probit.
 
 \begin{figure}[htbp]
   \centering
@@ -65,7 +65,7 @@ tương ứng là đường biên quyết định tương ứng của ba mô hì
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.9\textwidth]{sigmoid-decision-boundary}
-  \caption{Đường biên quyết định của mô hình hồi quy logistic}
+  \caption{Đường biên quyết định của mô hình hồi quy Logistic}
   \label{fig:sigmoid-decision-boundary}
 \end{figure}
 
@@ -83,12 +83,12 @@ Ta thấy rằng đường biên của 3 mô hình sau khi hội tụ là khá g
 
 \figurename~\ref{fig:sigmoid-probability-output}
 và~\ref{fig:probit-probability-output} tương ứng là xác suất đầu ra của hồi quy
-logistic và Probit.
+Logistic và Probit.
 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.9\textwidth]{sigmoid-probability-output}
-  \caption{Xác suất đầu ra của mô hình hồi quy logistic}
+  \caption{Xác suất đầu ra của mô hình hồi quy Logistic}
   \label{fig:sigmoid-probability-output}
 \end{figure}
 
@@ -99,7 +99,7 @@ logistic và Probit.
   \label{fig:probit-probability-output}
 \end{figure}
 
-Quan sát các biểu đồ xác suất đầu ra của mô hình hồi quy logistic và Probit
+Quan sát các biểu đồ xác suất đầu ra của mô hình hồi quy Logistic và Probit
 cho thấy sự khác biệt chủ yếu nằm ở vùng chuyển tiếp xác suất quanh đường biên
 quyết định, tức khu vực mà xác suất thay đổi từ gần 0 sang gần 1.
 
@@ -126,7 +126,7 @@ decision boundary.
 
 \tablename~\ref{tab:probit-sigmoid-label-noise-sensitivity-part1}
 và~\ref{tab:probit-sigmoid-label-noise-sensitivity-part2} cho ta thấy độ nhạy
-với nhãn nhiễu của hai mô hình Probit và hồi quy logistic. Tỉ lệ dữ liệu bị
+với nhãn nhiễu của hai mô hình Probit và hồi quy Logistic. Tỉ lệ dữ liệu bị
 thay đổi nhãn là $0.2$. Trong đó xác suất bị thay đổi tỉ lệ với khoảng cách tới
 đường biên quyết định của model baseline (\texttt{SGDClassifier} của
 scikit-learn).

@@ -65,8 +65,8 @@ Khi đó phân phối hậu nghiệm (posterior predictive distribution) là Gau
 
 với:
 \begin{gather}
-  \mu_* = \boldsymbol{k}_*^T \boldsymbol{K}^{-1} \boldsymbol{t}, \\
-  \sigma_*^2 = k_{**} - \boldsymbol{k}_*^T \boldsymbol{K}^{-1}
+  \mu_* = \boldsymbol{k}_*^\intercal \boldsymbol{K}^{-1} \boldsymbol{t}, \\
+  \sigma_*^2 = k_{**} - \boldsymbol{k}_*^\intercal \boldsymbol{K}^{-1}
   \boldsymbol{k}_*.
 \end{gather}
 
@@ -76,14 +76,14 @@ Các tham số kernel $\boldsymbol{\theta} = \{\ell, \sigma_f, \sigma_n\}$
 được học bằng cách tối ưu log-marginal likelihood:
 \begin{equation}
   \log p(\boldsymbol{t} \mid \boldsymbol{X}) =
-  -\frac{1}{2} \boldsymbol{t}^T \boldsymbol{K}^{-1} \boldsymbol{t}
+  -\frac{1}{2} \boldsymbol{t}^\intercal \boldsymbol{K}^{-1} \boldsymbol{t}
   - \frac{1}{2} \log |\boldsymbol{K}|
   - \frac{n}{2} \log(2\pi).
 \end{equation}
 
 Hàm này gồm ba thành phần:
 \begin{itemize}
-    \item \textbf{Data fit term}: $\boldsymbol{t}^T \boldsymbol{K}^{-1}
+    \item \textbf{Data fit term}: $\boldsymbol{t}^\intercal \boldsymbol{K}^{-1}
       \boldsymbol{t}$
     \item \textbf{Complexity penalty}: $\log |\boldsymbol{K}|$
     \item \textbf{Normalization constant}
