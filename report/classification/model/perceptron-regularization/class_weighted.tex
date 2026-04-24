@@ -1,0 +1,116 @@
+\subsubsection{Class-Weighted Loss}
+
+\paragraph{Động cơ}
+
+Trong các bài toán phân loại thực tế, dữ liệu thường không phân bố đồng đều giữa các lớp, dẫn đến hiện tượng \textit{class imbalance}. Khi đó, các lớp chiếm đa số (majority classes) có số lượng mẫu lớn sẽ chi phối quá trình tối ưu, khiến mô hình học được thiên lệch về phía các lớp này.
+
+Dưới góc nhìn tối ưu hóa, hàm mất mát thực nghiệm:
+\[
+\frac{1}{N} \sum_{n=1}^{N} \ell(y_n, f(x_n))
+\]
+bị chi phối bởi các lớp có $N_k$ lớn. Do đó, mô hình có xu hướng tối thiểu hóa sai số trên lớp đa số, trong khi bỏ qua lớp thiểu số (minority classes), dẫn đến:
+\begin{itemize}
+    \item Hiệu năng thấp trên lớp hiếm
+    \item Recall kém trong các bài toán quan trọng (fraud detection, medical diagnosis)
+    \item Decision boundary bị lệch về phía lớp thiểu số
+\end{itemize}
+
+Để khắc phục, ta điều chỉnh hàm mất mát nhằm tái cân bằng đóng góp của từng lớp.
+
+\paragraph{Hàm mất mát có trọng số}
+
+Xét bài toán phân loại $K$ lớp với biểu diễn one-hot:
+\[
+t_{nk} =
+\begin{cases}
+1 & \text{nếu mẫu } n \text{ thuộc lớp } k \\
+0 & \text{ngược lại}
+\end{cases}
+\]
+
+Gọi $y_{nk} = P(y = k \mid x_n)$ là xác suất dự đoán. Khi đó, hàm mất mát cross-entropy chuẩn có dạng:
+\[
+E = - \sum_{n=1}^{N} \sum_{k=1}^{K} t_{nk} \log y_{nk}
+\]
+
+Để xử lý mất cân bằng, ta đưa vào trọng số lớp $c_k$:
+\[
+E = - \sum_{n=1}^{N} \sum_{k=1}^{K} c_k \, t_{nk} \log y_{nk}
+\]
+
+Trong đó $c_k > 0$ điều chỉnh mức độ ảnh hưởng của lớp $k$ trong quá trình tối ưu.
+
+\paragraph{Lựa chọn trọng số}
+
+Một lựa chọn phổ biến là đặt:
+\[
+c_k \propto \frac{1}{N_k}
+\quad \text{hoặc} \quad
+c_k = \frac{N}{K \cdot N_k}
+\]
+
+với $N_k$ là số mẫu thuộc lớp $k$. Khi đó:
+\begin{itemize}
+    \item Lớp thiểu số ($N_k$ nhỏ) $\Rightarrow$ $c_k$ lớn $\Rightarrow$ tăng ảnh hưởng
+    \item Lớp đa số ($N_k$ lớn) $\Rightarrow$ $c_k$ nhỏ $\Rightarrow$ giảm ảnh hưởng
+\end{itemize}
+
+Cách thiết kế này đảm bảo rằng tổng đóng góp của mỗi lớp trong hàm mất mát trở nên cân bằng hơn.
+
+\paragraph{Diễn giải dưới góc nhìn xác suất}
+
+Class-weighted loss có thể được hiểu như việc thay đổi phân phối dữ liệu hiệu dụng. Cụ thể, thay vì tối thiểu hóa kỳ vọng theo phân phối gốc $P(x,y)$, ta tối thiểu hóa theo một phân phối được tái trọng số:
+\[
+P'(x,y=k) \propto c_k \cdot P(x,y=k)
+\]
+
+Do đó, quá trình học tương đương với việc “phóng đại” tầm quan trọng của các lớp thiểu số trong không gian xác suất.
+
+\paragraph{Diễn giải dưới góc nhìn tối ưu hóa}
+
+Hàm mục tiêu có thể được viết lại:
+\[
+\min_{\mathbf{w}} \sum_{k=1}^{K} c_k \sum_{n \in \mathcal{D}_k} \ell(y_n, f_{\mathbf{w}}(x_n))
+\]
+
+Điều này tương đương với việc mỗi mẫu thuộc lớp $k$ được nhân với hệ số $c_k$, hoặc có thể hiểu như việc lặp lại mẫu đó $c_k$ lần trong quá trình huấn luyện.
+
+\paragraph{Ảnh hưởng đến gradient}
+
+Gradient của hàm mất mát theo tham số $\mathbf{w}$ có dạng:
+\[
+\nabla_{\mathbf{w}} E = - \sum_{n=1}^{N} \sum_{k=1}^{K} c_k \, t_{nk} \, \nabla_{\mathbf{w}} \log y_{nk}
+\]
+
+Trong trường hợp Logistic Regression, điều này dẫn đến:
+\[
+\nabla_{\mathbf{w}} E \propto \sum_{n=1}^{N} c_{y_n} (y_n - \hat{y}_n)\mathbf{x}_n
+\]
+
+Cho thấy rằng:
+\begin{itemize}
+    \item Sai số từ lớp thiểu số được khuếch đại (gradient lớn hơn)
+    \item Sai số từ lớp đa số bị giảm ảnh hưởng
+\end{itemize}
+
+Do đó, decision boundary sẽ được điều chỉnh theo hướng cân bằng hơn giữa các lớp.
+
+\paragraph{Ưu điểm và hạn chế}
+
+\textbf{Ưu điểm:}
+\begin{itemize}
+    \item Không cần thay đổi dữ liệu (không cần over/under-sampling)
+    \item Dễ tích hợp vào hầu hết các mô hình học máy
+    \item Hiệu quả với dữ liệu mất cân bằng vừa phải
+\end{itemize}
+
+\textbf{Hạn chế:}
+\begin{itemize}
+    \item Nhạy với cách chọn trọng số $c_k$
+    \item Có thể gây mất ổn định nếu $c_k$ quá lớn (gradient explosion)
+    \item Không xử lý tốt khi dữ liệu cực kỳ mất cân bằng
+\end{itemize}
+
+\paragraph{Kết luận}
+
+Class-weighted loss là một kỹ thuật đơn giản nhưng mạnh mẽ nhằm xử lý mất cân bằng dữ liệu bằng cách điều chỉnh trực tiếp hàm mục tiêu. Bằng việc tái cân bằng đóng góp của từng lớp trong quá trình tối ưu, phương pháp này giúp cải thiện đáng kể khả năng nhận diện lớp thiểu số, đồng thời vẫn giữ nguyên cấu trúc dữ liệu và mô hình.
