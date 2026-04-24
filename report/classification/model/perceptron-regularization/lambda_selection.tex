@@ -1,0 +1,97 @@
+\subsubsection{Lựa chọn siêu tham số $\lambda$ bằng Stratified K-Fold Cross Validation}
+
+\paragraph{Động cơ và bài toán}
+
+Trong các mô hình học máy có regularization như Logistic Regression hay Ridge Regression, siêu tham số $\lambda$ đóng vai trò kiểm soát độ phức tạp của mô hình thông qua việc phạt các tham số lớn. Dưới góc nhìn tối ưu hóa, bài toán học có thể được biểu diễn như sau:
+\[
+\min_{\mathbf{w}} \; \frac{1}{N} \sum_{i=1}^{N} \ell(y_i, f_{\mathbf{w}}(x_i)) + \lambda \Omega(\mathbf{w})
+\]
+
+Trong đó:
+\begin{itemize}
+    \item $\ell(\cdot)$ là hàm mất mát
+    \item $\Omega(\mathbf{w})$ là hàm regularization (ví dụ: $\|\mathbf{w}\|^2$)
+    \item $\lambda$ điều khiển mức độ đánh đổi giữa \textit{data fitting} và \textit{generalization}
+\end{itemize}
+
+Cụ thể, khi $\lambda$ nhỏ, mô hình ưu tiên khớp sát dữ liệu huấn luyện, dễ dẫn đến overfitting (variance cao). Ngược lại, khi $\lambda$ lớn, mô hình bị ép đơn giản hóa, dẫn đến underfitting (bias cao). Do đó, việc lựa chọn $\lambda$ tối ưu thực chất là tìm điểm cân bằng trong trade-off giữa bias và variance.
+
+\paragraph{Ước lượng rủi ro tổng quát hóa}
+
+Mục tiêu cuối cùng của mô hình là tối thiểu hóa rủi ro kỳ vọng trên phân phối dữ liệu thực:
+\[
+R(\lambda) = \mathbb{E}_{(x,y)\sim \mathcal{D}} \left[ \ell(y, f_{\lambda}(x)) \right]
+\]
+
+Tuy nhiên, do phân phối $\mathcal{D}$ không biết trước, ta cần một phương pháp ước lượng thực nghiệm. K-Fold Cross Validation cung cấp một cơ chế hiệu quả để xấp xỉ đại lượng này.
+
+Cụ thể, tập dữ liệu được chia thành $K$ phần rời nhau:
+\[
+\mathcal{D} = \bigcup_{k=1}^{K} \mathcal{D}_k
+\]
+
+Tại mỗi lần lặp, mô hình được huấn luyện trên $\mathcal{D} \setminus \mathcal{D}_k$ và đánh giá trên $\mathcal{D}_k$. Khi đó, ước lượng rủi ro được tính:
+\[
+\hat{R}_{CV}(\lambda) = \frac{1}{K} \sum_{k=1}^{K} \mathcal{L}^{(k)}(\lambda)
+\]
+
+Giá trị $\lambda$ tối ưu được xác định theo:
+\[
+\lambda^* = \arg\min_{\lambda} \hat{R}_{CV}(\lambda)
+\]
+
+\paragraph{Stratified K-Fold và tính ổn định}
+
+Trong bài toán phân loại, đặc biệt khi dữ liệu mất cân bằng, việc chia fold ngẫu nhiên có thể làm sai lệch phân phối nhãn giữa các fold. Điều này dẫn đến ước lượng rủi ro có phương sai cao và không ổn định.
+
+Để khắc phục, ta sử dụng Stratified K-Fold, đảm bảo rằng:
+\[
+P(y \mid \mathcal{D}_k) \approx P(y), \quad \forall k
+\]
+
+Nhờ đó, mỗi fold là một đại diện tốt của toàn bộ dataset, giúp giảm phương sai của $\hat{R}_{CV}$ và cải thiện độ tin cậy của quá trình lựa chọn siêu tham số.
+
+\paragraph{Hàm đánh giá}
+
+Trong thực nghiệm này, chúng tôi sử dụng log loss (cross-entropy loss):
+\[
+\mathcal{L}(y, \hat{p}) = - \frac{1}{N} \sum_{i=1}^{N} \left[ y_i \log \hat{p}_i + (1 - y_i) \log (1 - \hat{p}_i) \right]
+\]
+
+Log loss là một hàm mất mát lồi và có các đặc tính quan trọng:
+\begin{itemize}
+    \item Là \textit{strictly proper scoring rule}, đảm bảo tối ưu khi xác suất dự đoán đúng với phân phối thật
+    \item Nhạy với độ tự tin của mô hình, phạt mạnh các dự đoán sai nhưng có xác suất cao
+    \item Tương đương với việc tối đa hóa likelihood trong mô hình xác suất
+\end{itemize}
+
+Do đó, log loss không chỉ đo độ chính xác mà còn phản ánh chất lượng dự đoán xác suất.
+
+\paragraph{Quy trình lựa chọn $\lambda$}
+
+Dựa trên các nguyên lý trên, quy trình lựa chọn $\lambda$ được thực hiện như sau:
+
+\begin{enumerate}
+    \item Xác định một tập hữu hạn các giá trị ứng viên $\{\lambda_1, \dots, \lambda_M\}$
+    
+    \item Với mỗi $\lambda_m$:
+    \begin{itemize}
+        \item Thực hiện Stratified K-Fold (k = 5)
+        \item Tại mỗi fold:
+        \begin{itemize}
+            \item Huấn luyện mô hình trên tập train
+            \item Đánh giá log loss trên tập validation
+        \end{itemize}
+    \end{itemize}
+    
+    \item Tính trung bình log loss trên 5 fold để thu được $\hat{R}_{CV}(\lambda_m)$
+    
+    \item Chọn giá trị tối ưu:
+    \[
+    \lambda^* = \arg\min_{\lambda_m} \hat{R}_{CV}(\lambda_m)
+    \]
+\end{enumerate}
+
+\paragraph{Kết luận}
+
+Phương pháp lựa chọn $\lambda$ dựa trên Stratified K-Fold Cross Validation cung cấp một ước lượng thực nghiệm đáng tin cậy cho rủi ro tổng quát hóa. Cách tiếp cận này không chỉ giúp tìm được siêu tham số tối ưu mà còn đảm bảo tính ổn định trong đánh giá, đặc biệt trong các bài toán phân loại với phân phối dữ liệu không đồng đều.
