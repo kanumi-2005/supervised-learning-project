@@ -1,0 +1,60 @@
+\subsubsection{Xấp xỉ Laplace [Nâng cao]}
+
+Xấp xỉ Laplace là một phương pháp xấp xỉ phân phối hậu nghiệm của mô hình
+Logistic Regression bằng một phân phối Gaussian, với tâm tại nghiệm MAP
+(Maximum A Posteriori). Ý tưởng cốt lõi là khai triển bậc hai của log-posterior
+quanh điểm cực đại $\boldsymbol{w}_{MAP}$.
+
+Cụ thể, ta có posterior: \begin{equation}
+  p(\boldsymbol{w} \mid \mathcal{D}) \propto p(\mathcal{D} \mid \boldsymbol{w})
+  p(\boldsymbol{w}).
+\end{equation}
+
+Ta xấp xỉ log-posterior bằng khai triển Taylor bậc hai tại
+$\boldsymbol{w}_{MAP}$: \begin{equation}
+  \ln p(\boldsymbol{w} \mid \mathcal{D}) \approx \ln p(\boldsymbol{w}_{MAP}
+  \mid \mathcal{D}) - \frac{1}{2} (\boldsymbol{w} -
+  \boldsymbol{w}_{MAP})^\intercal \boldsymbol{A} (\boldsymbol{w} -
+  \boldsymbol{w}_{MAP}),
+\end{equation} trong đó ma trận Hessian âm được định nghĩa là: \begin{equation}
+  \boldsymbol{A} = - \nabla \nabla \ln p(\boldsymbol{w} \mid \mathcal{D})
+  \Big|_{\boldsymbol{w} = \boldsymbol{w}_{MAP}}.
+\end{equation}
+
+Từ đó, posterior được xấp xỉ bởi phân phối Gaussian: \begin{equation}
+  q(\boldsymbol{w}) = \mathcal{N}(\boldsymbol{w} \mid \boldsymbol{w}_{MAP},
+  \boldsymbol{A}^{-1}),
+\end{equation} trong đó, $\boldsymbol{A}^{-1}$ đóng vai trò là ma trận hiệp
+phương sai, mô tả độ bất định của các tham số mô hình.
+
+\paragraph{Bất định của đường biên quyết định}
+
+Trong Logistic Regression, đường biên quyết định được xác định bởi:
+\begin{equation}
+  \boldsymbol{w}^\intercal \boldsymbol{x} = 0.
+\end{equation} Với xấp xỉ Laplace, do $\boldsymbol{w}$ là một biến ngẫu nhiên
+Gaussian, biên quyết định trở thành một phân phối thay vì một đường cố định.
+
+Gọi phương sai của logit tại một điểm $\boldsymbol{x}$ là: \begin{equation}
+  \sigma^2(\boldsymbol{x}) = \boldsymbol{x}^\intercal \boldsymbol{A}^{-1}
+  \boldsymbol{x}.
+\end{equation} Khi đó, ta có thể biểu diễn vùng bất định của biên quyết định
+xấp xỉ bởi: \begin{equation}
+  \boldsymbol{w}_{MAP}^\intercal \boldsymbol{x} \pm 2 \sigma(\boldsymbol{x}).
+\end{equation} Vùng này tương ứng với khoảng tin cậy xấp xỉ $95\%$, thể hiện
+mức độ dao động của ranh giới phân lớp do bất định tham số.
+
+\figurename~\ref{fig:laplace-decision-boundary-sigma} cho thấy vùng bất định
+của đường biên quyết định dựa trên mô hình hồi quy logistic với tập dữ liệu
+được sinh trong phần Probit (xem biểu diễn dữ liệu này tại
+\figurename~\ref{fig:probit-data}).
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{laplace-decision-boundary-sigma}
+  \caption{Vùng bất định của đường biên quyết định dựa trên xấp xỉ Laplace}
+  \label{fig:laplace-decision-boundary-sigma}
+\end{figure}
+
+Ta thấy vùng bất định trong hình khá hẹp. Điều này cho thấy mô hình tự tin cao
+và biên quyết định ổn định. Có thể do dữ liệu tách biệt tốt.
