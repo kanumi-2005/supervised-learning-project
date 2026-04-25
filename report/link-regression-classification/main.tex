@@ -1,5 +1,5 @@
-\subsection{Kết nối hồi quy và phân lớp}
-\paragraph{Logistic Regression như một bài toán hồi quy}
+\section{Kết nối hồi quy và phân lớp}
+\subsection{Logistic Regression như một bài toán hồi quy}
 Mặc dù thường được sử dụng cho bài toán phân loại nhị phân, Logistic
 Regression thực chất là một dạng hồi quy phi tuyến. Cụ thể, mô hình giả định
 rằng xác suất của biến mục tiêu $t \in \{0,1\}$ được xác định thông qua một
@@ -13,7 +13,7 @@ suất (hoặc kỳ vọng) của $t$. Điều này cho thấy Logistic Regressi
 hình hồi quy với hàm liên kết phi tuyến (sigmoid), ánh xạ từ không gian tuyến
 tính sang miền xác suất $[0,1]$.
 
-\paragraph{Khung Generalized Linear Models (GLM)}
+\subsection{Khung Generalized Linear Models (GLM)}
 Generalized Linear Models (GLM) cung cấp một khung thống nhất cho nhiều mô
 hình hồi quy khác nhau. Trong GLM, ta giả định rằng:
 \begin{itemize}
@@ -37,7 +37,7 @@ Các mô hình quen thuộc là các trường hợp đặc biệt của GLM:
 Như vậy, GLM cho phép ta thay đổi phân phối của dữ liệu đầu ra và hàm liên kết
 một cách linh hoạt nhưng vẫn giữ cấu trúc tuyến tính trong không gian tham số.
 
-\paragraph{Vai trò của exponential family}
+\subsection{Vai trò của exponential family}
 Một điểm then chốt của GLM là giả định rằng phân phối của $t$ thuộc
 exponential family, có dạng:
 \begin{equation}
@@ -61,7 +61,7 @@ Do đó, cả Linear Regression (Gaussian) và Logistic Regression (Bernoulli) �
 nằm trong một khuôn khổ thống nhất, nơi sự khác biệt chỉ nằm ở lựa chọn phân
 phối và hàm liên kết.
 
-\paragraph{Tóm lại}
+\subsection{Tổng kết}
 Logistic Regression có thể được hiểu là một dạng hồi quy với hàm sigmoid. GLM
 mở rộng ý tưởng này bằng cách cho phép nhiều phân phối đầu ra khác nhau thông
 qua exponential family và các hàm liên kết tương ứng. Chính exponential family
