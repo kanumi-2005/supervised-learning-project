@@ -1,0 +1,42 @@
+\subsubsection{Đánh giá trên tập kiểm tra}
+
+\tablename~\ref{tab:classification-compare-models-test} thể hiện các kết quả
+đánh giá các mô hình trên tập kiểm tra. Các chỉ số dùng để đánh giá gồm
+Accuracy, Precision (macro), Recall (macro) và F1 (macro).
+
+\begin{table}[htbp]
+  \centering
+  \caption{Kết quả các chỉ số đánh giá các mô hình trên tập kiểm tra}
+  \import{\tablespath}{classification-compare-models-test}
+  \label{tab:classification-compare-models-test}
+\end{table}
+
+Nhìn vào bảng kết quả, có thể thấy các mô hình thể hiện những đặc điểm rất khác
+nhau tùy theo từng chỉ số đánh giá, cho thấy sự đánh đổi (trade-off) rõ ràng
+giữa độ chính xác tổng thể và khả năng nhận diện đầy đủ các lớp.
+
+Trước hết, Softmax đạt Accuracy cao nhất (0.7148), tuy nhiên các chỉ số Recall
+(0.4306) và F1 (0.4319) lại khá thấp. Điều này cho thấy mô hình có xu hướng dự
+đoán đúng tổng thể nhưng bỏ sót nhiều mẫu ở các lớp thiểu số, dẫn đến hiệu năng
+không đồng đều giữa các lớp.
+
+Ngược lại, Weighted Softmax cải thiện đáng kể Recall (0.697) – cao nhất trong
+tất cả các mô hình – cho thấy khả năng nhận diện tốt hơn các lớp, đặc biệt là
+lớp ít dữ liệu. Tuy nhiên, Accuracy (0.592) và Precision (0.4603) lại giảm,
+phản ánh việc mô hình đánh đổi bằng cách chấp nhận nhiều dự đoán sai hơn để
+tăng độ bao phủ.
+
+LDA thể hiện sự cân bằng tương đối giữa các chỉ số với Recall (0.5766) và F1
+(0.5096) ở mức khá, dù Accuracy (0.6815) không cao bằng Softmax. Điều này cho
+thấy LDA có hiệu năng ổn định hơn giữa các lớp, phù hợp khi cần một mô hình
+tổng quát, ít thiên lệch.
+
+Trong khi đó, QDA có hiệu năng kém nhất với Accuracy rất thấp (0.2421) và F1
+(0.256), mặc dù Recall (0.5548) không quá thấp. Điều này cho thấy mô hình dự
+đoán khá “thoáng”, bắt được nhiều mẫu nhưng thiếu chính xác nghiêm trọng, dẫn
+đến hiệu quả tổng thể kém.
+
+Tổng thể, nếu ưu tiên độ chính xác chung, Softmax là lựa chọn tốt nhất. Nếu mục
+tiêu là không bỏ sót dữ liệu (Recall cao), Weighted Softmax phù hợp hơn. Trong
+khi đó, LDA là phương án cân bằng giữa các chỉ số, còn QDA không phù hợp trong
+bối cảnh này do hiệu năng không ổn định và độ chính xác thấp.
