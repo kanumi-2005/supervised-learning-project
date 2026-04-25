@@ -1,0 +1,69 @@
+\subsection{Kết nối hồi quy và phân lớp}
+\paragraph{Logistic Regression như một bài toán hồi quy}
+Mặc dù thường được sử dụng cho bài toán phân loại nhị phân, Logistic
+Regression thực chất là một dạng hồi quy phi tuyến. Cụ thể, mô hình giả định
+rằng xác suất của biến mục tiêu $t \in \{0,1\}$ được xác định thông qua một
+hàm sigmoid áp dụng lên tổ hợp tuyến tính của đầu vào:
+\begin{equation}
+p(t=1|\boldsymbol{x}) = \sigma(\boldsymbol{w}^\intercal \boldsymbol{x}) =
+\frac {1}{1 + e^{-\boldsymbol{w}^\intercal \boldsymbol{x}}}.
+\end{equation}
+Do đó, thay vì dự đoán trực tiếp nhãn lớp, mô hình thực hiện hồi quy trên xác
+suất (hoặc kỳ vọng) của $t$. Điều này cho thấy Logistic Regression là một mô
+hình hồi quy với hàm liên kết phi tuyến (sigmoid), ánh xạ từ không gian tuyến
+tính sang miền xác suất $[0,1]$.
+
+\paragraph{Khung Generalized Linear Models (GLM)}
+Generalized Linear Models (GLM) cung cấp một khung thống nhất cho nhiều mô
+hình hồi quy khác nhau. Trong GLM, ta giả định rằng:
+\begin{itemize}
+    \item Biến đầu ra $t$ tuân theo một phân phối thuộc exponential family.
+    \item Kỳ vọng của $t$, ký hiệu $\mu = \mathbb{E}[t|\boldsymbol{x}]$, liên
+    hệ với tổ hợp tuyến tính $\eta = \boldsymbol{w}^\intercal \boldsymbol{x}$
+    thông qua một hàm liên kết $g$:
+    \begin{equation}
+    g(\mu) = \eta = \boldsymbol{w}^\intercal \boldsymbol{x}.
+    \end{equation}
+\end{itemize}
+Các mô hình quen thuộc là các trường hợp đặc biệt của GLM:
+\begin{itemize}
+    \item Linear Regression: phân phối Gaussian, link function là hàm đồng
+    nhất $g(\mu) = \mu$.
+    \item Logistic Regression: phân phối Bernoulli, link function là logit $g
+    (\mu) = \log \frac{\mu}{1-\mu}$.
+    \item Poisson Regression: phân phối Poisson, link function là log $g(\mu)
+    = \log \mu$.
+\end{itemize}
+Như vậy, GLM cho phép ta thay đổi phân phối của dữ liệu đầu ra và hàm liên kết
+một cách linh hoạt nhưng vẫn giữ cấu trúc tuyến tính trong không gian tham số.
+
+\paragraph{Vai trò của exponential family}
+Một điểm then chốt của GLM là giả định rằng phân phối của $t$ thuộc
+exponential family, có dạng:
+\begin{equation}
+p(t|\theta) = h(t)\exp\left(\theta^\intercal \boldsymbol{\phi}(t) - A(\theta)
+\right).
+\end{equation}
+Các phân phối như Gaussian, Bernoulli, và Poisson đều thuộc họ này. Điều này
+mang lại một cấu trúc toán học thống nhất với các lợi ích sau:
+\begin{itemize}
+    \item Kỳ vọng và phương sai có thể được suy ra trực tiếp từ hàm $A(\theta)
+    $:
+    \begin{equation}
+    \mathbb{E}[t] = A'(\theta), \quad \mathrm{Var}(t) = A''(\theta).
+    \end{equation}
+    \item Hàm log-likelihood có dạng lồi đối với nhiều trường hợp, giúp tối ưu
+    hóa hiệu quả.
+    \item Tồn tại các sufficient statistics hữu hạn chiều, giúp nén dữ liệu mà
+    không mất thông tin.
+\end{itemize}
+Do đó, cả Linear Regression (Gaussian) và Logistic Regression (Bernoulli) đều
+nằm trong một khuôn khổ thống nhất, nơi sự khác biệt chỉ nằm ở lựa chọn phân
+phối và hàm liên kết.
+
+\paragraph{Tóm lại}
+Logistic Regression có thể được hiểu là một dạng hồi quy với hàm sigmoid. GLM
+mở rộng ý tưởng này bằng cách cho phép nhiều phân phối đầu ra khác nhau thông
+qua exponential family và các hàm liên kết tương ứng. Chính exponential family
+cung cấp nền tảng lý thuyết giúp hợp nhất các mô hình này thành một hệ thống
+chung, vừa linh hoạt vừa có cấu trúc toán học chặt chẽ.
