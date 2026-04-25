@@ -9,8 +9,6 @@
   \label{fig:classification-confusion-matrix}
 \end{figure}
 
-\subsubsection{Phân tích ma trận nhầm lẫn}
-
 Dựa trên các ma trận nhầm lẫn, có thể thấy rõ sự khác biệt trong hành vi
 phân loại của các mô hình, đặc biệt trong cách xử lý các lớp thiểu số và
 mức độ thiên lệch về các lớp chiếm đa số.
@@ -116,3 +114,50 @@ Nhìn chung, Weighted Softmax là mô hình cho hiệu năng tổng thể tốt 
 cũng cho kết quả mạnh và ổn định. LDA có hiệu năng trung bình và khá đồng đều.
 Trong khi đó, QDA có sự biến động lớn, hoạt động tốt ở một số lớp nhưng kém ở
 các lớp khác.
+
+\paragraph{Biểu đồ đường cong Precision--Recall}
+
+\figurename~\ref{fig:classification-pr-curve} cho ta thấy kết quả
+Precision--Recall theo phương pháp One-vs-Rest.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{classification-pr-curve}
+  \caption{Biểu đồ đường cong theo từng lớp của các mô hình}
+  \label{fig:classification-pr-curve}
+\end{figure}
+
+Dựa trên kết quả, có thể nhận thấy sự khác biệt đáng kể giữa các mô hình
+Softmax, LDA, QDA và Weighted Softmax trên từng lớp.
+
+Đối với lớp 1, mô hình Softmax đạt giá trị AP cao nhất (0.743), trong khi
+Weighted Softmax và LDA có kết quả gần tương đương. QDA thấp hơn đáng kể, cho
+thấy khả năng nhận diện lớp này còn hạn chế.
+
+Ở lớp 2, Softmax (0.818) và LDA (0.807) cho kết quả cao và tương đối gần nhau.
+Weighted Softmax thấp hơn một chút, trong khi QDA tiếp tục cho kết quả kém hơn
+rõ rệt.
+
+Đối với lớp 3, Softmax (0.680) và Weighted Softmax (0.685) đạt hiệu năng tương
+đương và cao nhất. LDA thấp hơn, còn QDA tiếp tục cho kết quả thấp nhất trong
+nhóm.
+
+Tại lớp 4, Weighted Softmax (0.485) và QDA (0.476) cải thiện đáng kể so với
+Softmax và LDA (khoảng 0.28--0.30). Điều này cho thấy lớp này hưởng lợi từ việc
+xử lý phi tuyến hoặc điều chỉnh trọng số.
+
+Ở lớp 5, tất cả các mô hình đều có giá trị AP rất thấp (dưới 0.2), trong đó
+Weighted Softmax cao nhất nhưng không đáng kể. Đây là lớp khó phân loại, có thể
+do mất cân bằng dữ liệu hoặc đặc trưng chồng lấn.
+
+Đối với lớp 6, Weighted Softmax đạt kết quả tốt nhất (0.374), theo sau là
+Softmax và LDA, trong khi QDA thấp hơn đáng kể.
+
+Cuối cùng, ở lớp 7, Weighted Softmax đạt hiệu năng cao nhất (0.713), tiếp theo
+là LDA (0.670). Softmax và QDA thấp hơn nhưng vẫn duy trì mức chấp nhận được.
+
+Nhìn chung, Weighted Softmax là mô hình có hiệu năng tốt nhất theo thước đo
+Precision--Recall, đặc biệt ở các lớp khó. Softmax hoạt động tốt trên các lớp
+phổ biến nhưng kém hiệu quả hơn ở các lớp mất cân bằng. LDA cho kết quả ổn định
+nhưng không nổi bật, trong khi QDA có hiệu năng không ổn định và phụ thuộc mạnh
+vào từng lớp cụ thể.
