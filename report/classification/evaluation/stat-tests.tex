@@ -1,0 +1,39 @@
+\subsubsection{Đánh giá kiểm định các cặp mô hình}
+
+\tablename~\ref{tab:classification-mcnemar-test} thể hiện được kết quả kiểm
+định McNemar các cặp mô hình về sự giống nhau của phân phối lỗi. Các kết quả
+được làm tròn đến 4 chữ số thập phân.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Kết quả kiểm định McNemar các cặp mô hình trên tập kiểm tra}
+  \label{tab:classification-mcnemar-test}
+  \import{\tablespath}{classification-mcnemar-test}
+\end{table}
+
+Kết quả kiểm định McNemar trong
+\tablename~\ref{tab:classification-mcnemar-test} cho thấy tất cả các cặp mô
+hình đều có p-value xấp xỉ  0.0000 (sau khi làm tròn 4 chữ số thập phân). Điều
+này cho phép bác bỏ giả thuyết $H_0$ ($H_0$ là  hai mô hình có cùng phân phối
+lỗi) ở mức ý nghĩa thông thường (ví dụ 0.05). Nói cách khác, sự khác biệt về
+hiệu năng giữa mọi cặp mô hình đều có ý nghĩa thống kê, không phải do ngẫu
+nhiên.
+
+Đáng chú ý, các cặp liên quan đến Softmax có giá trị thống kê rất lớn (đặc biệt
+với Weighted Softmax: 8905.0), cho thấy sự khác biệt rõ rệt trong cách hai mô
+hình này dự đoán. Điều này phù hợp với kết quả trước đó: dù cùng họ mô hình,
+Softmax tối ưu Accuracy trong khi Weighted Softmax thiên về Recall, dẫn đến sự
+khác biệt đáng kể trong các dự đoán sai/đúng.
+
+Tương tự, các cặp như LDA – QDA (5508.0) hay LDA – Weighted Softmax (6236.0)
+cũng có thống kê lớn, phản ánh sự khác biệt rõ ràng về bản chất mô hình và hành
+vi phân loại. Đặc biệt, dù QDA có Recall tương đối cao, kết quả kiểm định cho
+thấy mô hình này vẫn tạo ra mẫu lỗi rất khác biệt so với các mô hình còn lại,
+phù hợp với việc Accuracy và F1 của QDA thấp.
+
+Tổng thể, kiểm định McNemar củng cố kết luận từ các bảng trước: các mô hình
+không chỉ khác nhau về giá trị chỉ số mà còn khác nhau một cách có ý nghĩa
+thống kê trong dự đoán thực tế. Điều này khẳng định rằng việc lựa chọn mô hình
+(Softmax, LDA, hay Weighted Softmax) sẽ dẫn đến những hành vi phân loại khác
+biệt rõ rệt, tùy thuộc vào mục tiêu tối ưu (Accuracy, Recall hay cân bằng tổng
+thể).
