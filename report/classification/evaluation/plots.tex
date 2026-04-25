@@ -69,3 +69,50 @@ Tổng thể, phân tích ma trận nhầm lẫn cho thấy rõ sự đánh đ�
 Softmax có xu hướng thiên lệch về lớp lớn, Weighted Softmax mở rộng khả năng
 nhận diện nhưng kém chính xác hơn, LDA đạt được sự cân bằng tương đối, trong
 khi QDA thể hiện hiệu năng không ổn định và kém hiệu quả.
+
+\paragraph{Biểu đồ đường cong ROC}
+
+\figurename~\ref{fig:classification-roc-curve} cho ta thấy kết quả ROC-AUC theo
+phương pháp One-vs-Rest.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{classification-roc-curve}
+  \caption{Biểu đồ đường cong ROC trên từng lớp của các mô hình}
+  \label{fig:classification-roc-curve}
+\end{figure}
+
+Dựa trên kết quả, có thể nhận thấy sự khác biệt rõ rệt giữa các mô hình
+Softmax, LDA, QDA và Weighted Softmax trên từng lớp.
+
+Đối với lớp 1, mô hình Softmax đạt hiệu năng cao nhất với AUC = 0.854, tiếp
+theo là Weighted Softmax và LDA. QDA cho kết quả thấp nhất, cho thấy khả năng
+phân biệt lớp này còn hạn chế.
+
+Ở lớp 2, Softmax và LDA cho kết quả tương đối tương đồng và cao (lần lượt là
+0.841 và 0.833), trong khi Weighted Softmax giảm nhẹ. QDA tiếp tục thể hiện kém
+với AUC chỉ đạt 0.653.
+
+Đối với lớp 3, tất cả các mô hình đều đạt hiệu năng rất cao (AUC > 0.93), trong
+đó Softmax và Weighted Softmax gần như tương đương và tốt nhất. Điều này cho
+thấy lớp này tương đối dễ phân loại.
+
+Tại lớp 4, tất cả các mô hình đều đạt kết quả gần như hoàn hảo (AUC xấp xỉ
+1.0), đặc biệt QDA và Weighted Softmax đạt giá trị cao nhất là 0.995. Đây có
+thể xem là lớp dễ phân biệt nhất.
+
+Ở lớp 5, Weighted Softmax vượt trội với AUC = 0.917, cao hơn đáng kể so với các
+mô hình còn lại. QDA tiếp tục có kết quả thấp nhất.
+
+Đối với lớp 6, Softmax và Weighted Softmax đều đạt hiệu năng rất cao (trên
+0.96), trong khi LDA và QDA thấp hơn nhưng vẫn ở mức tốt.
+
+Cuối cùng, ở lớp 7, Weighted Softmax cho kết quả tốt nhất với AUC = 0.980, tiếp
+theo là LDA và QDA. Softmax có AUC thấp hơn một chút nhưng vẫn đạt hiệu năng
+cao.
+
+Nhìn chung, Weighted Softmax là mô hình cho hiệu năng tổng thể tốt nhất và ổn
+định trên hầu hết các lớp, đặc biệt cải thiện rõ rệt ở các lớp khó. Softmax
+cũng cho kết quả mạnh và ổn định. LDA có hiệu năng trung bình và khá đồng đều.
+Trong khi đó, QDA có sự biến động lớn, hoạt động tốt ở một số lớp nhưng kém ở
+các lớp khác.
