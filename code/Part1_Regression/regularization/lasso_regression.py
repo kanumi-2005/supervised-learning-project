@@ -27,6 +27,9 @@ class LassoRegression(BaseGDModel):
             random_state=random_state
         )
 
+    def _predict(self, X):
+        return X @ self.coef_ + self.intercept_
+
     def _init_params(self, X, y):
         n_features = X.shape[1]
 
@@ -37,7 +40,7 @@ class LassoRegression(BaseGDModel):
         self.intercept_ = 0.0
 
     def _loss(self, X, y):
-        y_pred = self.predict(X)
+        y_pred = self._predict(X)
         mse = np.mean((y_pred - y) ** 2)
         reg = self.alpha * np.sum(np.abs(self.coef_))
         return mse + reg
@@ -45,7 +48,7 @@ class LassoRegression(BaseGDModel):
     def _grad(self, X, y):
         n_samples = X.shape[0]
 
-        y_pred = self.predict(X)
+        y_pred = self._predict(X)
         errors = y_pred - y
 
         grad_w = (2.0 / n_samples) * (X.T @ errors) + \
@@ -62,14 +65,6 @@ class LassoRegression(BaseGDModel):
 
     def _extra_logs(self, X, y, grad, iter):
         return {}
-
-    def fit(self, X, y, **kwargs):
-        for _ in self._fit(X, y, **kwargs):
-            pass
-        return self
-
-    def predict(self, X):
-        return X @ self.coef_ + self.intercept_
 
 
 class LassoRegressionCV(BaseEstimator, RegressorMixin):

@@ -27,13 +27,16 @@ class ElasticNet(BaseGDModel):
             random_state=random_state
         )
 
+    def _predict(self, X):
+        return X @ self.coef_ + self.intercept_
+
     def _init_params(self, X, y):
         n_features = X.shape[1]
         self.coef_ = np.zeros(n_features)
         self.intercept_ = 0.0
 
     def _loss(self, X, y):
-        y_pred = self.predict(X)
+        y_pred = self._predict(X)
         mse = np.mean((y_pred - y) ** 2)
         l1 = self.alpha_1 * np.sum(np.abs(self.coef_))
         l2 = self.alpha_2 * np.sum(self.coef_ ** 2)
@@ -42,7 +45,7 @@ class ElasticNet(BaseGDModel):
     def _grad(self, X, y):
         n_samples = X.shape[0]
 
-        y_pred = self.predict(X)
+        y_pred = self._predict(X)
         errors = y_pred - y
 
         grad_mse = (2.0 / n_samples) * (X.T @ errors)
@@ -59,17 +62,6 @@ class ElasticNet(BaseGDModel):
 
         self.coef_ -= self.lr * grad_w
         self.intercept_ -= self.lr * grad_b
-
-    def _extra_logs(self, X, y, grad, iter):
-        return {}
-
-    def fit(self, X, y, **kwargs):
-        for _ in self._fit(X, y, **kwargs):
-            pass
-        return self
-
-    def predict(self, X):
-        return X @ self.coef_ + self.intercept_
 
 
 class ElasticNetCV(BaseEstimator, RegressorMixin):
