@@ -1,0 +1,61 @@
+\subsubsection{Các biểu đồ so sánh}
+
+\paragraph{Biểu đồ đường cong học}
+
+\figurename~\ref{fig:regression-learning-curves} thể hiện các đường cong học
+của từng mô hình.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{regression-learning-curves}
+  \caption{Biểu đồ đường cong học của các mô hình dựa trên MSE từng kích thước
+  của tập huấn luyện}
+  \label{fig:regression-learning-curves}
+\end{figure}
+
+Ta thấy rằng, hầu hết các mô hình cần khoảng 7000 mẫu huấn luyện để đạt MSE cực
+tiểu trên tập huấn luyện và tập xác thực.
+
+\paragraph{Biểu đồ phần dư}
+
+\figurename~\ref{fig:regression-residuals-plots} thể hiện biểu đồ phần dư của
+các mô hình trên tập kiểm tra
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{regression-residuals}
+  \caption{Biểu đồ phần dư của các mô hình trên tập kiểm tra}
+  \label{fig:regression-residuals-plots}
+\end{figure}
+
+Ta thấy rằng các mô hình hồi quy tuyến tính cơ bản (OLS, MBGD, WLS) có độ khớp
+vừa phải, không quá khớp của sự ngắt ngưỡng.
+
+Ngược lại, các mô hình cơ sở phi tuyến (Polynomial, RBF và Fourier) có việc học
+sự ngắt ngưỡng khi mô hình rất ít khi dự đoán trên 5.
+
+Trong khi đó, các mô hình chính quy hoá (Lasso, Ridge, Elastic Net) có sự lệch
+khi học.
+
+\paragraph{Biểu đồ giá trị dự đoán-giá trị thực}
+
+\figurename~\ref{fig:regression-predicted-actual} thể hiện tương quan giữa giá
+trị dự đoán và giá trị thực của các mô hình trên tập kiểm tra.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{regression-predicted-actual}
+  \caption{Biểu đồ giá trị dự đoán-giá trị thực trên tập kiểm tra}
+  \label{fig:regression-predicted-actual}
+\end{figure}
+
+Ta thấy rằng các mô hình chính quy hoá cho thấy các điểm phân tán lệch hẳn so
+với đường tham chiếu. Điều này cho thấy các mô hình này học chưa khớp khá nặng.
+
+Ngược lại, các mô hình cơ sở phí tuyến có sự khớp cao với cả dữ liệu và việc
+ngắt ngưỡng. Điều này có thể ảnh hưởng đến dự đoán thực tế khi không có sự ngắt
+ngưỡng này.
+
+Đối với các mô hình hồi quy tuyến tính cơ bản, các điểm phân tán hợp lí hơn. Mô
+hình không quá bị ảnh hưởng bởi việc ngắt ngưỡng của dữ liệu. Điều này cho thấy
+mô hình khớp tốt với dữ liệu và có khả năng dự đoán thực tế ổn định hơn.

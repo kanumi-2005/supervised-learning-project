@@ -1,0 +1,43 @@
+\subsubsection{Đánh giá kiểm định các cặp mô hình}
+
+\tablename~\ref{tab:regression-stat-tests-mse}
+và~\ref{tab:regression-stat-tests-mae} cho kết quả kiểm định các cặp mô hình
+tương ứng theo từng chỉ số MSE, MAE.
+
+\import{\tablespath}{regression-stat-tests-mse}
+\import{\tablespath}{regression-stat-tests-mae}
+
+Đối với chỉ số MSE, ta thấy mô hình OLS đều cho thấy sự khác biệt với các mô
+hình khác với mức ý nghĩa $\alpha = 0.05$. Khi so với kết quả của
+\tablename~\ref{tab:regression-models-cv-part1} và
+\tablename~\ref{tab:regression-models-cv-part2}, ta biết rằng OLS tốt hơn các
+mô hình. Đặc biệt, mặc dù mô hình Polynomial có MSE kém hơn OLS nhưng chưa đủ ý
+nghĩa thống kê để chứng minh có sự sai khác với OLS. Điều này có thể do việc
+chỉ dùng 10 fold cho cross-validation làm thống kê chưa phân biệt rõ ràng hơn.
+
+Đối với chỉ số MAE, kết quả cho thấy tất cả các cặp mô hình đều có sự sai khác
+nhau với mức ý nghĩa $\alpha = 0.05$. Có sự sai khác giữa OLS (dựa trên Normal
+Equation) và MBGD do phương pháp tìm nghiệm khác nhau. OLS cho sự ổn định hơn
+khi giải trực tiếp nghiệm. Điều này tạo ra sự khác biệt có ý nghĩa thống kê
+trên MAE, mặc dù trên MSE không có sự khác biệt.
+
+Kết quả thực nghiệm cho thấy các mô hình WLS, Polynomial và Fourier đạt MAE
+thấp hơn so với OLS trong một số thiết lập cross-validation. Điều này cho thấy
+việc mở rộng không gian biểu diễn (Polynomial, Fourier) hoặc điều chỉnh trọng
+số quan sát (WLS) có thể giúp mô hình khai thác tốt hơn cấu trúc dữ liệu, từ đó
+cải thiện độ chính xác dự đoán.
+
+Tuy nhiên, sự cải thiện này không hoàn toàn đồng nhất trên tất cả các phép kiểm
+định. Một số cặp so sánh vẫn cho thấy khác biệt có ý nghĩa thống kê, trong khi
+một số khác có mức chênh lệch nhỏ, cho thấy hiệu quả cải thiện phụ thuộc vào
+phân phối dữ liệu và cấu trúc nhiễu.
+
+Nhìn chung, khi so sánh với các mô hình còn lại, trên các chỉ số còn lại, OLS
+thể hiện kết quả ổn định và có tính nhất quán cao trên các phép đo đánh giá.
+Mặc dù một số mô hình mở rộng như WLS, Polynomial hay Fourier có thể đạt MAE
+tốt hơn trong một số trường hợp cụ thể, sự cải thiện này không mang tính đồng
+đều và thường đi kèm với độ biến thiên cao hơn giữa các fold.
+
+Tổng thể, xét trên cả độ chính xác trung bình, tính ổn định và mức độ đơn giản
+của mô hình, OLS vẫn cho thấy hiệu quả tốt nhất trong bài toán này, đồng thời
+là lựa chọn cân bằng giữa hiệu năng và tính tổng quát hóa.
