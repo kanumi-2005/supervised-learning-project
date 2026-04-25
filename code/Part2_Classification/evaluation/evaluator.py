@@ -263,7 +263,7 @@ class Evaluator:
 
                 f"Precision ({average})":
                     f"{scores[f'Precision ({average})'][0]:.4f} ± " \
-                    "{scores[f'Precision ({average})'][1]:.4f}",
+                    f"{scores[f'Precision ({average})'][1]:.4f}",
 
                 f"Recall ({average})":
                     f"{scores[f'Recall ({average})'][0]:.4f} ± " \
