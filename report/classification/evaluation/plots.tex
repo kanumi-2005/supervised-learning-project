@@ -161,3 +161,47 @@ Precision--Recall, đặc biệt ở các lớp khó. Softmax hoạt động t�
 phổ biến nhưng kém hiệu quả hơn ở các lớp mất cân bằng. LDA cho kết quả ổn định
 nhưng không nổi bật, trong khi QDA có hiệu năng không ổn định và phụ thuộc mạnh
 vào từng lớp cụ thể.
+
+\paragraph{Biểu đồ Calibration (Reliability Curve)}
+
+\figurename~\ref{fig:classification-calibration-curve} cho ta thấy kết quả
+đường cong tin cậy theo phương pháp One-vs-Rest.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{classification-calibration-curve}
+  \caption{Biểu đồ calibration các mô hình trên từng lớp}
+  \label{fig:classification-calibration-curve}
+\end{figure}
+
+Dựa trên biểu đồ calibration, có thể đánh giá mức độ tin cậy của xác suất dự
+đoán từ các mô hình Softmax, LDA, QDA và Weighted Softmax thông qua khoảng cách
+so với đường tham chiếu.
+
+Đối với mô hình Softmax, hầu hết các đường của các lớp đều bám sát đường tham
+chiếu, cho thấy xác suất dự đoán có độ tin cậy cao và được hiệu chỉnh tốt trên
+toàn bộ các lớp.
+
+Ở mô hình LDA, các lớp 1 và 2 vẫn duy trì sự bám sát đường tham chiếu, tuy
+nhiên lớp 3 có xu hướng cao hơn ở vùng xác suất thấp nhưng giảm xuống dưới
+đường tham chiếu khi xác suất tăng (khoảng từ 0.8 trở đi), cho thấy hiện tượng
+quá tự tin ở vùng xác suất cao. Các lớp 4, 5, 6 và 7 nằm dưới đường tham chiếu,
+phản ánh việc mô hình dự đoán xác suất cao hơn thực tế (thiếu độ tin cậy).
+
+Đối với QDA, các lớp 1, 2 và 3 đều có xu hướng tương tự khi ban đầu nằm trên
+đường tham chiếu nhưng sau đó giảm xuống dưới ở các mức xác suất cao (lớp 1 và
+2 từ khoảng 0.8, lớp 3 từ khoảng 0.6). Điều này cho thấy mô hình có xu hướng
+không ổn định trong hiệu chỉnh xác suất. Các lớp 4, 5, 6 và 7 phần lớn nằm dưới
+đường tham chiếu, thể hiện việc dự đoán xác suất không đáng tin cậy.
+
+Đối với Weighted Softmax, các lớp 1 và 3 có xu hướng nằm hơi trên đường tham
+chiếu, trong khi lớp 2 cũng cao hơn. Điều này cho thấy mô hình có xu hướng hơi
+thiếu tự tin ở các lớp này. Ngược lại, các lớp 4, 5, 6 và 7 nằm dưới đường tham
+chiếu, tuy nhiên có xu hướng tiệm cận dần khi xác suất tăng. Đặc biệt, lớp 6
+bắt kịp đường tham chiếu ở vùng xác suất cao (khoảng từ 0.9), trong khi các lớp
+còn lại cải thiện nhưng vẫn chưa đạt mức cân bằng hoàn toàn.
+
+Nhìn chung, Softmax là mô hình có khả năng hiệu chỉnh xác suất tốt nhất.
+Weighted Softmax có cải thiện ở một số lớp nhưng vẫn chưa đồng đều. LDA và QDA
+thể hiện sự thiếu ổn định, đặc biệt ở các lớp có xác suất cao, cho thấy hạn chế
+trong việc cung cấp xác suất đáng tin cậy.
