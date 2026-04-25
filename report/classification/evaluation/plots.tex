@@ -1,0 +1,71 @@
+\subsubsection{Các biểu đồ so sánh}
+
+\paragraph{Ma trận nhầm lẫn}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{classification-confusion-matrix}
+  \caption{Ma trận nhầm lẫn của các mô hình trên tập kiểm tra}
+  \label{fig:classification-confusion-matrix}
+\end{figure}
+
+\subsubsection{Phân tích ma trận nhầm lẫn}
+
+Dựa trên các ma trận nhầm lẫn, có thể thấy rõ sự khác biệt trong hành vi
+phân loại của các mô hình, đặc biệt trong cách xử lý các lớp thiểu số và
+mức độ thiên lệch về các lớp chiếm đa số.
+
+Đối với Softmax, các giá trị trên đường chéo tập trung chủ yếu ở các lớp
+lớn, chẳng hạn lớp 1 và lớp 2 với lần lượt 29213 và 45254 mẫu được dự đoán
+đúng. Tuy nhiên, nhiều lớp nhỏ bị bỏ sót nghiêm trọng. Ví dụ, lớp 5 chỉ có
+25 mẫu được dự đoán đúng nhưng bị nhầm sang lớp 2 tới 1696 mẫu; lớp 6 chỉ
+có 206 mẫu đúng nhưng bị nhầm sang lớp 3 tới 2056 mẫu. Điều này cho thấy
+mô hình có xu hướng dồn dự đoán về một vài lớp chính, dẫn đến mất cân bằng
+trong phân loại.
+
+Ngược lại, LDA cho thấy phân phối dự đoán đồng đều hơn giữa các lớp.
+Các lớp thiểu số được nhận diện tốt hơn, chẳng hạn lớp 5 có 419 mẫu được
+dự đoán đúng (so với 25 của Softmax) và lớp 6 có 1828 mẫu đúng (so với 206).
+Tuy nhiên, vẫn tồn tại nhầm lẫn đáng kể giữa các lớp, ví dụ lớp 3 bị nhầm
+sang lớp 6 tới 2371 mẫu. Dù vậy, mô hình không bị hiện tượng tập trung vào
+một vài lớp như Softmax, thể hiện sự cân bằng tốt hơn.
+
+Đối với QDA, ma trận nhầm lẫn cho thấy sự phân loại thiếu ổn định với nhiều
+giá trị lớn nằm ngoài đường chéo. Ví dụ, lớp 1 bị nhầm sang lớp 5 tới 11997
+mẫu và sang lớp 7 tới 18780 mẫu. Tương tự, lớp 2 bị nhầm sang lớp 5 tới
+31626 mẫu. Những giá trị này cho thấy mô hình đưa ra nhiều dự đoán sai lệch
+nghiêm trọng. Mặc dù một số lớp có Recall cao, Precision lại rất thấp, dẫn
+đến hiệu năng tổng thể kém.
+
+Trong khi đó, Weighted Softmax cải thiện đáng kể khả năng nhận diện các lớp
+thiểu số. Ví dụ, lớp 5 có 1438 mẫu được dự đoán đúng (so với 25 của Softmax).
+Tuy nhiên, điều này đi kèm với việc gia tăng nhầm lẫn giữa các lớp. Chẳng hạn,
+lớp 2 bị nhầm sang lớp 5 tới 10934 mẫu và sang lớp 6 tới 2477 mẫu. Ma trận
+nhầm lẫn cho thấy các dự đoán bị phân tán rộng hơn, dẫn đến việc tăng Recall
+nhưng giảm Precision và Accuracy.
+
+Một điểm chung rõ ràng giữa các mô hình là đều xảy ra nhầm lẫn mạnh giữa
+một số cặp lớp cụ thể, đặc biệt là giữa lớp 1 và lớp 2. Cụ thể, ở Softmax,
+có 12181 mẫu từ lớp 1 bị nhầm sang lớp 2 và 9793 mẫu theo chiều ngược lại.
+Xu hướng này cũng xuất hiện ở LDA (11540 và 10227 mẫu) và Weighted Softmax
+(6906 và 12813 mẫu), cho thấy đây là cặp lớp khó phân biệt đối với mọi mô hình.
+
+Ngoài ra, lớp 2 có xu hướng bị nhầm sang nhiều lớp khác ở tất cả các mô hình,
+đặc biệt là sang lớp 3, lớp 5 và lớp 6. Ví dụ, ở Weighted Softmax, có 10934 mẫu
+từ lớp 2 bị nhầm sang lớp 5 và 2477 mẫu sang lớp 6; ở Softmax và LDA có tương
+ứng 1332 và 1013 mẫu bị nhầm từ lớp 2 sang lớp 3. Điều này cho thấy lớp 2 có
+phân bố đặc trưng chồng lấn với nhiều lớp khác.
+
+Bên cạnh đó, các lớp thiểu số như lớp 5 đều có số lượng dự đoán đúng thấp
+trong hầu hết các mô hình. Ví dụ, Softmax chỉ dự đoán đúng 25 mẫu cho lớp 5,
+trong khi LDA và Weighted Softmax cải thiện hơn (419 và 1438 mẫu) nhưng vẫn
+thấp so với các lớp lớn.
+
+Những điểm chung này cho thấy các lỗi phân loại mang tính hệ thống, đặc biệt
+liên quan đến sự chồng lấn đặc trưng giữa một số lớp và sự mất cân bằng dữ
+liệu, thay vì chỉ xuất phát từ từng mô hình riêng lẻ.
+
+Tổng thể, phân tích ma trận nhầm lẫn cho thấy rõ sự đánh đổi giữa các mô hình:
+Softmax có xu hướng thiên lệch về lớp lớn, Weighted Softmax mở rộng khả năng
+nhận diện nhưng kém chính xác hơn, LDA đạt được sự cân bằng tương đối, trong
+khi QDA thể hiện hiệu năng không ổn định và kém hiệu quả.
