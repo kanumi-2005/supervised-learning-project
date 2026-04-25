@@ -205,3 +205,34 @@ Nhìn chung, Softmax là mô hình có khả năng hiệu chỉnh xác suất t�
 Weighted Softmax có cải thiện ở một số lớp nhưng vẫn chưa đồng đều. LDA và QDA
 thể hiện sự thiếu ổn định, đặc biệt ở các lớp có xác suất cao, cho thấy hạn chế
 trong việc cung cấp xác suất đáng tin cậy.
+
+\paragraph{Biểu đồ đường cong mất mát huấn luyện (training loss curve)}
+
+\figurename~\ref{fig:classification-train-loss} minh họa đường cong mất mát
+huấn luyện của các mô hình theo từng epoch.
+
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{classification-train-loss}
+  \caption{Đường cong mất mát huấn luyện trên từng epoch}
+  \label{fig:classification-train-loss}
+\end{figure}
+
+Dựa trên biểu đồ hàm mất mát theo số epochs (cross-entropy loss), có thể thấy
+cả hai mô hình Softmax và Weighted Softmax đều có xu hướng giảm mạnh trong giai
+đoạn đầu và bắt đầu hội tụ sau khoảng 20 epochs, khi giá trị loss gần như ổn
+định và không còn giảm đáng kể.
+
+So sánh giữa hai mô hình, đường cong loss của Softmax có dạng mượt hơn và ổn
+định hơn trong suốt quá trình huấn luyện. Điều này cho thấy quá trình tối ưu
+diễn ra tương đối ổn định khi sử dụng mini-batch.
+
+Ngược lại, Weighted Softmax có đường cong loss dao động nhẹ (rung lắc lên
+xuống), đặc biệt trong giai đoạn đầu và giữa quá trình huấn luyện. Hiện tượng
+này là do việc sử dụng trọng số cho các lớp kết hợp với cơ chế mini-batch, dẫn
+đến gradient cập nhật có độ biến thiên lớn hơn giữa các batch.
+
+Tuy nhiên, mặc dù có dao động, cả hai mô hình đều đạt trạng thái hội tụ tương
+đương sau khoảng 20 epochs, cho thấy Weighted Softmax vẫn đảm bảo khả năng tối
+ưu hóa ổn định và không ảnh hưởng đáng kể đến hiệu năng cuối cùng.
