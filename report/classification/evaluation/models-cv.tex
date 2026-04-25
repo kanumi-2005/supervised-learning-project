@@ -1,0 +1,58 @@
+\subsubsection{Đánh giá qua cross-validation}
+
+\tablename~\ref{tab:classification-compare-models-cv-part1}
+và~\ref{tab:classification-compare-models-cv-part2} thể hiện các kết quả trung
+bình và độ lệch chuẩn các chỉ số Accuracy, Precision (macro), Recall (macro) và
+F1 (macro) thông qua $5$-fold cross-validation.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Kết quả trung bình và độ lệch chuẩn các chỉ số của các mô hình
+  thông qua cross-validation (phần 1)}
+  \import{\tablespath}{classification-compare-models-cv-part1}
+  \label{tab:classification-compare-models-cv-part1}
+\end{table}
+
+\begin{table}[htbp]
+  \centering
+  \caption{Kết quả trung bình và độ lệch chuẩn các chỉ số của các mô hình
+  thông qua cross-validation (phần 2)}
+  \import{\tablespath}{classification-compare-models-cv-part2}
+  \label{tab:classification-compare-models-cv-part2}
+\end{table}
+
+Kết quả cross-validation trong
+\tablename~\ref{tab:classification-compare-models-cv-part1}
+và~\ref{tab:classification-compare-models-cv-part2} nhìn chung phù hợp và nhất
+quán với kết quả trên tập kiểm tra, đồng thời cung cấp thêm thông tin về độ ổn
+định của các mô hình thông qua độ lệch chuẩn.
+
+Trước hết, Softmax tiếp tục duy trì Accuracy cao nhất (0.7122 ± 0.0009), rất
+gần với kết quả trên tập test (0.7148). Độ lệch chuẩn nhỏ cho thấy mô hình rất
+ổn định qua các lần chia dữ liệu. Tuy nhiên, Recall (0.4212) và F1 (0.4155) vẫn
+thấp, củng cố nhận định trước đó rằng mô hình này thiên về tối ưu độ chính xác
+tổng thể nhưng chưa xử lý tốt sự mất cân bằng giữa các lớp.
+
+Weighted Softmax một lần nữa nổi bật với Recall cao nhất (0.6899 ± 0.0040), gần
+như trùng khớp với kết quả test (0.697). Điều này cho thấy khả năng tổng quát
+hóa tốt trong việc nhận diện các lớp, đặc biệt là lớp thiểu số. Tuy nhiên,
+Accuracy (0.5903) và Precision (0.4556) vẫn thấp hơn Softmax, phản ánh sự đánh
+đổi tương tự như đã quan sát trên tập kiểm tra. Độ lệch chuẩn nhỏ cho thấy mô
+hình này cũng ổn định.
+
+LDA tiếp tục thể hiện vai trò là mô hình cân bằng nhất, với các chỉ số Recall
+(0.5791) và F1 (0.5108) khá tốt và ổn định. Kết quả này gần tương ứng với tập
+test (Recall 0.5766, F1 0.5096), cho thấy LDA có khả năng tổng quát hóa đáng
+tin cậy và ít bị dao động theo dữ liệu.
+
+Trong khi đó, QDA vẫn có Accuracy rất thấp (0.2427) nhưng Recall tương đối cao
+(0.5548), giống với kết quả trên tập test. Tuy nhiên, F1 thấp (0.2572) cho thấy
+mô hình dự đoán thiếu chính xác và không cân bằng. Dù độ lệch chuẩn nhỏ (tức là
+ổn định), nhưng đây là sự ổn định ở mức hiệu năng kém, nên không có giá trị
+thực tiễn cao.
+
+Tổng thể, kết quả cross-validation xác nhận lại các kết luận từ tập kiểm tra:
+Softmax tốt nhất về Accuracy, Weighted Softmax tốt nhất về Recall, LDA cân bằng
+nhất, và QDA kém hiệu quả. Đồng thời, độ lệch chuẩn nhỏ ở tất cả các mô hình
+cho thấy các kết luận này đáng tin cậy và không phụ thuộc mạnh vào cách chia dữ
+liệu.
