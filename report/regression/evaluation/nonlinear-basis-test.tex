@@ -1,12 +1,16 @@
-Mô hình Polynomial cải thiện tương đối so với OLS với MSE giảm từ $0.5253$ xuống
-$0.494$ và R2 tăng từ $0.6097$ lên $0.633$. Điều này cũng cho thấy giữa biến
-mục tiêu và các đặc trưng có yếu tố phi tuyến nhẹ.
+Mô hình Polynomial cho thấy sự cải thiện so với OLS, với MSE giảm từ 0.5253
+xuống 0.494 và $R^2$ tăng từ 0.6097 lên 0.633. Kết quả này cho thấy dữ liệu tồn
+tại yếu tố phi tuyến và việc mở rộng không gian đặc trưng giúp mô hình biểu
+diễn tốt hơn mối quan hệ giữa các biến.
 
-Mô hình RBF tệ hơn OLS nhưng vẫn tốt hơn Regularization. Điều này có thể do các
-tham số chưa được điều chỉnh tốt hoặc dữ liệu không khớp với mối quan hệ của
-RBF.
+Ngược lại, mô hình RBF không đạt được kết quả như kỳ vọng khi có MSE cao hơn
+(0.6971) và $R^2$ thấp hơn (0.4821) so với OLS. Nguyên nhân có thể đến từ việc
+lựa chọn siêu tham số (như số lượng tâm hoặc độ rộng kernel) chưa phù hợp, hoặc
+bản chất dữ liệu không phù hợp với dạng biểu diễn của RBF.
 
-Fourier cho thấy sự cải thiện rõ rệt so với OLS. Đây cũng là mô hình cho kết
-quả trên tập kiểm tra tốt nhất với MSE là $0.3873$ và R2 cao nhất với $0.7123$.
-Điều này có thể do dữ liệu có mẫu (pattern) lặp lại và Fourier có thể xấp xỉ
-tốt hơn Polynomial với điều này.
+Cuối cùng, mô hình Fourier thể hiện hiệu năng vượt trội so với tất cả các mô
+hình còn lại. Cụ thể, mô hình này đạt MSE thấp nhất (0.3873), RMSE thấp nhất
+(0.6223), MAE thấp nhất (0.4466) và $R^2$ cao nhất (0.7123). Điều này cho thấy
+dữ liệu có thể chứa các thành phần mang tính chu kỳ hoặc lặp lại, và Fourier là
+phương pháp phù hợp để khai thác đặc điểm này, thậm chí hiệu quả hơn cả
+Polynomial trong trường hợp này.

@@ -1,6 +1,11 @@
-Đối với các mô hình hồi quy tuyến tính cơ bản (OLS tức là sử dụng Normal
-Equation, MBGD và WLS) cho kết quả gần như tương đương. Trong đó, MBGD gần như
-tái hiện lại OLS chỉ khác cách tối ưu. WLS cho MAE thấp hơn nhưng tổng thể
-không cải thiện rõ rệt. Việc WLS không cải thiện rõ rệt so với OLS có thể do
-mối quan hệ phi tuyến giữa biến mục tiêu và các đặc trưng hoặc do ảnh hưởng của
-việc ngắt ngưỡng nên việc xấp xỉ phương sai không chuẩn xác hoặc có ý nghĩa.
+Nhìn chung, các mô hình hồi quy tuyến tính cơ bản (OLS, MBGD và WLS) cho kết
+quả rất tương đồng. Cụ thể, OLS và MBGD gần như trùng khớp trên tất cả các chỉ
+số (MSE xấp xỉ 0.5253--0.5254, $R^2$ xấp xỉ 0.6097), cho thấy MBGD đã hội
+tụ tốt và tái hiện lại nghiệm của OLS dù sử dụng phương pháp tối ưu lặp. Kết
+quả này cũng cho thấy chiến lược lập lịch tốc độ học trong MBGD hoạt động hiệu
+quả, giúp quá trình tối ưu vừa ổn định vừa đạt được nghiệm gần tối ưu toàn cục.
+
+WLS có MAE thấp hơn một chút (0.5205 so với 0.5299), tuy nhiên các chỉ số còn
+lại không cải thiện đáng kể, thậm chí MSE và RMSE còn cao hơn nhẹ. Điều này cho
+thấy việc gán trọng số chưa mang lại lợi ích rõ ràng, có thể do giả định về
+phương sai của sai số không phù hợp với dữ liệu.
