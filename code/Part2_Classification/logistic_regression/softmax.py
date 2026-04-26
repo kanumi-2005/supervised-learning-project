@@ -62,10 +62,12 @@ class SoftmaxClassifier(ClassifierMixin, BaseGDModel):
         X_design = np.c_[np.ones(n_samples), X]
 
         y_encoded = np.array([self.class_to_index_[c] for c in y])
-        Y = self._one_hot(y_encoded, self.n_classes_)
 
         probs = softmax(X_design @ self.W)
-        grad = (X_design.T @ (probs - Y)) / n_samples
+
+        probs[np.arange(n_samples), y_encoded] -= 1
+
+        grad = (X_design.T @ probs) / n_samples
         return grad
 
     def _update_params(self, grad, iteration):

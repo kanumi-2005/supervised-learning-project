@@ -52,6 +52,12 @@ class CovtypeDataset:
             stratify=stratify_y,
         )
 
+        if val_size == 0 or X_temp.shape[0] == 0:
+            self.X_train, self.y_train = X_train, y_train
+            self.X_val, self.y_val = None, None
+            self.X_test, self.y_test = X_temp, y_temp
+            return
+
         val_ratio = val_size / (val_size + test_size)
         stratify_temp = y_temp if stratify else None
         X_val, X_test, y_val, y_test = train_test_split(
