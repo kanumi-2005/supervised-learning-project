@@ -4,9 +4,9 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 
-from nonlinear_basis.rbf import RBF
-from nonlinear_basis.fourier import FourierBasis
-from nonlinear_basis.polynomial import PolynomialBasis
+from .rbf import RBF
+from .fourier import FourierBasis
+from .polynomial import PolynomialBasis
 from dataset import CaliforniaHousingDataset as Dataset
 from pipeline import get_pipeline
 

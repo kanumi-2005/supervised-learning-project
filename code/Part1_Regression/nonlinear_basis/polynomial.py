@@ -1,6 +1,6 @@
 import numpy as np
 from sklearn.base import BaseEstimator, TransformerMixin
-from ..base.basemodel import BaseModel
+from regression.base.basemodel import BaseModel
 
 
 class PolynomialBasis(BaseModel, TransformerMixin):

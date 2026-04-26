@@ -5,9 +5,9 @@ from sklearn.linear_model import LinearRegression
 from sklearn.pipeline import Pipeline
 
 from dataset import CaliforniaHousingDataset as Dataset
-from nonlinear_basis.polynomial import PolynomialBasis
-from nonlinear_basis.rbf import RBF
-from nonlinear_basis.fourier import FourierBasis
+from .polynomial import PolynomialBasis
+from .rbf import RBF
+from .fourier import FourierBasis
 
 
 class ValidationExperiment:

@@ -1,7 +1,7 @@
 import numpy as np
 from itertools import combinations
 from sklearn.base import BaseEstimator, TransformerMixin
-from ..base.basemodel import BaseModel
+from base.basemodel import BaseModel
 
 
 class InteractionBasis(BaseModel, TransformerMixin):
