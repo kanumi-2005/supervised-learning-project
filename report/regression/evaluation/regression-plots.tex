@@ -14,7 +14,8 @@ của từng mô hình.
 \end{figure}
 
 Ta thấy rằng, hầu hết các mô hình cần khoảng 7000 mẫu huấn luyện để đạt MSE cực
-tiểu trên tập huấn luyện và tập xác thực.
+tiểu trên tập huấn luyện và tập xác thực. Riêng mô hình Fourier thì cần khoảng
+400 mẫu đã có thể hội tụ.
 
 \paragraph{Biểu đồ phần dư}
 
@@ -34,8 +35,8 @@ vừa phải, không quá khớp của sự ngắt ngưỡng.
 Ngược lại, các mô hình cơ sở phi tuyến (Polynomial, RBF và Fourier) có việc học
 sự ngắt ngưỡng khi mô hình rất ít khi dự đoán trên 5.
 
-Trong khi đó, các mô hình chính quy hoá (Lasso, Ridge, Elastic Net) có sự lệch
-khi học.
+Trong khi đó, các mô hình chính quy hoá (Lasso, Ridge, Elastic Net) có đường
+tham chiếu $e = 0$ thấp hơn trung bình so với phân tán của phần dư.
 
 \paragraph{Biểu đồ giá trị dự đoán-giá trị thực}
 
@@ -49,8 +50,8 @@ trị dự đoán và giá trị thực của các mô hình trên tập kiểm 
   \label{fig:regression-predicted-actual}
 \end{figure}
 
-Ta thấy rằng các mô hình chính quy hoá cho thấy các điểm phân tán lệch hẳn so
-với đường tham chiếu. Điều này cho thấy các mô hình này học chưa khớp khá nặng.
+Ta thấy rằng các mô hình chính quy hoá cho thấy các điểm phân tán lệch cao hơn
+so với đường tham chiếu. Điều này cho thấy các mô hình này học chưa khớp.
 
 Ngược lại, các mô hình cơ sở phí tuyến có sự khớp cao với cả dữ liệu và việc
 ngắt ngưỡng. Điều này có thể ảnh hưởng đến dự đoán thực tế khi không có sự ngắt
