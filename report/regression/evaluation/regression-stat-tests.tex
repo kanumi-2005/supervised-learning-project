@@ -1,25 +1,31 @@
 \subsubsection{Đánh giá kiểm định các cặp mô hình}
 
 \tablename~\ref{tab:regression-stat-tests-mse}
-và~\ref{tab:regression-stat-tests-mae} cho kết quả kiểm định các cặp mô hình
-tương ứng theo từng chỉ số MSE, MAE.
+và~\ref{tab:regression-stat-tests-mae} trình bày kết quả kiểm định các cặp mô
+hình dựa trên chỉ số MSE và MAE thông qua cross-validation, sử dụng t-test và
+Wilcoxon signed-rank test.
 
 \import{\tablespath}{regression-stat-tests-mse}
 \import{\tablespath}{regression-stat-tests-mae}
 
-Đối với chỉ số MSE, ta thấy mô hình OLS đều cho thấy sự khác biệt với các mô
-hình khác với mức ý nghĩa $\alpha = 0.05$. Khi so với kết quả của
-\tablename~\ref{tab:regression-models-cv-part1} và
-\tablename~\ref{tab:regression-models-cv-part2}, ta biết rằng OLS tốt hơn các
-mô hình. Đặc biệt, mặc dù mô hình Polynomial có MSE kém hơn OLS nhưng chưa đủ ý
-nghĩa thống kê để chứng minh có sự sai khác với OLS. Điều này có thể do việc
-chỉ dùng 10 fold cho cross-validation làm thống kê chưa phân biệt rõ ràng hơn.
+Đối với chỉ số MSE, không phải tất cả các cặp mô hình đều có sự khác biệt có ý
+nghĩa thống kê. Cụ thể, giữa OLS và MBGD không tồn tại sự khác biệt có ý nghĩa
+(p-value lớn hơn 0.05 ở cả hai kiểm định), phù hợp với kết quả trước đó khi hai
+mô hình này cho hiệu năng gần như trùng khớp. Tương tự, các cặp như
+OLS--Polynomial hoặc OLS--Fourier cũng không cho thấy sự khác biệt có ý nghĩa
+thống kê, mặc dù giá trị trung bình có thể khác nhau. Điều này cho thấy độ biến
+thiên lớn trong các mô hình phi tuyến đã làm giảm khả năng kết luận sự khác
+biệt rõ ràng.
 
-Đối với chỉ số MAE, kết quả cho thấy tất cả các cặp mô hình đều có sự sai khác
-nhau với mức ý nghĩa $\alpha = 0.05$. Có sự sai khác giữa OLS (dựa trên Normal
-Equation) và MBGD do phương pháp tìm nghiệm khác nhau. OLS cho sự ổn định hơn
-khi giải trực tiếp nghiệm. Điều này tạo ra sự khác biệt có ý nghĩa thống kê
-trên MAE, mặc dù trên MSE không có sự khác biệt.
+Ngược lại, OLS và MBGD đều có sự khác biệt có ý nghĩa thống kê so với các mô
+hình chính quy hoá (Ridge, Lasso, Elastic Net) và RBF (p-value rất nhỏ), phản
+ánh sự suy giảm hiệu năng của các mô hình này so với nhóm tuyến tính cơ bản.
+
+Đối với chỉ số MAE, nhiều cặp mô hình thể hiện sự khác biệt có ý nghĩa thống
+kê, bao gồm cả OLS so với WLS, Polynomial và Fourier (p-value < 0.05). Tuy
+nhiên, giữa OLS và MBGD vẫn không có sự khác biệt có ý nghĩa, cho thấy hai
+phương pháp này tương đương không chỉ về mặt giá trị trung bình mà còn về phân
+phối sai số.
 
 Kết quả thực nghiệm cho thấy các mô hình WLS, Polynomial và Fourier đạt MAE
 thấp hơn so với OLS trong một số thiết lập cross-validation. Điều này cho thấy
@@ -39,5 +45,5 @@ tốt hơn trong một số trường hợp cụ thể, sự cải thiện này 
 đều và thường đi kèm với độ biến thiên cao hơn giữa các fold.
 
 Tổng thể, xét trên cả độ chính xác trung bình, tính ổn định và mức độ đơn giản
-của mô hình, OLS vẫn cho thấy hiệu quả tốt nhất trong bài toán này, đồng thời
-là lựa chọn cân bằng giữa hiệu năng và tính tổng quát hóa.
+của mô hình, OLS và MBGD vẫn cho thấy hiệu quả tốt nhất trong bài toán này,
+đồng thời là lựa chọn cân bằng giữa hiệu năng và tính tổng quát hóa.
