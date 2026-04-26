@@ -135,7 +135,7 @@ def sensitivity_split_analysis(models, dataset, task="classification",
 
 def _add_noise(X, sigma, rng):
     X = X.copy()
-    X[:, 0] += rng.normal(0, sigma, size=X.shape[0])
+    X += rng.normal(0, sigma, size=X.shape)
     return X
 
 def noise_injection_analysis(models, dataset, sigmas=[0.1, 0.5, 1.0],
