@@ -5,7 +5,7 @@ from ..base.basegdmodel import BaseGDModel
 
 
 def softmax(z):
-    z = z - np.max(z, axis=1, keepdims=True)
+    z = z - np.max(z, axis=1, keepdims=True)  # stability
     exp_z = np.exp(z)
     return exp_z / np.sum(exp_z, axis=1, keepdims=True)
 
@@ -33,7 +33,7 @@ class WeightedSoftmaxClassifier(ClassifierMixin, BaseGDModel):
         self.step_size = step_size
         self.decay_factor = decay_factor
 
-    # ENCODE LABEL
+    # ===== ENCODE LABEL =====
     def _encode_labels(self, y):
         self.classes_ = np.unique(y)
         self.class_to_index_ = {c: i for i, c in enumerate(self.classes_)}
@@ -44,7 +44,7 @@ class WeightedSoftmaxClassifier(ClassifierMixin, BaseGDModel):
         one_hot[np.arange(len(y)), y] = 1
         return one_hot
 
-    # INIT PARAMS
+    # ===== INIT PARAMS =====
     def _init_params(self, X, y):
         n_samples, n_features = X.shape
 
@@ -60,36 +60,37 @@ class WeightedSoftmaxClassifier(ClassifierMixin, BaseGDModel):
 
         self.W = np.zeros((n_features + 1, self.n_classes_))
 
-    # LOSS
+    # ===== LOSS =====
     def _loss(self, X, y):
         probs = self.predict_proba(X)
         return log_loss(y, probs, labels=self.classes_)
 
-    # GRADIENT (FIXED WEIGHTED)
+    # ===== GRADIENT (FIXED - STABLE & WEIGHTED) =====
     def _grad(self, X, y):
-        n_samples = X.shape[0]
-        X_design = np.c_[np.ones(n_samples), X]
+        n = X.shape[0]
+        X_design = np.c_[np.ones(n), X]
 
-        # encode y
         y_encoded = np.array([self.class_to_index_[c] for c in y])
-        Y = self._one_hot(y_encoded, self.n_classes_)
 
         probs = softmax(X_design @ self.W)
 
         # ===== SAMPLE WEIGHTS =====
         sample_weights = self.class_weights_[y_encoded]
 
-        error = (probs - Y)
-        error *= sample_weights[:, None]
+        # Softmax gradient trick (no one-hot)
+        probs[np.arange(n), y_encoded] -= 1
 
-        grad = (X_design.T @ error) / n_samples
+        # Apply class weights
+        probs *= sample_weights[:, None]
+
+        grad = (X_design.T @ probs) / n
         return grad
 
-    # UPDATE
+    # ===== UPDATE =====
     def _update_params(self, grad, iteration):
         self.W -= self._lr(iteration) * grad
 
-    # LR SCHEDULE
+    # ===== LR SCHEDULE =====
     def _lr(self, iteration):
         if self.lr_sched is None:
             return self.lr
@@ -101,17 +102,19 @@ class WeightedSoftmaxClassifier(ClassifierMixin, BaseGDModel):
     def _extra_logs(self, X, y, grad, iter):
         return {"lr": self._lr(iter)}
 
+    # ===== PREDICT =====
     def _predict(self, X):
         probs = self.predict_proba(X)
         indices = np.argmax(probs, axis=1)
         return self.classes_[indices]
-    # PREDICT PROBA 
+
+    # ===== PREDICT PROBA =====
     def predict_proba(self, X):
         n_samples = X.shape[0]
         X_design = np.c_[np.ones(n_samples), X]
         return softmax(X_design @ self.W)
 
-    # ACCESSORS
+    # ===== ACCESSORS =====
     @property
     def intercept_(self):
         return self.W[0]
