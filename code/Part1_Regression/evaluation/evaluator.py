@@ -6,6 +6,7 @@ from sklearn.metrics import (
     mean_absolute_error,
     r2_score
 )
+from sklearn.base import clone
 from sklearn.model_selection import KFold, cross_validate
 from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
@@ -93,7 +94,7 @@ class Evaluator:
             "train_size": len(X_train),
             "test_size": len(X_test)
         })
-
+        model = clone(model)
         model.fit(X_train, y_train)
         y_pred = model.predict(X_test)
 
@@ -124,7 +125,7 @@ class Evaluator:
             })
 
         scores = cross_validate(
-            model,
+            clone(model),
             X,
             y,
             scoring=[
@@ -224,7 +225,7 @@ class Evaluator:
         )
 
         scores = cross_validate(
-            model,
+            clone(model),
             X,
             y,
             scoring=scoring,
