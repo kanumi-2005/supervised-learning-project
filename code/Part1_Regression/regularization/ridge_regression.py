@@ -7,6 +7,67 @@ from ..base.basegdmodel import BaseGDModel
 
 
 class RidgeRegression(BaseGDModel):
+    """
+    Ridge Regression model trained using gradient descent.
+
+    This model fits a linear function with L2 regularization on the
+    coefficients. The objective is to minimize the mean squared error
+    with an added penalty proportional to the squared magnitude of
+    the coefficients.
+
+    The optimization is performed using (stochastic) gradient descent
+    depending on the batch size configuration inherited from the
+    base class.
+
+    Parameters
+    ----------
+    alpha : float, default=1.0
+        Regularization strength. Must be a non-negative float.
+        Larger values specify stronger regularization.
+
+    lr : float, default=0.001
+        Learning rate used in gradient descent updates.
+
+    max_iter : int, default=1000
+        Maximum number of iterations for the optimization process.
+
+    store_history : bool, default=False
+        Whether to store loss values during training.
+
+    batch_size : int or None, default=None
+        Number of samples per batch. If None, full batch gradient
+        descent is used.
+
+    warm_start : bool, default=False
+        If True, reuse the solution of the previous call to fit
+        as initialization.
+
+    random_state : int, default=42
+        Seed used for random number generation.
+
+    Attributes
+    ----------
+    coef_ : ndarray of shape (n_features,)
+        Estimated coefficients for the linear model.
+
+    intercept_ : float
+        Independent term in the linear model.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> X = np.array([[1, 1], [1, 2], [2, 2], [2, 3]])
+    >>> y = np.dot(X, np.array([1.0, 2.0])) + 3.0
+    >>> model = RidgeRegression(alpha=1.0, lr=0.01, max_iter=1000)
+    >>> model.fit(X, y)
+    >>> model.coef_
+    array([1., 2.])
+    >>> model.intercept_
+    3.0
+    >>> model.predict(np.array([[3, 5]]))
+    array([16.])
+    """
+
     def __init__(
         self,
         alpha=1.0,
@@ -17,6 +78,32 @@ class RidgeRegression(BaseGDModel):
         warm_start=False,
         random_state=42
     ):
+        """
+        Initialize the RidgeRegression model.
+
+        Parameters
+        ----------
+        alpha : float, default=1.0
+            Regularization strength.
+
+        lr : float, default=0.001
+            Learning rate.
+
+        max_iter : int, default=1000
+            Maximum number of iterations.
+
+        store_history : bool, default=False
+            Whether to store training loss history.
+
+        batch_size : int or None, default=None
+            Size of mini-batches.
+
+        warm_start : bool, default=False
+            Reuse previous solution if available.
+
+        random_state : int, default=42
+            Random seed.
+        """
         self.alpha = alpha
         self.warm_start = warm_start
         super().__init__(
@@ -28,9 +115,38 @@ class RidgeRegression(BaseGDModel):
         )
 
     def _predict(self, X):
+        """
+        Compute predictions using the linear model.
+
+        Parameters
+        ----------
+        X : ndarray of shape (n_samples, n_features)
+            Input data.
+
+        Returns
+        -------
+        y_pred : ndarray of shape (n_samples,)
+            Predicted values.
+        """
         return X @ self.coef_ + self.intercept_
 
     def _init_params(self, X, y):
+        """
+        Initialize model parameters.
+
+        Parameters
+        ----------
+        X : ndarray of shape (n_samples, n_features)
+            Training data.
+
+        y : ndarray of shape (n_samples,)
+            Target values.
+
+        Notes
+        -----
+        If warm_start is enabled and parameters already exist,
+        initialization is skipped.
+        """
         n_features = X.shape[1]
 
         if self.warm_start and hasattr(self, "coef_"):
@@ -40,12 +156,49 @@ class RidgeRegression(BaseGDModel):
         self.intercept_ = 0.0
 
     def _loss(self, X, y):
+        """
+        Compute the Ridge loss.
+
+        The loss consists of mean squared error plus L2 penalty.
+
+        Parameters
+        ----------
+        X : ndarray of shape (n_samples, n_features)
+            Input data.
+
+        y : ndarray of shape (n_samples,)
+            True target values.
+
+        Returns
+        -------
+        loss : float
+            Computed loss value.
+        """
         y_pred = self._predict(X)
         mse = np.mean((y_pred - y) ** 2)
         reg = self.alpha * np.sum(self.coef_ ** 2)
         return mse + reg
 
     def _grad(self, X, y):
+        """
+        Compute gradients of the loss function.
+
+        Parameters
+        ----------
+        X : ndarray of shape (n_samples, n_features)
+            Input data.
+
+        y : ndarray of shape (n_samples,)
+            True target values.
+
+        Returns
+        -------
+        grad_w : ndarray of shape (n_features,)
+            Gradient with respect to coefficients.
+
+        grad_b : float
+            Gradient with respect to intercept.
+        """
         n_samples = X.shape[0]
 
         y_pred = self._predict(X)
@@ -58,6 +211,21 @@ class RidgeRegression(BaseGDModel):
         return grad_w, grad_b
 
     def _update_params(self, grad, iteration):
+        """
+        Update model parameters using gradient descent.
+
+        Parameters
+        ----------
+        grad : tuple
+            Tuple containing gradients (grad_w, grad_b).
+
+        iteration : int
+            Current iteration number.
+
+        Returns
+        -------
+        None
+        """
         grad_w, grad_b = grad
 
         self.coef_ -= self.lr * grad_w
@@ -65,12 +233,97 @@ class RidgeRegression(BaseGDModel):
 
 
 class RidgeRegressionCV(BaseEstimator, RegressorMixin):
+    """
+    Ridge Regression with built-in cross-validation.
+
+    This estimator selects the optimal regularization parameter
+    from a predefined set of alphas using K-fold cross-validation.
+    For each alpha, the model is trained and evaluated across
+    multiple folds, and the alpha with the lowest average mean
+    squared error is selected.
+
+    Parameters
+    ----------
+    alphas : iterable of float, default=(0.1, 1.0, 10.0)
+        List of regularization strengths to evaluate.
+
+    cv : int, default=10
+        Number of cross-validation folds.
+
+    random_state : int, default=42
+        Seed used for shuffling data in cross-validation.
+
+    Attributes
+    ----------
+    best_alpha_ : float
+        Selected regularization parameter with lowest CV error.
+
+    coef_ : ndarray of shape (n_features,)
+        Coefficients of the final fitted model.
+
+    intercept_ : float
+        Intercept of the final fitted model.
+
+    result_ : ndarray of shape (n_alphas,)
+        Mean squared error for each alpha averaged over folds.
+
+    coefs_path_ : ndarray of shape (n_alphas, n_features)
+        Average coefficient values across folds for each alpha.
+
+    final_model_ : RidgeRegression
+        Model fitted on the full dataset using best_alpha_.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> X = np.array([[1, 1], [1, 2], [2, 2], [2, 3]])
+    >>> y = np.dot(X, np.array([1.0, 2.0])) + 3.0
+    >>> model = RidgeRegressionCV(alphas=(0.1, 1.0, 10.0), cv=2)
+    >>> model.fit(X, y)
+    >>> model.best_alpha_
+    1.0
+    >>> model.coef_
+    array([1., 2.])
+    >>> model.predict(np.array([[3, 5]]))
+    array([16.])
+    """
+
     def __init__(self, alphas=(0.1, 1.0, 10.0), cv=10, random_state=42):
+        """
+        Initialize the RidgeRegressionCV estimator.
+
+        Parameters
+        ----------
+        alphas : iterable of float, default=(0.1, 1.0, 10.0)
+            Candidate regularization strengths.
+
+        cv : int, default=10
+            Number of folds for cross-validation.
+
+        random_state : int, default=42
+            Random seed for reproducibility.
+        """
         self.alphas = alphas
         self.cv = cv
         self.random_state = random_state
 
     def fit(self, X, y):
+        """
+        Fit Ridge Regression model with cross-validation.
+
+        Parameters
+        ----------
+        X : array-like of shape (n_samples, n_features)
+            Training data.
+
+        y : array-like of shape (n_samples,)
+            Target values.
+
+        Returns
+        -------
+        self : object
+            Fitted estimator with selected alpha.
+        """
         X, y = np.array(X), np.array(y).ravel()
         self.alphas = sorted(self.alphas, reverse=True)
         kf = KFold(
@@ -118,9 +371,43 @@ class RidgeRegressionCV(BaseEstimator, RegressorMixin):
         return self
 
     def predict(self, X):
+        """
+        Predict using the fitted Ridge model.
+
+        Parameters
+        ----------
+        X : array-like of shape (n_samples, n_features)
+            Input samples.
+
+        Returns
+        -------
+        y_pred : ndarray of shape (n_samples,)
+            Predicted values.
+        """
         return self.final_model_.predict(X)
 
     def plot_regularization_path(self, title=None):
+        """
+        Plot coefficient paths over different alphas.
+
+        The plot shows how each feature coefficient changes
+        as a function of the logarithm of the regularization
+        parameter.
+
+        Parameters
+        ----------
+        title : str or None, default=None
+            Title of the plot.
+
+        Returns
+        -------
+        None
+
+        Raises
+        ------
+        ValueError
+            If the model has not been fitted yet.
+        """
         if self.coefs_path_ is None:
             raise ValueError("Model not fitted. Call fit() first.")
 
