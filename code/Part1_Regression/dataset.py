@@ -4,20 +4,70 @@ from sklearn.datasets import fetch_california_housing
 
 class CaliforniaHousingDataset:
     """
-    Utility class for loading and splitting the California Housing dataset.
+    California Housing dataset wrapper with train/val/test splitting.
+
+    This class loads the California Housing dataset from sklearn and
+    provides utilities for splitting it into train, validation, and
+    test sets using random permutation of indices.
+
+    Parameters
+    ----------
+    None
 
     Attributes
     ----------
-    X : np.ndarray
-        Feature matrix of shape (n_samples, n_features).
-    y : np.ndarray
-        Target vector of shape (n_samples,).
+    X : ndarray of shape (n_samples, n_features)
+        Feature matrix.
+
+    y : ndarray of shape (n_samples,)
+        Target values.
+
     df : pandas.DataFrame
-        Full dataset as a pandas DataFrame.
+        Full dataset as a dataframe including features and target.
+
+    feature_names : list of str
+        Names of input features.
+
+    target_name : str
+        Name of the target variable.
+
+    n_features : int
+        Number of features.
+
+    n_samples : int
+        Number of samples.
+
+    X_train : ndarray
+        Training features after split.
+
+    X_val : ndarray
+        Validation features after split.
+
+    X_test : ndarray
+        Test features after split.
+
+    y_train : ndarray
+        Training targets after split.
+
+    y_val : ndarray
+        Validation targets after split.
+
+    y_test : ndarray
+        Test targets after split.
+
+    Examples
+    --------
+    >>> ds = CaliforniaHousingDataset()
+    >>> ds.split(train_size=0.6, val_size=0.2, test_size=0.2)
+    >>> ds.train_size()
+    12384
+    >>> ds.test_size()
+    4128
     """
+
     def __init__(self):
         """
-        Load the California Housing dataset into memory.
+        Load California Housing dataset.
         """
         dataset = fetch_california_housing(as_frame=True)
         self.X = dataset.data.to_numpy()
@@ -30,72 +80,45 @@ class CaliforniaHousingDataset:
 
     def size(self) -> int:
         """
-        Return the number of samples in the dataset.
+        Return total number of samples.
 
         Returns
         -------
         int
-            Number of samples.
+            Number of samples in dataset.
         """
         return len(self.X)
 
     def train_size(self) -> int:
         """
-        Return the number of samples in the training set.
+        Return number of training samples.
 
         Returns
         -------
         int
-            Number of samples in the training set.
-
-        Raises
-        ------
-        AttributeError
-            If the dataset has not been split yet.
-
-        Notes
-        -----
-        This method is available only after calling `split()`.
+            Size of training set.
         """
         return len(self.X_train)
 
     def val_size(self) -> int:
         """
-        Return the number of samples in the validation set.
+        Return number of validation samples.
 
         Returns
         -------
         int
-            Number of samples in the validation set.
-
-        Raises
-        ------
-        AttributeError
-            If the dataset has not been split yet.
-
-        Notes
-        -----
-        This method is available only after calling `split()`.
+            Size of validation set.
         """
         return len(self.X_val)
 
     def test_size(self) -> int:
         """
-        Return the number of samples in the test set.
+        Return number of test samples.
 
         Returns
         -------
         int
-            Number of samples in the test set.
-
-        Raises
-        ------
-        AttributeError
-            If the dataset has not been split yet.
-
-        Notes
-        -----
-        This method is available only after calling `split()`.
+            Size of test set.
         """
         return len(self.X_test)
 
@@ -107,31 +130,27 @@ class CaliforniaHousingDataset:
         random_state: int = 42,
     ):
         """
-        Split the dataset into train, validation, and test sets.
+        Split dataset into train/validation/test sets.
 
         Parameters
         ----------
         train_size : float, default=0.6
-            Proportion of data used for training.
+            Proportion of training data.
+
         val_size : float, default=0.2
-            Proportion of data used for validation.
+            Proportion of validation data.
+
         test_size : float, default=0.2
-            Proportion of data used for testing.
+            Proportion of test data.
+
         random_state : int, default=42
             Random seed for reproducibility.
 
-        Raises
-        ------
-        AssertionError
-            If train_size + val_size + test_size != 1.0
-
-        Notes
-        -----
-        This method shuffles the dataset before splitting.
-
-        After calling this method, the following attributes are available:
-        - X_train, X_val, X_test
-        - y_train, y_val, y_test
+        Returns
+        -------
+        None
+            Sets X_train, X_val, X_test, y_train,
+            y_val, y_test as attributes.
         """
         assert train_size + val_size + test_size == 1.0
 
