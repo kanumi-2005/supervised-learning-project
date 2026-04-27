@@ -1,0 +1,167 @@
+\section{Thông tin nhóm}
+
+Báo cáo được thực hiện bởi nhóm 13 của lớp 23\_24 môn Nhập môn học máy.
+
+\subsection{Thông tin thành viên}
+Thông tin các thành viên nhóm được trình bày ở
+\tablename~\ref{tab:info-members}.
+
+\begin{longtblr}[
+  caption = {Thông tin thành viên nhóm},
+  label = {tab:info-members},
+  note{$\dag$} = {Nhóm trưởng.}
+]{
+  width=\textwidth,
+  colspec={lll},
+  rowhead = 1,
+  hlines,
+  vlines
+}
+  Tên thành viên & Mã số sinh viên\\
+  Hoàng Ngọc Phú\TblrNote{$\dag$} & 23120010\\
+  Hoàng Ngọc Quí & 23120077\\
+  Nguyễn Duy Bảo & 23120113 \\
+\end{longtblr}
+
+\subsection{Phân chia công việc và mức độ hoàn thành}
+
+\tablename~\ref{tab:task-members} trình bày các nhiệm vụ và thành viên thực
+hiện. Mức độ hoàn thành được tính riêng cho từng thành viên thay vì so với tỉ
+lệ hoàn thành trong từng công việc---tức là ai hoàn thành công việc của mình
+đều được đánh giá 100\%.
+
+\begin{longtblr}[
+  caption = {Nhiệm vụ và mức độ hoàn thành yêu cầu được giao của mỗi thành
+  viên},
+  label = {tab:task-members}
+]{
+  width=\textwidth,
+  colspec={Q[3in,h,l]*{3}{X[c,m]}},
+  cell{1-2}{1} = {font=\bfseries, bg=gray!15},
+  cell{1}{2-Z} = {font=\bfseries, bg=gray!15},
+  rowhead = 2,
+  hlines,
+  vlines
+}
+  \SetCell[r=2]{c,m} Nhiệm vụ & \SetCell[c=3]{c} Thành viên & \\
+   & H.\ N.\ Phú & H.\ N.\ Quí & N.\ D.\ Bảo\\
+  \SetCell[c=4]{l} Bài toán hồi quy & \\
+  Chọn bộ dữ liệu & 100\% & 100\% & 100\% \\
+  Phân tích khám phá và tiền xử lí & 100\% \\
+  Hồi quy tuyến tính & 100\% \\
+  Hồi quy có Regularization và Lựa chọn Đặc trưng & & 100\% \\
+  Mô hình với Hàm Cơ sở Phi Tuyến và Ablation Study & & & 100\% \\
+  Hồi quy Bayesian đầy đủ + vùng bất định (nâng cao) & & & 100\% \\
+  Evidence Maximization (nâng cao) & & & 100\% \\
+  Kernel Ridge Regression (nâng cao) & & 100\% \\
+  Gaussian Process Regression (nâng cao) & 100\% \\
+  Robust Regression (nâng cao) & 100\% \\
+  Phân tích Bias–Variance thực nghiệm (nâng cao) & & 100\% \\
+  Đánh giá mô hình & 100\% & 100\% & 100\% \\
+  Phân tích và thảo luận & 100\% & 100\% & 100\% \\
+  \SetCell[c=4]{l} Bài toán phân lớp \\
+  Chọn bộ dữ liệu & 100\% & 100\% & 100\% \\
+  Phân tích khám phá và tiền xử lí & 100\% \\
+  Logistic Regression & 100\% \\
+  Linear Discriminant Analysis--LDA và QDA & & 100\% \\
+  Perceptron và Logistic Regression có Regularization & & & 100\% \\
+  Mô hình Probit (nâng cao) & 100\% \\
+  Xấp xỉ Laplace (nâng cao) & 100\% \\
+  Kernel Logistic Regression (nâng cao) & & 100\% \\
+  Gaussian Naive Bayes vs.\ LDA (nâng cao) & & 100\% \\
+  Phân tích VC dimension (nâng cao) & & & 100\% \\
+  Đánh giá mô hình & 100\% & 100\% & 100\% \\
+  Phân tích và thảo luận & 100\% & 100\% & 100\% \\
+  Kết nối hồi quy và phân lớp & & 100\% & 100\% \\
+  Bảng so sánh toàn diện & 100\% & 100\% & 100\% \\
+  Phân tích mức độ nhạy cảm (sensitivity) và tính bền vững (robustness) & 100\%
+  \\
+  \SetCell[c=4]{l} Khác \\
+  Cài đặt & 100\% & 100\% & 100\% \\
+  Chạy thí nghiệm & 100\% & 100\% & 100\% \\
+  Viết báo cáo & 100\% & 100\% & 100\% \\
+\end{longtblr}
+
+\subsection{Mức độ hoàn thành đồ án}
+
+\tablename~\ref{tab:requirement-project} trình bày từng yêu cầu của đồ án và
+mức độ hoàn thành.
+
+\begin{longtblr}[
+  caption = {Yêu cầu và mức độ hoàn thành từng yêu cầu},
+  label = {tab:requirement-project},
+  note{$\dag$} = {Chưa thực hiện ở các phần nâng cao.}
+]{
+  width=\textwidth,
+  colspec={Q[3in,h,l]Q[1in,c,m]},
+  cell{1-2}{1} = {font=\bfseries, bg=gray!15},
+  cell{1}{2-Z} = {font=\bfseries, bg=gray!15},
+  rowhead = 1,
+  hlines,
+  vlines
+}
+  Yêu cầu & Mức độ hoàn thành \\
+  \SetCell[c=2]{l} Bài toán hồi quy \\
+  Cơ sở lý thuyết: Normal Eq., Gauss–Markov, Bias–Variance, Bayesian, Evidence
+  & 100\% \\
+  EDA, kiểm định Breusch–Pagan, WLS nếu cần, tiền xử lý đầy đủ & 100\% \\
+  Linear Regression: Normal Equations + Mini-batch GD + learning
+  rate schedule & 100\% \\
+  Elastic Net + Lasso path + Forward/Backward feature selection & 100\% \\
+  Mô hình phi tuyến (3 loại) + validation curve + ablation study & 100\% \\
+  Đánh giá: $k$-fold CV $k = 10$, kiểm định thống kê, calibration & 100\% \\
+  Hồi quy Bayesian (nâng cao) & 100\% \\
+  Evidence Maximization (nâng cao) & 100\% \\
+  Kernel Ridge (nâng cao) & 100\% \\
+  GP Regression (nâng cao) & 100\% \\
+  Robust Regression (nâng cao) & 100\% \\
+  Bias–-Var bootstrap & 100\% \\
+  \SetCell[c=2]{l} Bài toán phân lớp \\
+
+  Lý thuyết: gradient/Hessian LR, IRLS, Perceptron, Kernel LR, Laplace, Probit
+  & 100\% \\
+  EDA, phân tích mất cân bằng, tiền xử lý có chiều sâu & 100\% \\
+  Logistic Regression: GD + Newton–Raphson + so sánh 3 chiến lược đa lớp &
+  100\% \\
+  LDA + QDA: Fisher ratio, so sánh lý thuyết, quy chiếu 2D & 100\% \\
+  Perceptron + L1/L2 LR + class-weighted loss + stratified CV & 100\% \\
+  Đánh giá: CV, McNemar, PR curve, calibration, phân tích lỗi sâu & 100\% \\
+  Probit (nâng cao) & 100\% \\
+  Laplace (nâng cao) & 100\% \\
+  Kernel LR (nâng cao) & 100\% \\
+  GNB vs LDA (nâng cao) & 100\% \\
+  VC dimension (nâng cao) & 100\% \\
+  \SetCell[c=2]{l} Kết nối Hồi quy và Phân lớp & 100\% \\
+  Hồi quy logistic như hồi quy & 100\% \\
+  Generalized Linear Models (GLM) & 100\% \\
+  Exponential family & 100\% \\
+  Bảng so sánh toàn diện & 100\% \\
+  \SetCell[c=2]{l} Phân tích mức độ nhạy cảm (sensitivity) và tính bền vững
+  (robustness) \\
+  Sensitivity analysis & 100\% \\
+  Noise injection & 100\% \\
+  Feature corruption & 100\% \\
+  Phân tích khả năng hội tụ (convergence) & 100\% \\
+  \SetCell[c=2]{l} Khả năng tái hiện lại thí nghiệm \\
+  Cố định tất cả random seed & 100\% \\
+  Ghi log đầy đủ: hyperparameter, train/val/test split indices, metric từng
+  fold, \ldots & 80\%\TblrNote{$\dag$} \\
+  Báo cáo thời gian thực thi/ huấn luyện/ kiểm tra và bộ nhớ tiêu tốn của từng
+  thuật toán & 100\% \\
+  Cung cấp file \texttt{environment.yml} (conda) hoặc \texttt{requirements.txt}
+  với version cụ thể & 100\% \\
+  Kết quả phải tái hiện được hoàn toàn khi chạy lại notebook từ đầu & 100\% \\
+  \SetCell[c=2]{l} Yêu cầu về Code \\
+  Tất cả code phải chạy lại được & 100\% \\
+  Phần cài đặt từ đầu phải rõ ràng, tách biệt với phần sử dụng thư viện kiểm
+  chứng & 100\% \\
+  Phiên bản Python và thư viện phải được ghi rõ trong file
+  \texttt{requirements.txt} & 100\% \\
+  Đặt seed ngẫu nhiên để đảm bảo kết quả tái hiện được & 100\% \\
+  \SetCell[c=2]{l} Yêu cầu về Báo cáo \\
+  Báo cáo được nộp dưới dạng PDF, không giới hạn độ dài trang & 100\% \\
+  Danh mục tài liệu tham khảo theo chuẩn IEEE hoặc APA rõ ràng & 100\% \\
+  Khuyến nghị sử dụng \LaTeX. Nếu sử dụng \LaTeX, yêu cầu nhóm nộp cả mã nguồn
+  \texttt{.tex} & 100\% \\
+  Mỗi thành viên trong nhóm phải có mục đóng góp rõ ràng & 100\% \\
+\end{longtblr}
