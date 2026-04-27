@@ -40,7 +40,8 @@ class Evaluator:
         Optional logger for tracking evaluation steps.
     """
 
-    def __init__(self, n_splits=5, random_state=42, logger=None):
+    def __init__(self, n_splits=5, random_state=42, logger=None,
+                 log_model=False):
         """
         Initialize evaluator.
 
@@ -58,6 +59,10 @@ class Evaluator:
         self.n_splits = n_splits
         self.random_state = random_state
         self.logger = logger
+        if log_model:
+            self.model_fit_params = {"predictor__logger": self.logger}
+        else:
+            self.model_fit_params = {}
 
     # ====================== LOG ======================
 
@@ -232,7 +237,9 @@ class Evaluator:
         })
 
         model = clone(model)
-        model.fit(X_train, y_train, predictor__logger=self.logger)
+        if self.log_model:
+
+        model.fit(X_train, y_train, **self.model_fit_params)
 
         y_pred = model.predict(X_test)
 
@@ -301,7 +308,7 @@ class Evaluator:
             ],
             cv=splits,
             n_jobs=-1,
-            params={"predictor__logger": self.logger}
+            params=self.model_fit_params
         )
 
         acc = scores["test_accuracy"]

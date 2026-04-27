@@ -40,7 +40,8 @@ class Evaluator:
         steps and metrics.
     """
 
-    def __init__(self, n_splits=10, random_state=42, logger=None):
+    def __init__(self, n_splits=10, random_state=42, logger=None,
+                 log_model=False):
         """
         Initialize Evaluator.
 
@@ -58,6 +59,10 @@ class Evaluator:
         self.n_splits = n_splits
         self.random_state = random_state
         self.logger = logger
+        if log_model:
+            self.model_fit_params = {"predictor__logger": self.logger}
+        else:
+            self.model_fit_params = {}
 
     # ====================== LOG ======================
 
@@ -194,7 +199,7 @@ class Evaluator:
         })
 
         model = clone(model)
-        model.fit(X_train, y_train, predictor__logger=self.logger)
+        model.fit(X_train, y_train, **self.model_fit_params)
         y_pred = model.predict(X_test)
 
         return self.evaluate(y_test, y_pred)
@@ -253,9 +258,7 @@ class Evaluator:
             ],
             cv=splits,
             n_jobs=-1,
-            params={
-                "predictor__logger": self.logger
-            }
+            params=self.model_fit_params
         )
 
         mse_list = -scores["test_neg_mean_squared_error"]
@@ -421,9 +424,7 @@ class Evaluator:
             scoring=scoring,
             cv=kf,
             n_jobs=-1,
-            params={
-                "predictor__logger": self.logger
-            }
+            params=self.model_fit_params
         )
 
         raw_scores = -scores["test_score"]
