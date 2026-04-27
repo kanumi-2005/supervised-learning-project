@@ -11,27 +11,158 @@ def sigmoid(x):
 
 
 class IRLSClassifier(ClassifierMixin, BaseModel):
+    """
+    Iteratively Reweighted Least Squares (IRLS) binary classifier.
+
+    IRLSClassifier fits a logistic regression model for binary
+    classification using the Newton-Raphson optimization method.
+
+    The model minimizes negative log-likelihood with L2 regularization.
+
+    Parameters
+    ----------
+    max_iter : int, default=20
+        Maximum number of IRLS iterations.
+
+    reg_lambda : float, default=1e-4
+        L2 regularization strength added to the Hessian diagonal.
+
+    store_history : bool, default=True
+        Whether to store training/validation loss and time history.
+
+    Attributes
+    ----------
+    classes_ : ndarray of shape (2,)
+        Unique class labels.
+
+    w : ndarray of shape (n_features + 1,)
+        Model weights including intercept.
+
+    n_iter_ : int
+        Number of iterations performed.
+
+    train_loss_history_ : list
+        Training loss per iteration (if enabled).
+
+    val_loss_history_ : list
+        Validation loss per iteration (if provided).
+
+    time_history_ : list
+        Elapsed time per iteration.
+
+    Notes
+    -----
+    IRLS solves a sequence of weighted least squares problems
+    using second-order optimization.
+
+    Examples
+    --------
+    >>> from sklearn.datasets import make_classification
+    >>> X, y = make_classification(n_samples=100, n_features=5,
+    ...                            random_state=0)
+    >>> clf = IRLSClassifier(max_iter=3)
+    >>> list(clf.fit(X, y))
+    >>> clf.predict(X)[:5]
+    """
+
     def __init__(self, max_iter=20, reg_lambda=1e-4, store_history=True):
         self.max_iter = max_iter
         self.reg_lambda = reg_lambda
         self.store_history = store_history
 
     def _encode_labels(self, y):
+        """
+        Encode binary labels into {0, 1} format.
+
+        Parameters
+        ----------
+        y : array-like of shape (n_samples,)
+            Target labels.
+
+        Returns
+        -------
+        y_bin : ndarray of shape (n_samples,)
+            Binary encoded labels.
+
+        Raises
+        ------
+        ValueError
+            If number of classes is not 2.
+        """
         self.classes_ = np.unique(y)
         if len(self.classes_) != 2:
             raise ValueError("IRLSClassifier only supports binary")
         return (y == self.classes_[1]).astype(float)
 
     def _init_params(self, X, y):
+        """
+        Initialize model parameters.
+
+        Parameters
+        ----------
+        X : ndarray of shape (n_samples, n_features)
+            Input data.
+
+        y : array-like
+            Target labels.
+
+        Returns
+        -------
+        None
+        """
         n_samples, n_features = X.shape
         self.w = np.zeros(n_features + 1)
         self.y_bin_ = self._encode_labels(y)
 
     def _loss(self, X, y):
+        """
+        Compute log loss.
+
+        Parameters
+        ----------
+        X : array-like
+            Input data.
+
+        y : array-like
+            True labels.
+
+        Returns
+        -------
+        loss : float
+            Log loss value.
+        """
         probs = self.predict_proba(X)
         return log_loss(y, probs)
 
     def _fit(self, X, y, **kwargs):
+        """
+        Fit IRLS classifier.
+
+        Parameters
+        ----------
+        X : array-like of shape (n_samples, n_features)
+            Training data.
+
+        y : array-like of shape (n_samples,)
+            Binary target labels.
+
+        X_val : array-like, optional
+            Validation data.
+
+        y_val : array-like, optional
+            Validation labels.
+
+        Yields
+        ------
+        dict
+            Dictionary with iteration, train loss, val loss,
+            and elapsed time.
+
+        Returns
+        -------
+        self : object
+            Fitted model after training.
+        """
         X_val = kwargs.get("X_val", None)
         y_val = kwargs.get("y_val", None)
 
@@ -52,7 +183,8 @@ class IRLSClassifier(ClassifierMixin, BaseModel):
             p = sigmoid(z)
 
             W = np.clip(p * (1 - p), 1e-8, None)
-            H = X_design.T @ (W[:, None] * X_design) + self.reg_lambda * np.eye(X_design.shape[1])
+            H = X_design.T @ (W[:, None] * X_design) + \
+                self.reg_lambda * np.eye(X_design.shape[1])
             g = X_design.T @ (p - self.y_bin_)
 
             try:
@@ -86,10 +218,36 @@ class IRLSClassifier(ClassifierMixin, BaseModel):
         self.n_iter_ = self.max_iter
 
     def _predict(self, X):
+        """
+        Predict class labels.
+
+        Parameters
+        ----------
+        X : array-like
+            Input data.
+
+        Returns
+        -------
+        y_pred : ndarray
+            Predicted class labels.
+        """
         probs = self.predict_proba(X)
         return self.classes_[np.argmax(probs, axis=1)]
 
     def predict_proba(self, X):
+        """
+        Predict class probabilities.
+
+        Parameters
+        ----------
+        X : array-like
+            Input data.
+
+        Returns
+        -------
+        proba : ndarray of shape (n_samples, 2)
+            Class probabilities.
+        """
         n_samples = X.shape[0]
         X_design = np.c_[np.ones(n_samples), X]
         p = sigmoid(X_design @ self.w)
@@ -97,73 +255,10 @@ class IRLSClassifier(ClassifierMixin, BaseModel):
 
     @property
     def intercept_(self):
+        """float : Intercept term."""
         return self.w[0]
 
     @property
     def coef_(self):
+        """ndarray : Model coefficients (excluding intercept)."""
         return self.w[1:]
-
-
-if __name__ == "__main__":
-    import matplotlib.pyplot as plt
-    from sklearn.datasets import make_classification
-    from sklearn.model_selection import train_test_split
-    from sklearn.metrics import accuracy_score
-    from sklearn.preprocessing import StandardScaler
-
-    # dataset
-    X, y = make_classification(
-        n_samples=500_000,
-        n_features=10,
-        n_informative=6,
-        n_classes=2,
-        random_state=42
-    )
-
-    # split
-    X_train, X_temp, y_train, y_temp = train_test_split(
-        X, y, test_size=0.3, random_state=42
-    )
-
-    X_val, X_test, y_val, y_test = train_test_split(
-        X_temp, y_temp, test_size=0.5, random_state=42
-    )
-
-    scaler = StandardScaler()
-    X_train = scaler.fit_transform(X_train)
-    X_val = scaler.transform(X_val)
-    X_test = scaler.transform(X_test)
-
-    # model
-    model = IRLSClassifier()
-
-    # fit
-    model.fit(X_train, y_train, X_val=X_val, y_val=y_val)
-
-    # accuracy
-    y_pred = model.predict(X_test)
-    acc = accuracy_score(y_test, y_pred)
-    print(f"Acc = {acc:.4f}")
-
-    # ===== PLOT =====
-    epochs = range(len(model.train_loss_history_))
-
-    # 1. loss vs epoch
-    plt.figure(layout="constrained")
-    plt.plot(epochs, model.train_loss_history_, label="train")
-    plt.plot(epochs, model.val_loss_history_, label="val")
-    plt.xlabel("Epoch")
-    plt.ylabel("Loss")
-    plt.title("Loss vs Epoch")
-    plt.legend()
-    plt.show()
-
-    # 2. loss vs time
-    plt.figure(layout="constrained")
-    plt.plot(model.time_history_, model.train_loss_history_, label="train")
-    plt.plot(model.time_history_, model.val_loss_history_, label="val")
-    plt.xlabel("Time (s)")
-    plt.ylabel("Loss")
-    plt.title("Loss vs Time")
-    plt.legend()
-    plt.show()
