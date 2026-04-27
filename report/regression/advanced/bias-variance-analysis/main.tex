@@ -1,5 +1,75 @@
 \subsubsection{Phân tích Bias-Variance}
+\paragraph{Thiết lập bài toán}
 
+Giả sử dữ liệu được sinh theo mô hình:
+\begin{align}
+    t &= f(\mathbf{x}) + \varepsilon, \\
+    \mathbb{E}[\varepsilon] &= 0, \quad \mathrm{Var}(\varepsilon) = \sigma^2.
+\end{align}
+
+Xét mô hình dự đoạn: $\hat{f}(\mathbf{x})$.
+
+\subparagraph{Phân rã sai số kỳ vọng}
+
+\begin{align}
+    \mathbb{E}_{\mathcal{D}, \varepsilon}
+    \left[
+        \left(t - \hat{f}(\mathbf{x}) \right)^2
+    \right]
+    &= \mathbb{E}_{\mathcal{D}, \varepsilon}
+    \left[
+        \left(f(\mathbf{x}) + \varepsilon - \hat{f}(\mathbf{x}) \right)^2
+    \right] \\
+    &= \mathbb{E}_{\mathcal{D}}
+    \left[
+        \left(\hat{f}(\mathbf{x}) - f(\mathbf{x}) \right)^2
+    \right] + \sigma^2.
+\end{align}
+
+Phân rã tiếp:
+\begin{equation}
+    \mathbb{E}_{\mathcal{D}}
+    \left[
+        \left(\hat{f}(\mathbf{x}) - f(\mathbf{x}) \right)^2
+    \right]
+    = \left(
+        \mathbb{E}_{\mathcal{D}}[\hat{f}(\mathbf{x})]
+        - f(\mathbf{x})
+    \right)^2 + \mathbb{E}_{\mathcal{D}}
+    \left[
+        \left(
+            \hat{f}(\mathbf{x}) -
+            \mathbb{E}_{\mathcal{D}}[\hat{f}(\mathbf{x})]
+        \right)^2
+    \right].
+\end{equation}
+
+\subparagraph{Định nghĩa}
+
+\begin{align}
+    \mathrm{Bias}(\mathbf{x})
+    &= \mathbb{E}_{\mathcal{D}}[\hat{f}(\mathbf{x})] - f(\mathbf{x}), \\
+    \mathrm{Var}(\mathbf{x})
+    &= \mathbb{E}_{\mathcal{D}}
+    \left[
+        \left(
+            \hat{f}(\mathbf{x}) -
+            \mathbb{E}_{\mathcal{D}}[\hat{f}(\mathbf{x})]
+        \right)^2
+    \right].
+\end{align}
+
+\subparagraph{Kết quả cuối cùng}
+
+\begin{align}
+    \mathbb{E}_{\mathcal{D}, \varepsilon}
+    \left[
+        \left(t - \hat{f}(\mathbf{x}) \right)^2
+    \right]
+    = \mathrm{Bias}^2(\mathbf{x}) + \mathrm{Var}(\mathbf{x}) + \sigma^2.
+\end{align}
+
+\paragraph{Kết quả ước lượng}
 Trong phần này, ta thực hiện phân tích Bias-Variance cho hai mô hình Ridge và
 Lasso nhằm hiểu rõ hơn về khả năng tổng quát hóa của từng mô hình.
 
@@ -7,8 +77,6 @@ Phân tích được thực hiện bằng phương pháp bootstrap với 200 l�
 với mỗi lần lặp, chúng tôi lấy mẫu lại từ tập huấn luyện, huấn luyện mô hình
 và ghi nhận dự đoán. Từ đó, ước lượng được bias$^2$ và variance theo công thức
 thực nghiệm.
-
-\paragraph{Kết quả ước lượng}
 \tablename~\ref{tab:bias-variance} trình bày kết quả ước lượng bias$^2$ và
 variance cho hai mô hình.
 
