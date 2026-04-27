@@ -1,0 +1,7 @@
+model,train_time_mean,train_time_std,train_memory_mean,train_memory_std,inference_time_mean,inference_time_std,inference_memory_mean,inference_memory_std
+OLS,0.001,0.0002,1321608.0,0.0,0.0,0.0,66344.0,0.0
+MBGD,2.1302,0.0401,2518412.4,1037.7972,0.0,0.0,66368.0,0.0
+WLS,0.0063,0.001,4758081.0,0.0,0.0,0.0,66344.0,0.0
+Ridge,0.6169,0.0226,2511440.0,0.0,0.0,0.0,66344.0,0.0
+Lasso,0.634,0.023,2511440.0,0.0,0.0,0.0,66344.0,0.0
+Elastic Net,0.6453,0.0268,2511627.2,310.4,0.0,0.0,66344.0,0.0

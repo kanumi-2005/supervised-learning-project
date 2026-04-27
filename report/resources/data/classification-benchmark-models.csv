@@ -1,0 +1,5 @@
+model,train_time_mean,train_time_std,train_memory_mean,train_memory_std,inference_time_mean,inference_time_std,inference_memory_mean,inference_memory_std
+Softmax,32.7608,0.4819,496501522.4,6838.8137,0.0376,0.0007,71648448.0,0.0
+LDA,2.4893,0.0108,810431965.0,0.0,0.0254,0.0033,13081910.0,0.0
+QDA,1.9705,0.0157,293849960.4,308.8,0.3616,0.0117,157108606.0,0.0
+Weighted Softmax,34.5564,1.7707,496498120.2,1015.3767,0.0395,0.0047,71648448.0,0.0

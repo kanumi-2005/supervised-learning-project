@@ -1,0 +1,14 @@
+\begin{tblr}{
+  width=\textwidth,
+  colspec={lXXXX},
+  row{1} = {font=\bfseries, bg=gray!15},
+  hlines,
+  vlines,
+  cell{1}{1-Z} = {cmd=\textenglish}
+}
+model & train time mean & train memory mean & inference time mean & inference memory mean \\
+Softmax & 32.7608 & 496501522.4 & 0.0376 & 71648448.0 \\
+LDA & 2.4893 & 810431965.0 & 0.0254 & 13081910.0 \\
+QDA & 1.9705 & 293849960.4 & 0.3616 & 157108606.0 \\
+Weighted Softmax & 34.5564 & 496498120.2 & 0.0395 & 71648448.0 \\
+\end{tblr}

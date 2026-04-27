@@ -1,0 +1,16 @@
+\begin{tblr}{
+  width=\textwidth,
+  colspec={lXXXX},
+  row{1} = {font=\bfseries, bg=gray!15},
+  hlines,
+  vlines,
+  cell{1}{-Z} = {cmd=\textenglish}
+}
+model & train time std & train memory std & inference time std & inference memory std \\
+OLS & 0.0002 & 0.0 & 0.0 & 0.0 \\
+MBGD & 0.0401 & 1037.7972 & 0.0 & 0.0 \\
+WLS & 0.001 & 0.0 & 0.0 & 0.0 \\
+Ridge & 0.0226 & 0.0 & 0.0 & 0.0 \\
+Lasso & 0.023 & 0.0 & 0.0 & 0.0 \\
+Elastic Net & 0.0268 & 310.4 & 0.0 & 0.0 \\
+\end{tblr}

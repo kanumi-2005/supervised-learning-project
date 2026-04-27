@@ -1,0 +1,85 @@
+\section{Kiểm chuẩn (Benchmark)}
+
+Trong phần này, các mô hình được đánh giá và so sánh dựa trên nhiều tiêu chí
+khác nhau như thời gian huấn luyện, mức sử dụng bộ nhớ trong quá trình huấn
+luyện, cũng như thời gian và bộ nhớ khi suy luận. Mục tiêu của việc kiểm chuẩn
+là nhằm đánh giá hiệu năng tính toán của từng mô hình trong các điều kiện thực
+nghiệm giống nhau.
+
+\subsection{Hồi quy}
+
+
+Kết quả kiểm chuẩn của các mô hình hồi quy được trình bày trong
+\tablename~\ref{tab:regression-benchmark-part1} và
+\tablename~\ref{tab:regression-benchmark-part2}. Kết quả được tính trên 5 lần
+chạy. Các tiêu chí đánh giá gồm trung bình và độ lệch chuẩn thời gian (theo đơn
+vị giây) và bộ nhớ (tính theo đơn vị byte) quá trình huấn luyện và suy luận.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Kết quả kiểm chuẩn các mô hình hồi quy (phần 1)}
+  \label{tab:regression-benchmark-part1}
+  \import{\tablespath}{regression-benchmark-part1}
+\end{table}
+
+\begin{table}[htbp]
+  \centering
+  \caption{Kết quả kiểm chuẩn các mô hình hồi quy (phần 2)}
+  \label{tab:regression-benchmark-part2}
+  \import{\tablespath}{regression-benchmark-part2}
+\end{table}
+
+Từ các kết quả kiểm chuẩn, có thể thấy sự khác biệt rõ rệt giữa các mô hình về
+thời gian huấn luyện và mức sử dụng bộ nhớ.
+
+Các mô hình tuyến tính đơn giản như OLS và WLS có thời gian huấn luyện rất
+thấp, gần như tức thời, đồng thời mức tiêu thụ bộ nhớ cũng nhỏ. Điều này cho
+thấy đây là các mô hình có độ phức tạp tính toán thấp, phù hợp với các bài toán
+cần tốc độ xử lý cao.
+
+Ngược lại, MBGD có thời gian huấn luyện lớn hơn đáng kể so với OLS và WLS do
+phải cập nhật tham số theo từng lô dữ liệu, kéo theo chi phí tính toán tăng
+lên. Tuy nhiên, mức bộ nhớ sử dụng vẫn tương đối ổn định.
+
+Các mô hình Ridge, Lasso và Elastic Net có thời gian huấn luyện cao hơn OLS
+nhưng vẫn ở mức chấp nhận được. Sự khác biệt giữa ba mô hình này không quá lớn,
+tuy nhiên Elastic Net có xu hướng tốn thời gian hơn nhẹ do kết hợp đồng thời
+hai dạng chính quy.
+
+Về suy luận, tất cả các mô hình hồi quy đều có thời gian suy luận rất nhỏ, gần
+như không đáng kể, cho thấy khả năng dự đoán nhanh sau khi huấn luyện.
+
+\subsection{Phân lớp}
+
+Kết quả kiểm chuẩn của các mô hình phân lớp được trình bày trong
+\tablename~\ref{tab:classification-benchmark-part1} và
+\tablename~\ref{tab:classification-benchmark-part2}.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Kết quả kiểm chuẩn các mô hình phân lớp (phần 1)}
+  \label{tab:classification-benchmark-part1}
+  \import{\tablespath}{classification-benchmark-part1}
+\end{table}
+
+\begin{table}[htbp]
+  \centering
+  \caption{Kết quả kiểm chuẩn các mô hình phân lớp (phần 2)}
+  \label{tab:classification-benchmark-part2}
+  \import{\tablespath}{classification-benchmark-part2}
+\end{table}
+
+Trong nhóm mô hình phân lớp, có sự khác biệt rõ rệt hơn về cả thời gian huấn
+luyện lẫn bộ nhớ.
+
+LDA và QDA có thời gian huấn luyện tương đối nhỏ, trong đó QDA nhanh hơn LDA
+nhưng lại có thời gian suy luận lớn hơn đáng kể. Điều này phản ánh sự đánh đổi
+giữa độ phức tạp mô hình và chi phí dự đoán.
+
+Softmax và Weighted Softmax có thời gian huấn luyện cao hơn so với LDA và QDA,
+trong đó Weighted Softmax là mô hình tốn thời gian huấn luyện nhiều nhất. Tuy
+nhiên, chi phí suy luận của các mô hình này khá thấp và ổn định.
+
+Về bộ nhớ, LDA có mức tiêu thụ bộ nhớ cao hơn so với các mô hình còn lại, trong
+khi Softmax và Weighted Softmax sử dụng bộ nhớ ở mức trung bình nhưng ổn định
+giữa các lần chạy.
