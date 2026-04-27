@@ -1,0 +1,82 @@
+\subsection{So sánh các chiến lược bổ sung dữ liệu thiếu (Imputation)}
+
+\subsubsection{Hồi quy}
+
+\tablename~\ref{tab:regression-sens-imputer} trình bày độ nhạy của các mô hình
+hồi quy trước các tỉ lệ dữ liệu thiếu khác nhau khi áp dụng các chiến lược bổ
+sung dữ liệu (mean, median và kNN).
+
+\import{\tablespath}{regression-sens-imputer}
+
+Trước hết, có thể nhận thấy một xu hướng nhất quán rằng khi tỉ lệ dữ liệu thiếu
+tăng từ $0.1$ lên $0.3$, độ nhạy của tất cả các mô hình đều tăng đáng kể trên
+mọi chỉ số (MSE, RMSE, MAE và $R^2$). Điều này cho thấy việc bổ sung dữ liệu
+không thể hoàn toàn bù đắp thông tin bị mất, đặc biệt trong trường hợp dữ liệu
+thiếu ở mức cao.
+
+Xét theo từng phương pháp, kNN imputation cho kết quả tốt nhất một cách nhất
+quán trên hầu hết các mô hình và mức thiếu dữ liệu. Cụ thể, các giá trị độ nhạy
+của kNN luôn thấp hơn đáng kể so với mean và median, ví dụ với OLS tại mức
+thiếu $0.1$, MSE sensitivity giảm từ $0.2733$ (mean) và $0.2967$ (median) xuống
+còn $0.1796$. Xu hướng này tiếp tục được duy trì ở các mức thiếu cao hơn, cho
+thấy kNN có khả năng bảo toàn cấu trúc cục bộ của dữ liệu tốt hơn so với các
+phương pháp dựa trên thống kê toàn cục.
+
+Mean imputation đóng vai trò như một phương pháp trung gian, thường cho kết quả
+tốt hơn median nhưng vẫn kém hơn kNN. Phương pháp này có ưu điểm về tính đơn
+giản và chi phí tính toán thấp, tuy nhiên việc thay thế bằng giá trị trung bình
+làm giảm độ biến thiên của dữ liệu, từ đó ảnh hưởng đến khả năng học của mô
+hình.
+
+Ngược lại, median imputation thường cho kết quả kém nhất trong các trường hợp
+thử nghiệm. Độ nhạy cao hơn cho thấy phương pháp này không phù hợp khi dữ liệu
+không bị lệch hoặc khi mối quan hệ giữa các biến mang tính phi tuyến.
+
+Xét theo từng nhóm mô hình, các mô hình tuyến tính (OLS, MBGD, WLS) thể hiện độ
+nhạy cao hơn rõ rệt so với các mô hình có chính quy hoá (Ridge, Lasso, Elastic
+Net).  Các mô hình chính quy hoá cho thấy khả năng chống chịu tốt hơn trước
+nhiễu do dữ liệu thiếu, thể hiện qua các giá trị độ nhạy thấp hơn đáng kể trên
+mọi chiến lược imputation.
+
+Đối với các mô hình phi tuyến (Polynomial, RBF, Fourier), độ nhạy thường cao
+hơn so với các mô hình tuyến tính, đặc biệt khi tỉ lệ dữ liệu thiếu tăng. Điều
+này cho thấy các mô hình này phụ thuộc mạnh vào cấu trúc dữ liệu ban đầu, do đó
+dễ bị ảnh hưởng khi dữ liệu bị thiếu và được bổ sung lại.
+
+Tóm lại, có thể xếp hạng hiệu quả của các phương pháp bổ sung dữ liệu theo thứ
+tự giảm dần: kNN, Mean, Median. Ngoài ra, khi tỉ lệ dữ liệu thiếu tăng, việc
+lựa chọn mô hình (đặc biệt là các mô hình có chính quy hoá) đóng vai trò quan
+trọng không kém so với việc lựa chọn phương pháp imputation.
+
+\subsubsection{Phân lớp}
+
+\tablename~\ref{tab:classification-sens-imputer} trình bày độ nhạy của các mô
+hình phân lớp trước các tỉ lệ dữ liệu thiếu khác nhau khi áp dụng các chiến
+lược bổ sung dữ liệu (mean, median).
+
+\import{\tablespath}{classification-sens-imputer}
+
+Trước hết, có thể nhận thấy một xu hướng nhất quán rằng khi tỉ lệ dữ liệu thiếu
+tăng từ 0.1 lên 0.3, độ nhạy của tất cả các mô hình đều tăng đáng kể trên mọi
+chỉ số (Accuracy, Precision macro, Recall macro và F1 macro). Điều này cho thấy
+việc bổ sung dữ liệu không thể bù đắp hoàn toàn thông tin bị mất, đặc biệt khi
+mức thiếu dữ liệu lớn.
+
+So sánh giữa hai phương pháp, mean imputation thường cho kết quả tốt hơn hoặc
+tương đương so với median trên hầu hết các mô hình và chỉ số. Cụ thể, các giá
+trị độ nhạy khi sử dụng mean nhìn chung thấp hơn hoặc chênh lệch không đáng kể
+so với median,đặc biệt ở các mô hình Softmax và LDA.
+
+Ngược lại, median imputation có xu hướng kém ổn định hơn, thể hiện rõ ở các mô
+hình nhạy như QDA. Ví dụ, tại mức thiếu 0.2 và 0.3, độ nhạy của QDA với median
+tăng đột biến so với mean trên tất cả các chỉ số, cho thấy phương pháp này dễ
+làm sai lệch phân phối dữ liệu trong bối cảnh hiện tại.
+
+Xét theo từng mô hình, QDA là mô hình nhạy nhất với dữ liệu thiếu, với độ nhạy
+tăng rất mạnh khi missing rate tăng, đặc biệt khi sử dụng median. Các mô hình
+Softmax và LDA cho thấy độ ổn định tốt hơn, trong khi Weighted Softmax có độ
+nhạy cao hơn Softmax chuẩn nhưng vẫn thấp hơn đáng kể so với QDA.
+
+Tổng hợp lại, theo thứ tự hiệu quả giảm dần: mean, median. Ngoài ra, do hạn chế
+về chi phí tính toán trên tập dữ liệu lớn, phương pháp kNN imputation không
+được xem xét trong thí nghiệm này.
