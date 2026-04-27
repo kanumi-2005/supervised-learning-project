@@ -82,13 +82,13 @@ class BaseGDModel(BaseModel):
     """
 
     def __init__(
-            self,
-            lr,
-            max_iter,
-            store_history,
-            batch_size=None,
-            random_state=42
-        ):
+        self,
+        lr,
+        max_iter,
+        store_history,
+        batch_size=None,
+        random_state=42
+    ):
         """
         Initialize gradient descent base model.
 
