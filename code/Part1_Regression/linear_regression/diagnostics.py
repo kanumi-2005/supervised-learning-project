@@ -7,7 +7,51 @@ import statsmodels.api as sm
 
 
 class GaussMarkovDiagnostics:
+    """
+    Diagnostic tools for validating Gauss-Markov assumptions in linear models.
+
+    This class provides visual and statistical diagnostics for assessing
+    linear regression assumptions, including homoscedasticity and normality
+    of residuals. It supports residual plots, QQ plots, and the
+    Breusch-Pagan test for heteroscedasticity.
+
+    Notes
+    -----
+    The Gauss-Markov assumptions include linearity, independence, and
+    constant variance of errors. Violations can be diagnosed using the
+    provided methods.
+
+    Examples
+    --------
+    >>> diag = GaussMarkovDiagnostics()
+    >>> diag.plot_residuals(y_true, y_pred)
+    >>> diag.plot_qq(residuals)
+    >>> diag.breusch_pagan_test(X, residuals)
+    """
+
     def plot_residuals(self, y_true, y_pred, ax=None):
+        """
+        Plot residuals versus predicted values.
+
+        This plot is used to visually inspect heteroscedasticity and
+        model misspecification patterns.
+
+        Parameters
+        ----------
+        y_true : array-like of shape (n_samples,)
+            True target values.
+
+        y_pred : array-like of shape (n_samples,)
+            Predicted values from the model.
+
+        ax : matplotlib axis, default=None
+            Axis to plot on. If None, a new figure is created.
+
+        Returns
+        -------
+        ax : matplotlib axis
+            The axis containing the plot.
+        """
         residuals = y_true - y_pred
 
         if ax is None:
@@ -25,6 +69,28 @@ class GaussMarkovDiagnostics:
         return ax
 
     def plot_residuals_direct(self, y_pred, residuals, ax=None):
+        """
+        Plot residuals directly against predictions.
+
+        This is a lower-level version of residual plotting when residuals
+        are precomputed.
+
+        Parameters
+        ----------
+        y_pred : array-like of shape (n_samples,)
+            Predicted values.
+
+        residuals : array-like of shape (n_samples,)
+            Precomputed residuals.
+
+        ax : matplotlib axis, default=None
+            Axis to plot on. If None, a new figure is created.
+
+        Returns
+        -------
+        ax : matplotlib axis
+            The axis containing the plot.
+        """
         if ax is None:
             _, ax = plt.subplots(layout="constrained")
 
@@ -39,6 +105,25 @@ class GaussMarkovDiagnostics:
         return ax
 
     def plot_qq(self, residuals, ax=None):
+        """
+        Generate a QQ plot of residuals.
+
+        The QQ plot compares empirical residual quantiles with a normal
+        distribution to assess normality.
+
+        Parameters
+        ----------
+        residuals : array-like of shape (n_samples,)
+            Model residuals.
+
+        ax : matplotlib axis, default=None
+            Axis to plot on. If None, a new figure is created.
+
+        Returns
+        -------
+        ax : matplotlib axis
+            The axis containing the plot.
+        """
         if ax is None:
             _, ax = plt.subplots(layout="constrained")
 
@@ -48,6 +133,26 @@ class GaussMarkovDiagnostics:
         return ax
 
     def breusch_pagan_test(self, X, residuals):
+        """
+        Perform Breusch-Pagan test for heteroscedasticity.
+
+        This test checks whether the variance of residuals depends on
+        the independent variables.
+
+        Parameters
+        ----------
+        X : array-like of shape (n_samples, n_features)
+            Design matrix.
+
+        residuals : array-like of shape (n_samples,)
+            Model residuals.
+
+        Returns
+        -------
+        dict
+            Dictionary containing LM statistic, LM p-value, F statistic,
+            and F p-value.
+        """
         X_const = sm.add_constant(X)
 
         lm_stat, lm_pvalue, f_stat, f_pvalue = het_breuschpagan(
@@ -60,50 +165,3 @@ class GaussMarkovDiagnostics:
             "F Stat": f_stat,
             "F p-value": f_pvalue
         }
-
-
-if __name__ == "__main__":
-    from ..dataset import CaliforniaHousingDataset as Dataset
-    from ..pipeline import get_pipeline
-    from sklearn.metrics import mean_squared_error
-    from .ols import OLS
-    from .wls import WLS
-
-    d = Dataset()
-    d.split()
-
-    model = get_pipeline(OLS())
-    model.fit(d.X_train, d.y_train)
-
-    y_pred_train = model.predict(d.X_train)
-    residuals_train = d.y_train - y_pred_train
-
-    diag = GaussMarkovDiagnostics()
-
-    diag.plot_residuals(d.y_train, y_pred_train)
-    diag.plot_qq(residuals_train)
-
-    result = diag.breusch_pagan_test(d.X_train, residuals_train)
-    print(result)
-
-    plt.show()
-
-    if result["LM p-value"] < 0.05:
-        aux = get_pipeline(OLS())
-        aux.fit(d.X_train, np.square(residuals_train))
-
-        sigma2_hat = aux.predict(d.X_train)
-        sigma2_hat = np.clip(sigma2_hat, 1e-6, None)
-
-        weights = 1.0 / sigma2_hat
-
-        wls = get_pipeline(WLS(weights=weights))
-        wls.fit(d.X_train, d.y_train)
-
-        y_pred_train = wls.predict(d.X_train)
-        residuals_train = d.y_train - y_pred_train
-        weighted_residuals = np.sqrt(weights) * residuals_train
-
-        diag.plot_residuals_direct(y_pred_train, weighted_residuals)
-        diag.plot_qq(weighted_residuals)
-        plt.show()
