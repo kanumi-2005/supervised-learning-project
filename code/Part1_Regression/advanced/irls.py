@@ -3,6 +3,59 @@ from sklearn.base import RegressorMixin, BaseEstimator
 
 
 class IRLS(RegressorMixin, BaseEstimator):
+    """
+    Iteratively Reweighted Least Squares (IRLS) regression model.
+
+    This model fits a linear regression using an iterative scheme where
+    each iteration solves a weighted least squares problem. The weights
+    are updated based on the residuals and a chosen robust loss function.
+
+    The model supports robust losses such as Huber and Student-t,
+    enabling resistance to outliers.
+
+    Parameters
+    ----------
+    loss : {"huber", "student-t"}, default="huber"
+        Loss function used to compute weights.
+
+        - "huber": piecewise linear-quadratic loss
+        - "student-t": heavy-tailed likelihood model
+
+    delta : float, default=1.0
+        Threshold parameter for Huber loss. Residuals larger than this
+        are down-weighted.
+
+    nu : float, default=4.0
+        Degrees of freedom for Student-t loss.
+
+    max_iter : int, default=50
+        Maximum number of IRLS iterations.
+
+    tol : float, default=1e-6
+        Convergence tolerance for parameter updates.
+
+    Attributes
+    ----------
+    beta_ : ndarray of shape (n_features + 1,)
+        Estimated regression coefficients including intercept.
+
+    intercept_ : float
+        Intercept term of the model.
+
+    coef_ : ndarray of shape (n_features,)
+        Regression coefficients excluding intercept.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> X = np.random.randn(100, 2)
+    >>> y = X @ np.array([1.5, -2.0]) + 0.5
+    >>> model = IRLS(loss="huber")
+    >>> model.fit(X, y)
+    >>> model.predict(X[:3])
+    array([...])
+    """
+
     def __init__(
         self,
         loss="huber",
@@ -18,9 +71,35 @@ class IRLS(RegressorMixin, BaseEstimator):
         self.tol = tol
 
     def _add_intercept(self, X):
+        """
+        Add intercept column to input features.
+
+        Parameters
+        ----------
+        X : ndarray of shape (n_samples, n_features)
+            Input data.
+
+        Returns
+        -------
+        X_design : ndarray of shape (n_samples, n_features + 1)
+            Data with added intercept column.
+        """
         return np.c_[np.ones(len(X)), X]
 
     def _compute_weights(self, r):
+        """
+        Compute IRLS weights based on residuals.
+
+        Parameters
+        ----------
+        r : ndarray of shape (n_samples,)
+            Residuals.
+
+        Returns
+        -------
+        w : ndarray of shape (n_samples,)
+            Sample weights.
+        """
         eps = 1e-8
         if self.loss == "huber":
             abs_r = np.abs(r)
@@ -34,6 +113,26 @@ class IRLS(RegressorMixin, BaseEstimator):
             raise ValueError
 
     def fit(self, X, y):
+        """
+        Fit IRLS regression model.
+
+        The algorithm alternates between computing residuals and solving
+        a weighted least squares problem until convergence or reaching
+        maximum iterations.
+
+        Parameters
+        ----------
+        X : ndarray of shape (n_samples, n_features)
+            Training data.
+
+        y : ndarray of shape (n_samples,)
+            Target values.
+
+        Returns
+        -------
+        self : object
+            Fitted estimator.
+        """
 
         X_design = self._add_intercept(X)
 
@@ -61,6 +160,19 @@ class IRLS(RegressorMixin, BaseEstimator):
         return self
 
     def predict(self, X):
+        """
+        Predict using fitted IRLS model.
+
+        Parameters
+        ----------
+        X : ndarray of shape (n_samples, n_features)
+            Input data.
+
+        Returns
+        -------
+        y_pred : ndarray of shape (n_samples,)
+            Predicted values.
+        """
         return X @ self.coef_ + self.intercept_
 
 
