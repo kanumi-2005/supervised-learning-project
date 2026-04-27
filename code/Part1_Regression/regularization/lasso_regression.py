@@ -7,6 +7,66 @@ from ..base.basegdmodel import BaseGDModel
 
 
 class LassoRegression(BaseGDModel):
+    """
+    Lasso Regression model trained using gradient descent.
+
+    This model fits a linear function with L1 regularization on the
+    coefficients. The objective is to minimize the mean squared error
+    with an added penalty proportional to the absolute values of
+    the coefficients, encouraging sparsity.
+
+    The optimization is performed using (stochastic) gradient descent
+    depending on the batch size configuration inherited from the
+    base class.
+
+    Parameters
+    ----------
+    alpha : float, default=1.0
+        Regularization strength. Must be non-negative. Larger values
+        lead to more sparsity in the coefficients.
+
+    lr : float, default=0.001
+        Learning rate used in gradient descent updates.
+
+    max_iter : int, default=1000
+        Maximum number of iterations.
+
+    store_history : bool, default=False
+        Whether to store loss values during training.
+
+    batch_size : int or None, default=None
+        Number of samples per batch. If None, full batch gradient
+        descent is used.
+
+    warm_start : bool, default=False
+        If True, reuse solution from previous fit call.
+
+    random_state : int, default=42
+        Seed for random number generation.
+
+    Attributes
+    ----------
+    coef_ : ndarray of shape (n_features,)
+        Estimated coefficients of the model.
+
+    intercept_ : float
+        Independent term in the model.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> X = np.array([[1, 1], [1, 2], [2, 2], [2, 3]])
+    >>> y = np.dot(X, np.array([1.0, 2.0])) + 3.0
+    >>> model = LassoRegression(alpha=0.1, lr=0.01, max_iter=1000)
+    >>> model.fit(X, y)
+    >>> model.coef_
+    array([1., 2.])
+    >>> model.intercept_
+    3.0
+    >>> model.predict(np.array([[3, 5]]))
+    array([16.])
+    """
+
     def __init__(
         self,
         alpha=1.0,
@@ -17,6 +77,32 @@ class LassoRegression(BaseGDModel):
         warm_start=False,
         random_state=42
     ):
+        """
+        Initialize the LassoRegression model.
+
+        Parameters
+        ----------
+        alpha : float, default=1.0
+            Regularization strength.
+
+        lr : float, default=0.001
+            Learning rate.
+
+        max_iter : int, default=1000
+            Maximum number of iterations.
+
+        store_history : bool, default=False
+            Whether to store training loss.
+
+        batch_size : int or None, default=None
+            Mini-batch size.
+
+        warm_start : bool, default=False
+            Whether to reuse previous parameters.
+
+        random_state : int, default=42
+            Random seed.
+        """
         self.alpha = alpha
         self.warm_start = warm_start
         super().__init__(
@@ -28,9 +114,38 @@ class LassoRegression(BaseGDModel):
         )
 
     def _predict(self, X):
+        """
+        Predict target values using the linear model.
+
+        Parameters
+        ----------
+        X : ndarray of shape (n_samples, n_features)
+            Input data.
+
+        Returns
+        -------
+        y_pred : ndarray of shape (n_samples,)
+            Predicted values.
+        """
         return X @ self.coef_ + self.intercept_
 
     def _init_params(self, X, y):
+        """
+        Initialize model parameters.
+
+        Parameters
+        ----------
+        X : ndarray of shape (n_samples, n_features)
+            Training data.
+
+        y : ndarray of shape (n_samples,)
+            Target values.
+
+        Notes
+        -----
+        If warm_start is enabled and parameters already exist,
+        initialization is skipped.
+        """
         n_features = X.shape[1]
 
         if self.warm_start and hasattr(self, "coef_"):
@@ -40,12 +155,49 @@ class LassoRegression(BaseGDModel):
         self.intercept_ = 0.0
 
     def _loss(self, X, y):
+        """
+        Compute Lasso loss.
+
+        The loss consists of mean squared error plus L1 penalty.
+
+        Parameters
+        ----------
+        X : ndarray of shape (n_samples, n_features)
+            Input data.
+
+        y : ndarray of shape (n_samples,)
+            True target values.
+
+        Returns
+        -------
+        loss : float
+            Computed loss value.
+        """
         y_pred = self._predict(X)
         mse = np.mean((y_pred - y) ** 2)
         reg = self.alpha * np.sum(np.abs(self.coef_))
         return mse + reg
 
     def _grad(self, X, y):
+        """
+        Compute gradients of the loss function.
+
+        Parameters
+        ----------
+        X : ndarray of shape (n_samples, n_features)
+            Input data.
+
+        y : ndarray of shape (n_samples,)
+            True target values.
+
+        Returns
+        -------
+        grad_w : ndarray of shape (n_features,)
+            Gradient with respect to coefficients.
+
+        grad_b : float
+            Gradient with respect to intercept.
+        """
         n_samples = X.shape[0]
 
         y_pred = self._predict(X)
@@ -58,22 +210,119 @@ class LassoRegression(BaseGDModel):
         return grad_w, grad_b
 
     def _update_params(self, grad, iteration):
+        """
+        Update model parameters using gradient descent.
+
+        Parameters
+        ----------
+        grad : tuple
+            Tuple containing (grad_w, grad_b).
+
+        iteration : int
+            Current iteration number.
+
+        Returns
+        -------
+        None
+        """
         grad_w, grad_b = grad
 
         self.coef_ -= self.lr * grad_w
         self.intercept_ -= self.lr * grad_b
 
-    def _extra_logs(self, X, y, grad, iter):
-        return {}
-
 
 class LassoRegressionCV(BaseEstimator, RegressorMixin):
+    """
+    Lasso Regression with cross-validation.
+
+    This estimator selects the best regularization parameter from
+    a list of candidate alphas using K-fold cross-validation. For
+    each alpha, the model is trained and evaluated across folds,
+    and the alpha with the lowest average mean squared error is
+    selected.
+
+    Parameters
+    ----------
+    alphas : iterable of float, default=(0.1, 1.0, 10.0)
+        List of regularization strengths to evaluate.
+
+    cv : int, default=10
+        Number of cross-validation folds.
+
+    random_state : int, default=42
+        Seed used for shuffling data in cross-validation.
+
+    Attributes
+    ----------
+    best_alpha_ : float
+        Alpha value that minimizes the cross-validation error.
+
+    coef_ : ndarray of shape (n_features,)
+        Coefficients of the final fitted model.
+
+    intercept_ : float
+        Intercept of the final fitted model.
+
+    result_ : ndarray of shape (n_alphas,)
+        Mean squared error for each alpha averaged across folds.
+
+    coefs_path_ : ndarray of shape (n_alphas, n_features)
+        Mean coefficient values across folds for each alpha.
+
+    final_model_ : LassoRegression
+        Model trained on the full dataset using best_alpha_.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> X = np.array([[1, 1], [1, 2], [2, 2], [2, 3]])
+    >>> y = np.dot(X, np.array([1.0, 2.0])) + 3.0
+    >>> model = LassoRegressionCV(alphas=(0.1, 1.0, 10.0), cv=2)
+    >>> model.fit(X, y)
+    >>> model.best_alpha_
+    1.0
+    >>> model.coef_
+    array([1., 2.])
+    >>> model.predict(np.array([[3, 5]]))
+    array([16.])
+    """
+
     def __init__(self, alphas=(0.1, 1.0, 10.0), cv=10, random_state=42):
+        """
+        Initialize the LassoRegressionCV estimator.
+
+        Parameters
+        ----------
+        alphas : iterable of float, default=(0.1, 1.0, 10.0)
+            Candidate regularization strengths.
+
+        cv : int, default=10
+            Number of folds for cross-validation.
+
+        random_state : int, default=42
+            Random seed for reproducibility.
+        """
         self.alphas = alphas
         self.cv = cv
         self.random_state = random_state
 
     def fit(self, X, y):
+        """
+        Fit Lasso Regression model with cross-validation.
+
+        Parameters
+        ----------
+        X : array-like of shape (n_samples, n_features)
+            Training data.
+
+        y : array-like of shape (n_samples,)
+            Target values.
+
+        Returns
+        -------
+        self : object
+            Fitted estimator with selected alpha.
+        """
         X, y = np.array(X), np.array(y).ravel()
         self.alphas = sorted(self.alphas, reverse=True)
         kf = KFold(
@@ -120,9 +369,42 @@ class LassoRegressionCV(BaseEstimator, RegressorMixin):
         return self
 
     def predict(self, X):
+        """
+        Predict using the fitted Lasso model.
+
+        Parameters
+        ----------
+        X : array-like of shape (n_samples, n_features)
+            Input samples.
+
+        Returns
+        -------
+        y_pred : ndarray of shape (n_samples,)
+            Predicted values.
+        """
         return self.final_model_.predict(X)
 
     def plot_regularization_path(self, title=None):
+        """
+        Plot coefficient paths for different alphas.
+
+        The plot shows how each coefficient evolves as a
+        function of log10(alpha).
+
+        Parameters
+        ----------
+        title : str or None, default=None
+            Title of the plot.
+
+        Returns
+        -------
+        None
+
+        Raises
+        ------
+        ValueError
+            If the model has not been fitted.
+        """
         if self.coefs_path_ is None:
             raise ValueError("Model not fitted. Call fit() first.")
 
