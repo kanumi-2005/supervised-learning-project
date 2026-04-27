@@ -1,0 +1,28 @@
+\begin{longtblr}[
+  caption = {Độ nhạy cảm với nhiễu Gaussian ở các biến đặc trưng đối với các mô
+  hình phân lớp},
+  label = {tab:classification-sens-noise}
+]{
+  width=\textwidth,
+  colspec={llXXXX},
+  row{1} = {font=\bfseries, bg=gray!15},
+  rowhead = 1,
+  hlines,
+  vlines,
+  cell{1}{3-Z} = {cmd=\textenglish}
+}
+Model & $\sigma$ & Accuracy sens & Precision macro sens & Recall macro sens &
+  F1 macro sens \\
+Softmax & 0.1 & 0.0101 & 0.0308 & 0.0708 & 0.0615 \\
+LDA & 0.1 & -0.0033 & -0.0172 & 0.0264 & -0.0086 \\
+QDA & 0.1 & -1.5435 & -0.331 & -0.1753 & -1.0717 \\
+Weighted Softmax & 0.1 & 0.0154 & 0.0228 & 0.0211 & 0.0292 \\
+Softmax & 0.5 & 0.0327 & 0.2476 & 0.2472 & 0.2399 \\
+LDA & 0.5 & -0.0145 & -0.049 & 0.2487 & 0.1269 \\
+QDA & 0.5 & -1.7787 & -0.489 & -0.0387 & -1.1447 \\
+Weighted Softmax & 0.5 & 0.0782 & 0.0786 & 0.0599 & 0.1054 \\
+Softmax & 1.0 & 0.0376 & 0.2731 & 0.2829 & 0.2899 \\
+LDA & 1.0 & -0.0107 & -0.0021 & 0.3298 & 0.21 \\
+QDA & 1.0 & -1.7544 & -0.4878 & 0.0302 & -1.0686 \\
+Weighted Softmax & 1.0 & 0.0997 & 0.0999 & 0.0713 & 0.1326 \\
+\end{longtblr}

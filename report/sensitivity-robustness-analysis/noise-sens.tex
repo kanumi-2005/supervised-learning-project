@@ -1,0 +1,79 @@
+\subsection{Độ nhạy cảm với nhiễu Gaussian ở các biến đặc trưng}
+
+\subsubsection{Hồi quy}
+
+\tablename~\ref{tab:regression-sens-noise} trình bày các kết quả về độ nhạy (tỉ
+lệ thay đổi tương đối khi chạy trên dữ liệu gốc) các chỉ số MSE, RMSE, MAE và
+$R^2$ đối với các độ lệch chuẩn nhiễu khác nhau. Các chỉ số độ nhạy cảm càng
+cao cho thấy kết quả càng tệ so với khi chạy trên dữ liệu gốc.
+
+\import{\tablespath}{regression-sens-noise}
+
+Khi tăng nhiễu lên $\sigma=0.1$, độ nhạy tương đối của tất cả các mô hình vẫn
+còn khá thấp (đa số MSE/RMSE/MAE sens chỉ khoảng 0.2–3\%), cho thấy mô hình
+chưa bị ảnh hưởng đáng kể bởi nhiễu nhỏ. Tuy nhiên, một số mô hình phi tuyến
+như Polynomial và RBF bắt đầu xuất hiện độ nhạy cao hơn nhẹ so với các mô hình
+tuyến tính.
+
+Khi tăng lên $\sigma=0.5$, độ nhạy tăng rõ rệt. Các mô hình tuyến tính như OLS,
+MBGD và WLS có mức tăng sai số tương đối khoảng 10–20\%, cho thấy chúng bắt đầu
+bị ảnh hưởng rõ rệt dưới nhiễu trung bình. Các mô hình regularization như
+Ridge, Lasso và Elastic Net có xu hướng ổn định hơn tương đối, với mức tăng sai
+số thấp hơn nhóm tuyến tính thuần túy. Trong nhóm phi tuyến, Polynomial và
+Fourier thể hiện độ nhạy cao, trong khi RBF chỉ tăng ở mức trung bình và vẫn
+giữ được độ ổn định tương đối tốt hơn so với hai mô hình còn lại.
+
+Ở mức nhiễu cao nhất $\sigma=1.0$, sự khác biệt trở nên rõ rệt hơn. Các mô hình
+tuyến tính truyền thống tăng sai số tương đối lên khoảng 20–40\%. Các mô hình
+phi tuyến có xu hướng nhạy hơn, tuy nhiên mức độ không đồng đều: Polynomial
+tăng mạnh, trong khi RBF chỉ ở mức trung bình (ví dụ MSE sens khoảng 0.29),
+cho thấy khả năng chống chịu nhiễu tốt hơn so với nhiều mô hình phi tuyến khác.
+Đặc biệt, Fourier cho thấy mức độ biến động rất lớn (ví dụ MSE sens vượt
+gần 1), cho thấy mô hình này rất nhạy với nhiễu đầu vào trong cấu hình hiện
+tại. Ngược lại, các mô hình có regularization (Ridge, Lasso, Elastic Net) vẫn
+giữ được mức tăng tương đối thấp hơn so với phần lớn các mô hình phi tuyến, dù
+vẫn suy giảm đáng kể khi nhiễu lớn.
+
+Tổng thể, kết quả cho thấy độ nhạy tăng theo $\sigma$ một cách nhất quán trên
+tất cả mô hình. Các mô hình tuyến tính và regularization có xu hướng ổn định
+hơn trong nhiễu thấp đến trung bình. Các mô hình phi tuyến đạt hiệu năng tốt
+trên dữ liệu sạch nhưng nhạy hơn với nhiễu, tuy nhiên RBF là một trường hợp
+đáng chú ý khi vẫn duy trì được độ ổn định tương đối ngay cả khi nhiễu lớn.
+
+\subsubsection{Phân lớp}
+
+\tablename~\ref{tab:classification-sens-noise} cho thấy độ nhạy cảm tương đối
+của các mô hình phân lớp khi thêm nhiễu Gaussian vào dữ liệu đầu vào. Nhìn
+chung, các giá trị sens có xu hướng tăng (dương hơn) khi $\sigma$ tăng, cho
+thấy hiệu năng suy giảm theo mức nhiễu.
+
+\import{\tablespath}{classification-sens-noise}
+
+
+Ở mức nhiễu thấp $\sigma = 0.1$, đa số các mô hình vẫn khá ổn định. Softmax và
+Weighted Softmax có sens dương nhỏ (khoảng 1--7\%), cho thấy hiệu năng chỉ suy
+giảm nhẹ. LDA có một số chỉ số mang giá trị âm, tức là hiệu năng thậm chí cải
+thiện nhẹ trong điều kiện nhiễu nhỏ, phản ánh tính ổn định cao. Ngược lại, QDA
+có giá trị sens âm rất lớn về độ lớn (ví dụ Accuracy sens xấp xỉ $-1.54$), cho
+thấy sự thay đổi cực mạnh và không ổn định (dù một phần là cải thiện, nhưng
+biến động lớn là dấu hiệu kém bền vững).
+
+Khi tăng lên $\sigma = 0.5$, xu hướng suy giảm trở nên rõ rệt hơn. Softmax có
+sens dương lớn ở các chỉ số macro (khoảng 24--25\%), cho thấy hiệu năng giảm
+đáng kể. Weighted Softmax vẫn duy trì sens thấp hơn, thể hiện khả năng chống
+nhiễu tốt hơn. LDA tiếp tục ổn định ở Accuracy và Precision (sens gần 0 hoặc âm
+nhẹ), nhưng Recall và F1 bắt đầu có sens dương đáng kể, cho thấy mô hình bị ảnh
+hưởng khi xét đến cân bằng giữa các lớp. QDA tiếp tục có biến động rất lớn (cả
+âm và dương), phản ánh sự thiếu ổn định nghiêm trọng.
+
+Ở mức nhiễu cao $\sigma = 1.0$, sự khác biệt càng rõ. Softmax có sens dương lớn
+(xấp xỉ 27--29\%), cho thấy suy giảm mạnh. Weighted Softmax vẫn kiểm soát tốt
+hơn với sens thấp hơn đáng kể (xấp xỉ 7--13\%). LDA duy trì Accuracy và
+Precision ổn định (sens gần 0), nhưng Recall và F1 có sens dương lớn, cho thấy
+hiệu năng tổng thể vẫn bị ảnh hưởng. QDA tiếp tục là mô hình kém ổn định nhất
+với các giá trị sens có độ lớn rất cao, cho thấy phản ứng mạnh và khó kiểm soát
+trước nhiễu.
+
+Tổng thể, Weighted Softmax là mô hình ổn định nhất (sens nhỏ và nhất quán), LDA
+ổn định ở một số chỉ số nhưng không đồng đều, Softmax suy giảm rõ khi nhiễu
+tăng, còn QDA có độ nhạy rất lớn và thiếu ổn định trong mọi mức nhiễu.
