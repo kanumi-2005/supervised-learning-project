@@ -66,3 +66,73 @@ Sự thay đổi mượt mà của Cosine Annealing giúp hạn chế dao độn
 trong khi Step Decay cung cấp cách điều chỉnh đơn giản và hiệu quả.
 
 \subparagraph{So sánh giữa phương pháp Normal Equation và Gradient Descent}
+
+\subparagraph{Định lý Gauss--Markov}
+
+Xét mô hình hồi quy tuyến tính \begin{equation}
+  \boldsymbol{t} = \boldsymbol{X}\boldsymbol{w} + \boldsymbol{\varepsilon},
+\end{equation} trong đó $\boldsymbol{t} \in \mathbb{R}^N$, $\boldsymbol{X} \in
+\mathbb{R}^{N \times M}$, $\boldsymbol{w} \in \mathbb{R}^M$,
+$\boldsymbol{\varepsilon} \in \mathbb{R}^N$.
+
+Giả sử \begin{equation}
+  \mathbb{E}[\boldsymbol{\varepsilon} \mid \boldsymbol{X}] = \boldsymbol{0},
+\end{equation} và \begin{equation}
+  \mathrm{Var}(\boldsymbol{\varepsilon} \mid \boldsymbol{X}) = \sigma^2
+  \boldsymbol{I}.
+\end{equation}
+
+Ước lượng OLS được cho bởi \begin{equation}
+  \hat{\boldsymbol{w}} =
+  (\boldsymbol{X}^{\intercal}\boldsymbol{X})^{-1}\boldsymbol{X}^{\intercal}\boldsymbol{t}.
+\end{equation} Thay $\boldsymbol{t} = \boldsymbol{X}\boldsymbol{w} +
+\boldsymbol{\varepsilon}$vào ta có \begin{equation}
+  \hat{\boldsymbol{w}} = \boldsymbol{w} +
+  (\boldsymbol{X}^{\intercal}\boldsymbol{X})^{-1}
+  \boldsymbol{X}^{\intercal}\boldsymbol{\varepsilon}.
+\end{equation} Khi đó \begin{equation}
+  \mathbb{E}[\hat{\boldsymbol{w}} \mid \boldsymbol{X}] = \boldsymbol{w}.
+\end{equation} Phương sai của ước lượng là \begin{equation}
+  \mathrm{Var}(\hat{\boldsymbol{w}} \mid \boldsymbol{X}) = \sigma^2
+  (\boldsymbol{X}^{\intercal}\boldsymbol{X})^{-1}.
+\end{equation}
+
+Với mọi ước lượng tuyến tính không chệch dạng $\tilde{\boldsymbol{w}} =
+\boldsymbol{A}\boldsymbol{t}$, điều kiện không chệch yêu cầu \begin{equation}
+  \boldsymbol{A}\boldsymbol{X} = \boldsymbol{I}.
+\end{equation} Ta có thể viết \begin{equation}
+  \tilde{\boldsymbol{w}} = \boldsymbol{A}(\boldsymbol{X}\boldsymbol{w} +
+  \boldsymbol{\varepsilon}) = \boldsymbol{w} +
+  \boldsymbol{A}\boldsymbol{\varepsilon}.
+\end{equation} Do đó \begin{equation}
+  \mathrm{Var}(\tilde{\boldsymbol{w}} \mid \boldsymbol{X}) =
+  \boldsymbol{A}\,\mathrm{Var}(\boldsymbol{\varepsilon} \mid
+  \boldsymbol{X})\,\boldsymbol{A}^{\intercal} = \sigma^2
+  \boldsymbol{A}\boldsymbol{A}^{\intercal}.
+\end{equation}
+
+Với OLS, ta có \begin{equation}
+  \hat{\boldsymbol{w}} =
+  (\boldsymbol{X}^{\intercal}\boldsymbol{X})^{-1}
+  \boldsymbol{X}^{\intercal}\boldsymbol{t}.
+\end{equation} Đặt \begin{equation}
+  \boldsymbol{A}_{OLS} =
+  (\boldsymbol{X}^{\intercal}\boldsymbol{X})^{-1}\boldsymbol{X}^{\intercal}.
+\end{equation} Khi đó với mọi $\boldsymbol{A}$ thỏa
+$\boldsymbol{A}\boldsymbol{X} = \boldsymbol{I}$, ta có thể viết
+\begin{equation}
+  \boldsymbol{A} = \boldsymbol{A}_{OLS} + \boldsymbol{C}
+  \quad \text{với } \boldsymbol{C}\boldsymbol{X} = \boldsymbol{0}.
+\end{equation} Suy ra \begin{equation}
+  \boldsymbol{A}\boldsymbol{A}^{\intercal}
+  = \boldsymbol{A}_{OLS}\boldsymbol{A}_{OLS}^{\intercal}
+  + \boldsymbol{C}\boldsymbol{C}^{\intercal}.
+\end{equation} Do $\boldsymbol{C}\boldsymbol{C}^{\intercal}$ là ma trận nửa xác
+định dương nên \begin{equation}
+  \mathrm{Var}(\tilde{\boldsymbol{w}} \mid \boldsymbol{X})
+  \succeq
+  \mathrm{Var}(\hat{\boldsymbol{w}} \mid \boldsymbol{X}).
+\end{equation}
+
+Do đó $\hat{\boldsymbol{w}}$ là ước lượng tuyến tính không chệch tốt nhất
+(Best Linear Unbiased Estimator, BLUE).
