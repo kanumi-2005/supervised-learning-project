@@ -1,0 +1,54 @@
+\begin{longtblr}[
+  caption = {So sánh toàn diện các  mô hình hồi quy và phân lớp},
+  label = {tab:complete-comparation}
+]{
+  width=\linewidth,
+  colspec={XXXXX},
+  row{1} = {font=\bfseries, bg=gray!15},
+  rowhead = 1,
+  hlines,
+  vlines,
+}
+  Tiêu chí & Linear Regression & Ridge/Lasso & Logistic Regression & LDA/QDA \\
+  Giả thiết phân phối
+  & $t = \boldsymbol{w}^\intercal \boldsymbol{x} + \varepsilon$, với
+  $\mathbb{E}[\varepsilon \mid \boldsymbol{X}] = 0$
+  & $t = \boldsymbol{w}^\intercal \boldsymbol{x} + \varepsilon$ với
+  $\|\boldsymbol{w}\|_2^2$ (Ridge) hoặc $\|\boldsymbol{w}\|_1$ (Lasso)
+  & $P(t=1 \mid \boldsymbol{x}) = \sigma(\boldsymbol{w}^\intercal
+  \boldsymbol{x})$ cho bài toán nhị lớp, $P(t=k \mid \boldsymbol{x}) =
+  \exp(\boldsymbol{w}_k^\intercal \boldsymbol{x})/\bigl(\sum_{j=1}^{K}
+  \exp(\boldsymbol{w}_j^\intercal \boldsymbol{x})\bigr)$ cho bài toán đa lớp
+  & $\boldsymbol{x} \mid t=k \sim \mathcal{N}(\boldsymbol{\mu}_k, \Sigma)$
+  (LDA),\quad $\boldsymbol{x} \mid t=k \sim \mathcal{N}(\boldsymbol{\mu}_k,
+  \Sigma_k)$ (QDA) \\
+
+  Nghiệm dạng đóng
+  & $\boldsymbol{w}^\ast = (\boldsymbol{X}^\intercal
+  \boldsymbol{X})^{-1}\boldsymbol{X}^\intercal \boldsymbol{t}$ & Ridge có
+  $\boldsymbol{w}^\ast = (\boldsymbol{X}^\intercal \boldsymbol{X} + \lambda
+  \boldsymbol{I})^{-1}\boldsymbol{X}^\intercal \boldsymbol{t}$; Lasso thì
+  không có
+  & Không có
+  & LDA có nghiệm đóng từ $\boldsymbol{\mu}_k,\Sigma$,\quad QDA từ
+  $\boldsymbol{\mu}_k,\Sigma_k$ \\
+
+  Độ phức tạp huấn luyện
+  & $\Theta(NM^2 + M^3)$ khi dùng Normal Equation, $\Theta(ENM)$ khi dùng
+  gradient descent
+  & Ridge thì $\Theta(NM^2 + M^3)$ khi dùng nghiệm đóng, $\Theta(ENM)$ khi dùng
+  gradient descent; còn Lasso thì $\Theta(ENM)$ khi dùng gradient descent
+  & $\Theta(ENM)$ cho nhị lớp khi dùng gradient descent; $\Theta(EKNM)$ cho bài
+  toán đa lớp với softmax khi dùng gradient descent
+  & LDA $\Theta(NM^2)$ khi ước lượng thống kê lớp QDA $\Theta(KNM + KM^2)$ khi
+  ước lượng riêng theo từng lớp \\
+
+  Khả năng giải thích & Cao & Ridge cao hơn Lasso ổn định, Lasso thưa &
+  Trung bình & LDA cao, QDA trung bình thấp \\
+
+  Nhạy với outlier & Cao & Ridge giảm nhạy, Lasso vẫn nhạy & Trung bình &
+  Cao \\
+
+  Hiệu năng thực nghiệm & Tốt & Trung bình &
+  Tốt & LDA tốt, QDA kém
+\end{longtblr}
