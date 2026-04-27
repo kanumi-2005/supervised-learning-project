@@ -2,7 +2,42 @@ from sklearn.base import clone
 import pandas as pd
 import numpy as np
 
+
 def benchmark_models(models, dataset, n_runs=5, random_state=42):
+    """
+    Benchmark models in terms of training and inference performance.
+
+    This function evaluates multiple models over repeated random
+    splits of a dataset and measures training/inference time and
+    memory usage statistics from the model's predictor component.
+
+    Parameters
+    ----------
+    models : dict
+        Mapping from model name to sklearn-like estimator.
+
+    dataset : object
+        Dataset object containing X, y and split() method.
+
+    n_runs : int, default=5
+        Number of random runs for averaging results.
+
+    random_state : int, default=42
+        Seed for reproducibility.
+
+    Returns
+    -------
+    pd.DataFrame
+        Table containing mean and std of:
+        - training time
+        - training memory
+        - inference time
+        - inference memory
+
+    Examples
+    --------
+    >>> benchmark_models(models, dataset, n_runs=3)
+    """
 
     results = []
 
@@ -21,7 +56,6 @@ def benchmark_models(models, dataset, n_runs=5, random_state=42):
 
         for seed in seeds:
 
-            # reset dataset
             dataset.X = X_base.copy()
             dataset.y = y_base.copy()
 
@@ -34,10 +68,18 @@ def benchmark_models(models, dataset, n_runs=5, random_state=42):
 
             predictor = m.named_steps["predictor"]
 
-            train_times.append(getattr(predictor, "training_time_", np.nan))
-            train_memories.append(getattr(predictor, "training_memory_", np.nan))
-            infer_times.append(getattr(predictor, "inference_time_", np.nan))
-            infer_memories.append(getattr(predictor, "inference_memory_", np.nan))
+            train_times.append(
+                getattr(predictor, "training_time_", np.nan)
+            )
+            train_memories.append(
+                getattr(predictor, "training_memory_", np.nan)
+            )
+            infer_times.append(
+                getattr(predictor, "inference_time_", np.nan)
+            )
+            infer_memories.append(
+                getattr(predictor, "inference_memory_", np.nan)
+            )
 
         results.append({
             "model": name,
