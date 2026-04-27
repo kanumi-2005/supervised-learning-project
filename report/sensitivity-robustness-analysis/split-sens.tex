@@ -1,0 +1,90 @@
+\subsection{Độ nhạy cảm với tỉ lệ tập huấn luyện và tập kiểm tra}
+
+\subsubsection{Hồi quy}
+
+\figurename~\ref{fig:regression-split-sens-mse}
+và~\ref{fig:regression-split-sens-mae} trình biểu đồ hộp các kết quả của 10 lần
+chạy ngẫu nhiên với từng tỉ lệ tập huấn luyện/kiểm tra khác nhau trên các chỉ
+số tương ứng MSE, MAE.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{regression-split-sens-mse}
+  \caption{Biểu đồ hộp các chỉ số MSE của các mô hình hồi quy đối với các tỉ lệ
+  tập huấn luyện và kiểm tra khác nhau}
+  \label{fig:regression-split-sens-mse}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{regression-split-sens-mae}
+  \caption{Biểu đồ hộp các chỉ số MAE của các mô hình hồi quy đối với các tỉ lệ
+  tập huấn luyện và kiểm tra khác nhau}
+  \label{fig:regression-split-sens-mae}
+\end{figure}
+
+Nhìn vào biểu đồ, ta thấy các mô hình hồi quy tuyến tính cơ bản và chính quy
+hoá có ổn định khá cao. Tuy nhiên, các mô hình vẫn còn bị ảnh hưởng bởi cách
+chia dữ liệu, như đối với chỉ số MSE, có một điểm xuất hiện với giá trị trên 5.
+
+Trong khi đó, mô hình rất ổn định với cả cách chia này, khi mà ở chỉ số MSE,
+các điểm chỉ phân tán trong khoảng 0.66--0.8. Với các cách phân chia dữ liệu
+cực đoan, kết quả cũng không cho thấy sự xuất hiện các ngoại lai quá lớn. Nhưng
+nếu xét trên chỉ số MAE, thì RBF lại không định bằng các mô hình trên khi dải
+phân bố rộng hơn đáng kể.
+
+Các mô hình cơ sở phi tuyến Polynomial và Fourier có sự không ổn định khi mà
+xuất hiện các điểm ngoại lai rất lớn như (700,000+ ở MSE của Fourier, 3,000+ ở
+MSE của Polynomial, các chỉ số MAE cũng rất lớn nếu so sánh các mô hình khác).
+Điều này cho thấy sự mất ổn định cũng như dấu hiệu quá khớp ở các mô hình này.
+
+Nhìn chung, RBF là mô hình ổn định nhất khi khó bị ảnh hưởng bởi cách chia dữ
+liệu và kết quả ở 2 chỉ số đều rất tốt. Các mô hình hồi quy tuyến tính cơ bản
+và chính quy hoá cũng có độ ổn định cao nhưng có phụ thuộc vào chia dữ liệu
+nhẹ.
+
+\subsubsection{Phân lớp}
+
+\figurename~\ref{fig:classification-split-sens-acc}
+và~\ref{fig:classification-split-sens-f1} trình biểu đồ hộp các kết quả của 10 lần
+chạy ngẫu nhiên với từng tỉ lệ tập huấn luyện/kiểm tra khác nhau trên các chỉ
+số tương ứng Accuracy và F1 macro.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{classification-split-sens-acc}
+  \caption{Biểu đồ hộp các chỉ số Accuracy của các mô hình phân lớp đối với các
+  tỉ lệ tập huấn luyện và kiểm tra khác nhau}
+  \label{fig:classification-split-sens-acc}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{classification-split-sens-f1}
+  \caption{Biểu đồ hộp các chỉ số F1 của các mô hình phân lớp đối với các tỉ lệ
+  tập huấn luyện và kiểm tra khác nhau}
+  \label{fig:classification-split-sens-f1}
+\end{figure}
+
+Đối với chỉ số Accuracy, mô hình Softmax đạt giá trị cao nhất và ổn định nhất,
+dao động quanh mức khoảng 0.711--0.714 ở cả các tỉ lệ chia 60/40, 70/30 và
+80/20. Mô hình LDA đứng thứ hai với Accuracy thấp hơn một chút (xấp xỉ
+0.678--0.681) nhưng cũng rất ổn định giữa các seed. Trong khi đó, Weighted
+Softmax có Accuracy thấp hơn đáng kể (khoảng 0.589--0.596), và QDA cho kết quả
+thấp nhất (khoảng 0.24) với phương sai nhỏ nhưng hiệu năng kém rõ rệt so với
+các mô hình còn lại.
+
+Đối với chỉ số F1-macro, xu hướng có sự khác biệt rõ hơn. Mô hình LDA thể hiện
+hiệu năng tốt nhất và ổn định nhất với F1 khoảng 0.506--0.512, phản ánh khả năng
+cân bằng tốt giữa precision và recall trên các lớp. Weighted Softmax đứng thứ
+hai với F1 khoảng 0.488--0.495; mặc dù Accuracy thấp hơn, mô hình này có xu
+hướng cải thiện recall nên F1 tương đối cạnh tranh. Softmax dù có Accuracy cao
+nhất nhưng F1 chỉ quanh mức 0.43--0.44, cho thấy mô hình thiên lệch hơn về lớp
+chiếm ưu thế. QDA tiếp tục cho kết quả thấp nhất với F1 khoảng 0.25 và không
+cải thiện đáng kể theo thay đổi seed hay tỉ lệ chia dữ liệu.
+
+Nhìn chung, có thể rút ra rằng Softmax tối ưu về Accuracy nhưng không tối ưu về
+F1-macro, trong khi LDA là mô hình cân bằng tốt nhất giữa hai tiêu chí và ổn
+định nhất trên nhiều lần chạy. Weighted Softmax có cải thiện về khả năng thu
+hồi (recall) nhưng chưa vượt trội về tổng thể, còn QDA không phù hợp với bài
+toán do hiệu năng thấp và thiếu tính phân biệt giữa các lớp.
