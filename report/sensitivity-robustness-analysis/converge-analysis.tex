@@ -1,0 +1,63 @@
+\subsection{Khả năng hội tụ}
+
+\subsubsection{Hồi quy}
+
+\figurename~\ref{fig:regression-loss-curve} mô tả đường cong lỗi của các mô
+hình hồi quy sử dụng thuật toán lặp.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{regression-loss-curve}
+  \caption{Biểu đồ đường cong lỗi của các mô hình hồi quy sử dụng
+  thuật toán lặp}
+  \label{fig:regression-loss-curve}
+\end{figure}
+
+Qua biểu đồ, có thể quan sát rằng mô hình MBGD---sử dụng phương pháp lập lịch
+tốc độ học dạng step decay---giảm lỗi rất nhanh trong giai đoạn đầu và
+hội tụ chỉ sau khoảng 150 epochs. Tuy nhiên, đường cong lỗi của MBGD xuất hiện
+các dao động nhẹ quanh xu hướng giảm. Đây là đặc trưng của phương pháp
+mini-batch, khi gradient chỉ được ước lượng trên các tập con dữ liệu nên mang
+tính nhiễu, dẫn đến quá trình cập nhật không hoàn toàn mượt.
+
+Ngược lại, các mô hình có áp dụng chính quy hoá hội tụ chậm hơn đáng kể, cần
+khoảng 1500 epochs để đạt trạng thái ổn định. Một nguyên nhân quan trọng là các
+mô hình này không sử dụng các chiến lược lập lịch tốc độ học như
+step decay. Do đó, để đảm bảo quá trình học ổn định và tránh dao động
+mạnh, tốc độ học phải được chọn nhỏ ngay từ đầu. Điều này làm cho mỗi bước cập
+nhật tham số trở nên thận trọng hơn, dẫn đến tốc độ giảm lỗi chậm và kéo dài
+thời gian hội tụ.
+
+Bù lại, các mô hình chính quy hoá có đường cong lỗi mượt hơn và ít dao động hơn
+so với MBGD, cho thấy quá trình tối ưu ổn định hơn. Nhìn chung, tồn tại sự đánh
+đổi rõ rệt giữa tốc độ hội tụ và độ ổn định: MBGD hội tụ nhanh nhưng dao động
+nhẹ, trong khi các mô hình chính quy hoá hội tụ chậm hơn nhưng ổn định hơn và
+có xu hướng tổng quát hoá tốt hơn.
+
+\subsubsection{Phân lớp}
+
+\figurename~\ref{fig:classification-loss-curve} mô tả đường cong lỗi của các mô
+hình hồi quy sử dụng thuật toán lặp.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{classification-loss-curve}
+  \caption{Biểu đồ đường cong lỗi của các mô hình phân lớp sử dụng
+  thuật toán lặp}
+  \label{fig:classification-loss-curve}
+\end{figure}
+
+Từ biểu đồ, có thể thấy rằng cả hai mô hình Softmax và Weighted Softmax đều
+hội tụ khá nhanh, chỉ trong khoảng 50 epochs. Điều này phản ánh đặc trưng của
+hàm mất mát cross-entropy, với độ dốc lớn ở giai đoạn đầu giúp mô hình nhanh
+chóng tiến gần tới vùng cực tiểu.
+
+Tuy nhiên, mô hình Weighted Softmax có đường cong lỗi dao động nhẹ và kém mượt
+hơn so với Softmax. Nguyên nhân là do việc áp dụng trọng số lớp làm thay đổi
+phân phối gradient giữa các lớp, khiến quá trình cập nhật tham số trở nên kém
+ổn định hơn, đặc biệt trong bối cảnh dữ liệu mất cân bằng.
+
+Dù tồn tại dao động, cả hai mô hình đều hội tụ nhanh và không có dấu hiệu phân
+kỳ, cho thấy cấu hình huấn luyện là hợp lý. Sự khác biệt về độ mượt của đường
+cong lỗi cũng cho thấy một đánh đổi giữa việc xử lý mất cân bằng dữ liệu và độ
+ổn định trong quá trình tối ưu.
