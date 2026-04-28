@@ -272,7 +272,7 @@ class AblationStudy:
         # =========================
         # PLOT
         # =========================
-        plt.figure(figsize=(14,6))
+        plt.figure(figsize=(8,5),constrained_layout=True)
         bars = plt.bar(names, values, color=colors, edgecolor='black')
 
         # =========================
@@ -323,8 +323,6 @@ class AblationStudy:
             mpatches.Patch(color="#FF6B6B", label="Full Model")
         ]
         plt.legend(handles=legend_handles)
-
-        plt.tight_layout()
         plt.show()
     def plot_importance(self):
         full = self.results["FULL"]
