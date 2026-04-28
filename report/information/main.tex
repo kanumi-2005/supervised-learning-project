@@ -45,7 +45,7 @@ lệ hoàn thành trong từng công việc---tức là ai hoàn thành công vi
 }
   \SetCell[r=2]{c,m} Nhiệm vụ & \SetCell[c=3]{c} Thành viên & \\
    & H.\ N.\ Phú & H.\ N.\ Quí & N.\ D.\ Bảo\\
-  \SetCell[c=4]{l} Bài toán hồi quy & \\
+  \SetCell[c=4]{l,font=\bfseries} Bài toán hồi quy & \\
   Chọn bộ dữ liệu & 100\% & 100\% & 100\% \\
   Phân tích khám phá và tiền xử lí & 100\% \\
   Hồi quy tuyến tính & 100\% \\
@@ -59,7 +59,7 @@ lệ hoàn thành trong từng công việc---tức là ai hoàn thành công vi
   Phân tích Bias–Variance thực nghiệm (nâng cao) & & 100\% \\
   Đánh giá mô hình & 100\% & 100\% & 100\% \\
   Phân tích và thảo luận & 100\% & 100\% & 100\% \\
-  \SetCell[c=4]{l} Bài toán phân lớp \\
+  \SetCell[c=4]{l,font=\bfseries} Bài toán phân lớp \\
   Chọn bộ dữ liệu & 100\% & 100\% & 100\% \\
   Phân tích khám phá và tiền xử lí & 100\% \\
   Logistic Regression & 100\% \\
@@ -76,7 +76,7 @@ lệ hoàn thành trong từng công việc---tức là ai hoàn thành công vi
   Bảng so sánh toàn diện & 100\% & 100\% & 100\% \\
   Phân tích mức độ nhạy cảm (sensitivity) và tính bền vững (robustness) & 100\%
   \\
-  \SetCell[c=4]{l} Khác \\
+  \SetCell[c=4]{l,font=\bfseries} Khác \\
   Cài đặt & 100\% & 100\% & 100\% \\
   Chạy thí nghiệm & 100\% & 100\% & 100\% \\
   Viết báo cáo & 100\% & 100\% & 100\% \\
@@ -94,14 +94,13 @@ mức độ hoàn thành.
 ]{
   width=\textwidth,
   colspec={Q[3in,h,l]Q[1in,c,m]},
-  cell{1-2}{1} = {font=\bfseries, bg=gray!15},
-  cell{1}{2-Z} = {font=\bfseries, bg=gray!15},
+  row{1} = {font=\bfseries, bg=gray!15},
   rowhead = 1,
   hlines,
   vlines
 }
-  Yêu cầu & Mức độ hoàn thành \\
-  \SetCell[c=2]{l} Bài toán hồi quy \\
+  \SetRow[]{c} Yêu cầu & Mức độ hoàn thành \\
+  \SetCell[c=2]{l,font=\bfseries} Bài toán hồi quy \\
   Cơ sở lý thuyết: Normal Eq., Gauss–Markov, Bias–Variance, Bayesian, Evidence
   & 100\% \\
   EDA, kiểm định Breusch–Pagan, WLS nếu cần, tiền xử lý đầy đủ & 100\% \\
@@ -116,7 +115,7 @@ mức độ hoàn thành.
   GP Regression (nâng cao) & 100\% \\
   Robust Regression (nâng cao) & 100\% \\
   Bias–-Var bootstrap & 100\% \\
-  \SetCell[c=2]{l} Bài toán phân lớp \\
+  \SetCell[c=2]{l,font=\bfseries} Bài toán phân lớp \\
 
   Lý thuyết: gradient/Hessian LR, IRLS, Perceptron, Kernel LR, Laplace, Probit
   & 100\% \\
@@ -131,34 +130,34 @@ mức độ hoàn thành.
   Kernel LR (nâng cao) & 100\% \\
   GNB vs LDA (nâng cao) & 100\% \\
   VC dimension (nâng cao) & 100\% \\
-  \SetCell[c=2]{l} Kết nối Hồi quy và Phân lớp & 100\% \\
+  \SetCell[c=2]{l,font=\bfseries} Kết nối Hồi quy và Phân lớp & 100\% \\
   Hồi quy logistic như hồi quy & 100\% \\
   Generalized Linear Models (GLM) & 100\% \\
   Exponential family & 100\% \\
   Bảng so sánh toàn diện & 100\% \\
-  \SetCell[c=2]{l} Phân tích mức độ nhạy cảm (sensitivity) và tính bền vững
-  (robustness) \\
+  \SetCell[c=2]{l,font=\bfseries} Phân tích mức độ nhạy cảm (sensitivity) và
+  tính bền vững (robustness) \\
   Sensitivity analysis & 100\% \\
   Noise injection & 100\% \\
   Feature corruption & 100\% \\
   Phân tích khả năng hội tụ (convergence) & 100\% \\
-  \SetCell[c=2]{l} Khả năng tái hiện lại thí nghiệm \\
+  \SetCell[c=2]{l,font=\bfseries} Khả năng tái hiện lại thí nghiệm \\
   Cố định tất cả random seed & 100\% \\
   Ghi log đầy đủ: hyperparameter, train/val/test split indices, metric từng
-  fold, \ldots & 80\%\TblrNote{$\dag$} \\
+  fold, $\ldots\,$ & 80\%\TblrNote{$\dag$} \\
   Báo cáo thời gian thực thi/ huấn luyện/ kiểm tra và bộ nhớ tiêu tốn của từng
   thuật toán & 100\% \\
   Cung cấp file \texttt{environment.yml} (conda) hoặc \texttt{requirements.txt}
   với version cụ thể & 100\% \\
   Kết quả phải tái hiện được hoàn toàn khi chạy lại notebook từ đầu & 100\% \\
-  \SetCell[c=2]{l} Yêu cầu về Code \\
+  \SetCell[c=2]{l,font=\bfseries} Yêu cầu về Code \\
   Tất cả code phải chạy lại được & 100\% \\
   Phần cài đặt từ đầu phải rõ ràng, tách biệt với phần sử dụng thư viện kiểm
   chứng & 100\% \\
   Phiên bản Python và thư viện phải được ghi rõ trong file
   \texttt{requirements.txt} & 100\% \\
   Đặt seed ngẫu nhiên để đảm bảo kết quả tái hiện được & 100\% \\
-  \SetCell[c=2]{l} Yêu cầu về Báo cáo \\
+  \SetCell[c=2]{l,font=\bfseries} Yêu cầu về Báo cáo \\
   Báo cáo được nộp dưới dạng PDF, không giới hạn độ dài trang & 100\% \\
   Danh mục tài liệu tham khảo theo chuẩn IEEE hoặc APA rõ ràng & 100\% \\
   Khuyến nghị sử dụng \LaTeX. Nếu sử dụng \LaTeX, yêu cầu nhóm nộp cả mã nguồn
