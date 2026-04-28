@@ -132,26 +132,26 @@ class EDA:
 
         return [fig]
 
-        def plot_categorical_features(self):
-            n_feats = len(self.categorical_features)
-            group_size = math.ceil(n_feats / 4)
-            figs = []
-            for gi in range(4):
-                group = self.categorical_features[gi*group_size:(gi+1)*group_size]
-                if not group:
-                    continue
-                n_cols = 2
-                n_rows = math.ceil(len(group) / n_cols)
-                fig, axes = plt.subplots(n_rows, n_cols, layout="constrained")
-                axes = axes.flatten()
-                for i, feat in enumerate(group):
-                    sns.countplot(x=feat, data=self.dataset.df, ax=axes[i])
-                    axes[i].set_title(f"{feat} Countplot")
-                for j in range(len(group), len(axes)):
-                    axes[j].set_visible(False)
-                fig.suptitle(f"Categorical Features - Group {gi+1}")
-                figs.append(fig)
-            return figs
+    def plot_categorical_features(self):
+        n_feats = len(self.categorical_features)
+        group_size = math.ceil(n_feats / 4)
+        figs = []
+        for gi in range(4):
+            group = self.categorical_features[gi*group_size:(gi+1)*group_size]
+            if not group:
+                continue
+            n_cols = 2
+            n_rows = math.ceil(len(group) / n_cols)
+            fig, axes = plt.subplots(n_rows, n_cols, layout="constrained")
+            axes = axes.flatten()
+            for i, feat in enumerate(group):
+                sns.countplot(x=feat, data=self.dataset.df, ax=axes[i])
+                axes[i].set_title(f"{feat} Countplot")
+            for j in range(len(group), len(axes)):
+                axes[j].set_visible(False)
+            fig.suptitle(f"Categorical Features - Group {gi+1}")
+            figs.append(fig)
+        return figs
 
 
 if __name__ == "__main__":

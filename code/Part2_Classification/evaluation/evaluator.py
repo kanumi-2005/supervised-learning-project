@@ -237,7 +237,6 @@ class Evaluator:
         })
 
         model = clone(model)
-        if self.log_model:
 
         model.fit(X_train, y_train, **self.model_fit_params)
 
