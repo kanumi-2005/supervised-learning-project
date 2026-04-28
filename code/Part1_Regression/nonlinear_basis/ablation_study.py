@@ -339,11 +339,10 @@ class AblationStudy:
         pairs = sorted(zip(names, values), key=lambda x: x[1], reverse=True)
         names, values = zip(*pairs)
 
-        plt.figure(figsize=(10,5))
+        plt.figure(figsize=(8,5), constrained_layout=True)
         plt.bar(names, values)
         plt.xticks(rotation=45)
         plt.ylabel("ΔMSE (Importance)")
         plt.title("Feature Importance Ranking")
         plt.grid(axis='y')
-        plt.tight_layout()
         plt.show()

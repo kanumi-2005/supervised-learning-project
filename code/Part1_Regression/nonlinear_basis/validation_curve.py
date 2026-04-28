@@ -79,7 +79,7 @@ class ValidationExperiment:
     # PLOT
     # =========================
     def plot(self, x, y, title, xlabel):
-        plt.figure()
+        plt.figure(figsize=(8,5), constrained_layout=True)  
 
         plt.plot(x, y, marker='o', label="Validation MSE")
 
@@ -93,7 +93,6 @@ class ValidationExperiment:
 
         plt.legend()
         plt.grid(True)
-        plt.tight_layout()
         plt.show()
 
     # =========================
