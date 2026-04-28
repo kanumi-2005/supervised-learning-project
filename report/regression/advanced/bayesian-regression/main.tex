@@ -6,11 +6,11 @@ Trong khi hồi quy tuyến tính truyền thống (OLS) tìm kiếm một bộ 
 
 Xét tập dữ liệu $\mathcal{D} = \{(\boldsymbol{x}_i, y_i)\}_{i=1}^n$ với $\boldsymbol{x}_i \in \mathbb{R}^d$. Giả định mối liên hệ tuyến tính bị nhiễu bởi một thành phần nhiễu trắng Gaussian:
 \[
-y = \boldsymbol{w}^\top \boldsymbol{x} + \epsilon, \quad \epsilon \sim \mathcal{N}(0, \beta^{-1})
+y = \boldsymbol{w}^\intercal \boldsymbol{x} + \epsilon, \quad \epsilon \sim \mathcal{N}(0, \beta^{-1})
 \]
 Trong đó $\beta$ là độ chụm (precision) của nhiễu. Hàm hợp lý (likelihood) của toàn bộ tập dữ liệu được mô tả bởi phân phối chuẩn đa biến:
 \[
-p(\boldsymbol{y} \mid \boldsymbol{X}, \boldsymbol{w}, \beta) = \prod_{i=1}^n \mathcal{N}(y_i \mid \boldsymbol{w}^\top \boldsymbol{x}_i, \beta^{-1}) = \mathcal{N}(\boldsymbol{y} \mid \boldsymbol{X}\boldsymbol{w}, \beta^{-1}\boldsymbol{I})
+p(\boldsymbol{y} \mid \boldsymbol{X}, \boldsymbol{w}, \beta) = \prod_{i=1}^n \mathcal{N}(y_i \mid \boldsymbol{w}^\intercal \boldsymbol{x}_i, \beta^{-1}) = \mathcal{N}(\boldsymbol{y} \mid \boldsymbol{X}\boldsymbol{w}, \beta^{-1}\boldsymbol{I})
 \]
 
 \paragraph{Phân phối Tiền nghiệm (Prior) và Ý nghĩa của Sự điều chuẩn}
@@ -29,7 +29,7 @@ p(\boldsymbol{w} \mid \boldsymbol{y}, \boldsymbol{X}, \alpha, \beta) \propto p(\
 \]
 Các tham số của phân phối hậu nghiệm được xác định qua hệ phương trình:
 \[
-\boldsymbol{S}_n^{-1} = \alpha\boldsymbol{I} + \beta\boldsymbol{X}^\top\boldsymbol{X}, \quad \boldsymbol{m}_n = \beta\boldsymbol{S}_n\boldsymbol{X}^\top\boldsymbol{y}
+\boldsymbol{S}_n^{-1} = \alpha\boldsymbol{I} + \beta\boldsymbol{X}^\intercal\boldsymbol{X}, \quad \boldsymbol{m}_n = \beta\boldsymbol{S}_n\boldsymbol{X}^\intercal\boldsymbol{y}
 \]
 Ở đây, ma trận độ chụm hậu nghiệm $\boldsymbol{S}_n^{-1}$ là tổng của độ chụm tiền nghiệm và thông tin thu hồi từ dữ liệu.
 
@@ -37,11 +37,11 @@ Các tham số của phân phối hậu nghiệm được xác định qua hệ 
 
 Để dự báo nhãn $y^\ast$ cho một quan sát mới $\boldsymbol{x}^\ast$, thay vì chỉ sử dụng vector trung bình $\boldsymbol{m}_n$, ta tích phân trên toàn bộ không gian tham số (marginalization):
 \[
-p(y^\ast \mid \boldsymbol{x}^\ast, \mathcal{D}) = \int p(y^\ast \mid \boldsymbol{x}^\ast, \boldsymbol{w}) p(\boldsymbol{w} \mid \mathcal{D}) d\boldsymbol{w} = \mathcal{N}(y^\ast \mid \boldsymbol{m}_n^\top \boldsymbol{x}^\ast, \sigma_N^2(\boldsymbol{x}^\ast))
+p(y^\ast \mid \boldsymbol{x}^\ast, \mathcal{D}) = \int p(y^\ast \mid \boldsymbol{x}^\ast, \boldsymbol{w}) p(\boldsymbol{w} \mid \mathcal{D}) d\boldsymbol{w} = \mathcal{N}(y^\ast \mid \boldsymbol{m}_n^\intercal \boldsymbol{x}^\ast, \sigma_N^2(\boldsymbol{x}^\ast))
 \]
 Trong đó, phương sai dự báo được phân tách thành hai thành phần cốt lõi:
 \[
-\sigma_N^2(\boldsymbol{x}^\ast) = \underbrace{\frac{1}{\beta}}_{\text{Aleatoric}} + \underbrace{\boldsymbol{x}^{\ast\top}\boldsymbol{S}_n\boldsymbol{x}^\ast}_{\text{Epistemic}}
+\sigma_N^2(\boldsymbol{x}^\ast) = \underbrace{\frac{1}{\beta}}_{\text{Aleatoric}} + \underbrace{\boldsymbol{x}^{\ast\intercal}\boldsymbol{S}_n\boldsymbol{x}^\ast}_{\text{Epistemic}}
 \]
 \begin{itemize}
     \item \textbf{Aleatoric Uncertainty:} Nhiễu nội tại của dữ liệu, không thể giảm bớt bằng cách thêm dữ liệu huấn luyện.

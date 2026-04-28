@@ -13,7 +13,7 @@ Cho tập dữ liệu huấn luyện:
 
 Perceptron xây dựng một hàm quyết định tuyến tính dưới dạng:
 \[
-f(\boldsymbol{x}) = \boldsymbol{w}^T \boldsymbol{x} + b
+f(\boldsymbol{x}) = \boldsymbol{w}^\intercal \boldsymbol{x} + b
 \]
 
 và dự đoán nhãn thông qua:
@@ -21,13 +21,13 @@ và dự đoán nhãn thông qua:
 \hat{y} = \text{sign}(f(\boldsymbol{x}))
 \]
 
-Siêu phẳng quyết định $\boldsymbol{w}^T \boldsymbol{x} + b = 0$ chia không gian đặc trưng thành hai nửa không gian, tương ứng với hai lớp. Vector $\boldsymbol{w}$ xác định hướng pháp tuyến của siêu phẳng, trong khi $b$ điều khiển vị trí dịch chuyển của nó.
+Siêu phẳng quyết định $\boldsymbol{w}^\intercal \boldsymbol{x} + b = 0$ chia không gian đặc trưng thành hai nửa không gian, tương ứng với hai lớp. Vector $\boldsymbol{w}$ xác định hướng pháp tuyến của siêu phẳng, trong khi $b$ điều khiển vị trí dịch chuyển của nó.
 
 \paragraph{Nguyên lý học}
 
 Perceptron có thể được diễn giải như một thuật toán tối ưu hóa nhằm tìm kiếm một siêu phẳng phân tách sao cho:
 \[
-y_i (\boldsymbol{w}^T \boldsymbol{x}_i + b) > 0, \quad \forall i
+y_i (\boldsymbol{w}^\intercal \boldsymbol{x}_i + b) > 0, \quad \forall i
 \]
 
 Khi điều kiện này bị vi phạm (tức là một điểm bị phân loại sai hoặc nằm trên ranh giới), tham số được cập nhật theo quy tắc:
@@ -36,11 +36,11 @@ Khi điều kiện này bị vi phạm (tức là một điểm bị phân loạ
 b \leftarrow b + \eta y_i
 \]
 
-Quy tắc này có thể được hiểu dưới góc nhìn hình học: mỗi lần cập nhật sẽ “đẩy” siêu phẳng theo hướng làm tăng giá trị $y_i (\boldsymbol{w}^T \boldsymbol{x}_i + b)$, tức là đưa điểm sai về phía đúng của ranh giới phân lớp.
+Quy tắc này có thể được hiểu dưới góc nhìn hình học: mỗi lần cập nhật sẽ “đẩy” siêu phẳng theo hướng làm tăng giá trị $y_i (\boldsymbol{w}^\intercal \boldsymbol{x}_i + b)$, tức là đưa điểm sai về phía đúng của ranh giới phân lớp.
 
 Từ góc nhìn tối ưu hóa, Perceptron tương đương với việc thực hiện gradient descent trên một hàm mất mát không trơn:
 \[
-\mathcal{L}(\boldsymbol{w}) = \sum_{i=1}^{N} \max(0, -y_i (\boldsymbol{w}^T \boldsymbol{x}_i + b))
+\mathcal{L}(\boldsymbol{w}) = \sum_{i=1}^{N} \max(0, -y_i (\boldsymbol{w}^\intercal \boldsymbol{x}_i + b))
 \]
 được gọi là \textit{Perceptron loss}.
 
