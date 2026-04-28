@@ -9,28 +9,28 @@ Trong Logistic Regression, regularization đóng vai trò quan trọng trong vi�
 Hàm mất mát tổng quát của Logistic Regression với regularization được viết dưới dạng:
 
 \[
-\mathcal{L}(\mathbf{w}, b) =
+\mathcal{L}(\boldsymbol{w}, b) =
 - \sum_{i=1}^{N}
 \left[
 y_i \log \hat{y}_i + (1 - y_i) \log (1 - \hat{y}_i)
 \right]
-+ \lambda \, \Omega(\mathbf{w})
++ \lambda \, \Omega(\boldsymbol{w})
 \]
 
-Trong đó $\Omega(\mathbf{w})$ là hạng phạt và $\lambda > 0$ điều khiển mức độ regularization. Giá trị $\lambda$ càng lớn thì ràng buộc càng mạnh, dẫn đến mô hình đơn giản hơn.
+Trong đó $\Omega(\boldsymbol{w})$ là hạng phạt và $\lambda > 0$ điều khiển mức độ regularization. Giá trị $\lambda$ càng lớn thì ràng buộc càng mạnh, dẫn đến mô hình đơn giản hơn.
 
 \paragraph{L2 Regularization}
 
 Với L2 regularization, hạng phạt được xác định bởi chuẩn $\ell_2$:
 
 \[
-\Omega(\mathbf{w}) = \|\mathbf{w}\|_2^2
+\Omega(\boldsymbol{w}) = \|\boldsymbol{w}\|_2^2
 \]
 
 Khi đó:
 \[
 \mathcal{L}_{L2} =
-\mathcal{L} + \lambda \|\mathbf{w}\|_2^2
+\mathcal{L} + \lambda \|\boldsymbol{w}\|_2^2
 \]
 
 L2 regularization làm giảm giá trị của các trọng số một cách trơn tru và liên tục, giúp mô hình ổn định hơn trước nhiễu và hiện tượng đa cộng tuyến. Tuy nhiên, do không triệt tiêu hoàn toàn các trọng số, mô hình vẫn giữ lại toàn bộ đặc trưng.
@@ -40,13 +40,13 @@ L2 regularization làm giảm giá trị của các trọng số một cách tr�
 Với L1 regularization, hạng phạt sử dụng chuẩn $\ell_1$:
 
 \[
-\Omega(\mathbf{w}) = \|\mathbf{w}\|_1 = \sum_{j=1}^{d} |w_j|
+\Omega(\boldsymbol{w}) = \|\boldsymbol{w}\|_1 = \sum_{j=1}^{d} |w_j|
 \]
 
 Khi đó:
 \[
 \mathcal{L}_{L1} =
-\mathcal{L} + \lambda \|\mathbf{w}\|_1
+\mathcal{L} + \lambda \|\boldsymbol{w}\|_1
 \]
 
 Đặc điểm nổi bật của L1 regularization là khả năng đưa nhiều trọng số về đúng bằng 0, từ đó tạo ra mô hình thưa (sparse). Điều này cho phép mô hình tự động thực hiện lựa chọn đặc trưng và giảm đáng kể độ phức tạp.

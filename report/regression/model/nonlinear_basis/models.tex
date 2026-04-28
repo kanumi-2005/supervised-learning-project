@@ -3,16 +3,16 @@
 Tất cả các mô hình đều tuân theo dạng tổng quát:
 
 \begin{equation}
-f(\mathbf{x}, \mathbf{w}) = \mathbf{w}^T \Phi(\mathbf{x})
+f(\boldsymbol{x}, \boldsymbol{w}) = \boldsymbol{w}^\intercal \Phi(\boldsymbol{x})
 \end{equation}
 
-trong đó $\Phi(\mathbf{x})$ được xây dựng từ các hệ cơ sở khác nhau.
+trong đó $\Phi(\boldsymbol{x})$ được xây dựng từ các hệ cơ sở khác nhau.
 
 \paragraph{Mô hình đa thức (Polynomial Basis):}
 Mô hình đa thức mở rộng vector đầu vào thành các lũy thừa phi tuyến:
 
 \begin{equation}
-\Phi(\mathbf{x}) = [1, x, x^2, \dots, x^p]
+\Phi(\boldsymbol{x}) = [1, x, x^2, \dots, x^p]
 \end{equation}
 
 Đây là dạng đơn giản nhất, giúp mô hình xấp xỉ các quan hệ phi tuyến mượt.
@@ -33,11 +33,11 @@ Mô hình đa thức mở rộng vector đầu vào thành các lũy thừa phi 
 Mô hình RBF sử dụng các hàm Gaussian làm cơ sở:
 
 \begin{equation}
-\phi_j(\mathbf{x}) =
-\exp\left(-\frac{\|\mathbf{x} - \mathbf{c}_j\|^2}{2\sigma^2}\right)
+\phi_j(\boldsymbol{x}) =
+\exp\left(-\frac{\|\boldsymbol{x} - \boldsymbol{c}_j\|^2}{2\sigma^2}\right)
 \end{equation}
 
-Trong đó $\mathbf{c}_j$ là các tâm và $\sigma$ điều khiển độ lan tỏa.
+Trong đó $\boldsymbol{c}_j$ là các tâm và $\sigma$ điều khiển độ lan tỏa.
 
 Mô hình tập trung vào khoảng cách trong không gian đầu vào, giúp biểu diễn tốt cấu trúc phi tuyến cục bộ.
 
@@ -51,7 +51,7 @@ Mô hình tập trung vào khoảng cách trong không gian đầu vào, giúp b
 Mô hình Fourier biểu diễn dữ liệu bằng các hàm sin/cos:
 
 \begin{equation}
-\Phi(\mathbf{x}) =
+\Phi(\boldsymbol{x}) =
 [\sin(\omega_1 x), \cos(\omega_1 x), \dots, \sin(\omega_k x), \cos(\omega_k x)]
 \end{equation}
 

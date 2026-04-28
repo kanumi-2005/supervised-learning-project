@@ -8,39 +8,39 @@ Perceptron là một trong những mô hình phân loại tuyến tính nền t�
 
 Cho tập dữ liệu huấn luyện:
 \[
-\mathcal{D} = \{(\mathbf{x}_i, y_i)\}_{i=1}^{N}, \quad y_i \in \{-1, +1\}, \quad \mathbf{x}_i \in \mathbb{R}^d
+\mathcal{D} = \{(\boldsymbol{x}_i, y_i)\}_{i=1}^{N}, \quad y_i \in \{-1, +1\}, \quad \boldsymbol{x}_i \in \mathbb{R}^d
 \]
 
 Perceptron xây dựng một hàm quyết định tuyến tính dưới dạng:
 \[
-f(\mathbf{x}) = \mathbf{w}^T \mathbf{x} + b
+f(\boldsymbol{x}) = \boldsymbol{w}^\intercal \boldsymbol{x} + b
 \]
 
 và dự đoán nhãn thông qua:
 \[
-\hat{y} = \text{sign}(f(\mathbf{x}))
+\hat{y} = \text{sign}(f(\boldsymbol{x}))
 \]
 
-Siêu phẳng quyết định $\mathbf{w}^T \mathbf{x} + b = 0$ chia không gian đặc trưng thành hai nửa không gian, tương ứng với hai lớp. Vector $\mathbf{w}$ xác định hướng pháp tuyến của siêu phẳng, trong khi $b$ điều khiển vị trí dịch chuyển của nó.
+Siêu phẳng quyết định $\boldsymbol{w}^\intercal \boldsymbol{x} + b = 0$ chia không gian đặc trưng thành hai nửa không gian, tương ứng với hai lớp. Vector $\boldsymbol{w}$ xác định hướng pháp tuyến của siêu phẳng, trong khi $b$ điều khiển vị trí dịch chuyển của nó.
 
 \paragraph{Nguyên lý học}
 
 Perceptron có thể được diễn giải như một thuật toán tối ưu hóa nhằm tìm kiếm một siêu phẳng phân tách sao cho:
 \[
-y_i (\mathbf{w}^T \mathbf{x}_i + b) > 0, \quad \forall i
+y_i (\boldsymbol{w}^\intercal \boldsymbol{x}_i + b) > 0, \quad \forall i
 \]
 
 Khi điều kiện này bị vi phạm (tức là một điểm bị phân loại sai hoặc nằm trên ranh giới), tham số được cập nhật theo quy tắc:
 \[
-\mathbf{w} \leftarrow \mathbf{w} + \eta y_i \mathbf{x}_i, \quad
+\boldsymbol{w} \leftarrow \boldsymbol{w} + \eta y_i \boldsymbol{x}_i, \quad
 b \leftarrow b + \eta y_i
 \]
 
-Quy tắc này có thể được hiểu dưới góc nhìn hình học: mỗi lần cập nhật sẽ “đẩy” siêu phẳng theo hướng làm tăng giá trị $y_i (\mathbf{w}^T \mathbf{x}_i + b)$, tức là đưa điểm sai về phía đúng của ranh giới phân lớp.
+Quy tắc này có thể được hiểu dưới góc nhìn hình học: mỗi lần cập nhật sẽ “đẩy” siêu phẳng theo hướng làm tăng giá trị $y_i (\boldsymbol{w}^\intercal \boldsymbol{x}_i + b)$, tức là đưa điểm sai về phía đúng của ranh giới phân lớp.
 
 Từ góc nhìn tối ưu hóa, Perceptron tương đương với việc thực hiện gradient descent trên một hàm mất mát không trơn:
 \[
-\mathcal{L}(\mathbf{w}) = \sum_{i=1}^{N} \max(0, -y_i (\mathbf{w}^T \mathbf{x}_i + b))
+\mathcal{L}(\boldsymbol{w}) = \sum_{i=1}^{N} \max(0, -y_i (\boldsymbol{w}^\intercal \boldsymbol{x}_i + b))
 \]
 được gọi là \textit{Perceptron loss}.
 
@@ -51,7 +51,7 @@ Từ góc nhìn tối ưu hóa, Perceptron tương đương với việc thực 
     \[
     O\left(\frac{R^2}{\gamma^2}\right)
     \]
-    trong đó $R = \max_i \|\mathbf{x}_i\|$.
+    trong đó $R = \max_i \|\boldsymbol{x}_i\|$.
 
     \item \textbf{Không tối ưu biên (non-margin maximizing):} Không giống như SVM, Perceptron không tìm siêu phẳng có biên lớn nhất, mà chỉ tìm một nghiệm bất kỳ thỏa mãn điều kiện phân tách.
 
