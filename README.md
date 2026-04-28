@@ -56,6 +56,7 @@ supervised-learning-project/
 ├── code/
 │   ├── Part1_Regression/          # Regression task
 │   │   ├── notebook.ipynb         # Main notebook (regression)
+│   │   ├── notebook.pdf           # Exported notebook (regression)
 │   │   ├── dataset.py             # California Housing loader & splitter
 │   │   ├── base/                  # Base classes
 │   │   ├── linear_regression/     # OLS, MBGD, WLS, FGLS
@@ -68,6 +69,7 @@ supervised-learning-project/
 │   │   └── ...
 │   ├── Part2_Classification/      # Classification task
 │   │   ├── notebook.ipynb         # Main notebook (classification)
+│   │   ├── notebook.pdf           # Exported notebook (classification)
 │   │   ├── dataset.py             # CoverType loader & splitter
 │   │   ├── base/                  # Base classes
 │   │   ├── logistic_regression/   # Logistic Regression (OvR, OvO, Softmax)
@@ -188,7 +190,6 @@ For detailed dataset descriptions, see [`data/README.md`](data/README.md).
 
 - Pace, R. K., & Barry, R. (1997). Sparse spatial autoregressions. *Statistics and Probability Letters*, 33(3), 291–297.
 - Blackard, J. (1998). Covertype. *UCI Machine Learning Repository*. DOI: [10.24432/C50K5N](https://doi.org/10.24432/C50K5N)
-- Géron, A. (2019). *Hands-on Machine Learning with Scikit-Learn, Keras, and TensorFlow* (2nd ed.). O'Reilly Media.
 
 ## Team
 
