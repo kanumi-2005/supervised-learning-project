@@ -3,14 +3,14 @@
 \paragraph{Xử lý các giá trị còn thiếu} Bộ dữ liệu California Housing không có
 giá trị thiếu nên bước này được bỏ qua.
 
-\paragraph{Chuẩn hoá dữ liệu} Các biến đặc trưng được chuẩn hoá về trung bình
+\paragraph{Chuẩn hóa dữ liệu} Các biến đặc trưng được chuẩn hóa về trung bình
 $\mu = 0$ và phương sai $\sigma^2 = 1$. Điều này giúp các giá trị của các biến
 đặc trưng được đưa về cùng thang đo, giúp quá trình học bằng Gradient Descent
 của các mô hình nhanh hơn (các đường mức không còn bị kéo dãn). Ngoài ra, việc
-chuẩn hoá như vậy giúp cho việc tính toán không bị tràn số (đã thử và bị với mô
-hình Mini-batch Gradient Descent). Lợi ích của cách chuẩn hoá này so với chuẩn
-hoá về $[0, 1]$ đó là sự xuất hiện các ngoại lai có giá trị rất lớn làm giá trị
-sau khi chuẩn hoá rất nhỏ. Điều này không làm các biến về cùng đúng thang đo so
+chuẩn hóa như vậy giúp cho việc tính toán không bị tràn số (đã thử và bị với mô
+hình Mini-batch Gradient Descent). Lợi ích của cách chuẩn hóa này so với chuẩn
+hóa về $[0, 1]$ đó là sự xuất hiện các ngoại lai có giá trị rất lớn làm giá trị
+sau khi chuẩn hóa rất nhỏ. Điều này không làm các biến về cùng đúng thang đo so
 với mong muốn.
 
 \paragraph{Chia dữ liệu} Dữ liệu được chia thành 3 tập là huấn luyện (train),

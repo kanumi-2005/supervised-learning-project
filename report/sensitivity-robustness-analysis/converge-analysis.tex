@@ -20,7 +20,7 @@ các dao động nhẹ quanh xu hướng giảm. Đây là đặc trưng của p
 mini-batch, khi gradient chỉ được ước lượng trên các tập con dữ liệu nên mang
 tính nhiễu, dẫn đến quá trình cập nhật không hoàn toàn mượt.
 
-Ngược lại, các mô hình có áp dụng chính quy hoá hội tụ chậm hơn đáng kể, cần
+Ngược lại, các mô hình có áp dụng chính quy hóa hội tụ chậm hơn đáng kể, cần
 khoảng 1500 epochs để đạt trạng thái ổn định. Một nguyên nhân quan trọng là các
 mô hình này không sử dụng các chiến lược lập lịch tốc độ học như
 step decay. Do đó, để đảm bảo quá trình học ổn định và tránh dao động
@@ -28,11 +28,11 @@ mạnh, tốc độ học phải được chọn nhỏ ngay từ đầu. Điều
 nhật tham số trở nên thận trọng hơn, dẫn đến tốc độ giảm lỗi chậm và kéo dài
 thời gian hội tụ.
 
-Bù lại, các mô hình chính quy hoá có đường cong lỗi mượt hơn và ít dao động hơn
+Bù lại, các mô hình chính quy hóa có đường cong lỗi mượt hơn và ít dao động hơn
 so với MBGD, cho thấy quá trình tối ưu ổn định hơn. Nhìn chung, tồn tại sự đánh
 đổi rõ rệt giữa tốc độ hội tụ và độ ổn định: MBGD hội tụ nhanh nhưng dao động
-nhẹ, trong khi các mô hình chính quy hoá hội tụ chậm hơn nhưng ổn định hơn và
-có xu hướng tổng quát hoá tốt hơn.
+nhẹ, trong khi các mô hình chính quy hóa hội tụ chậm hơn nhưng ổn định hơn và
+có xu hướng tổng quát hóa tốt hơn.
 
 \subsubsection{Phân lớp}
 
