@@ -19,7 +19,7 @@ def select_best_lambda(X, y, lambdas):
 
         model = LogisticRegression(
             C=C,
-            penalty='l2',
+            l1_ratio=0.0,
             solver='lbfgs',
             max_iter=1000
         )
