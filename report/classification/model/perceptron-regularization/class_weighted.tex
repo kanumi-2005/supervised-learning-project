@@ -68,21 +68,21 @@ Do đó, quá trình học tương đương với việc “phóng đại” t�
 
 Hàm mục tiêu có thể được viết lại:
 \[
-\min_{\mathbf{w}} \sum_{k=1}^{K} c_k \sum_{n \in \mathcal{D}_k} \ell(y_n, f_{\mathbf{w}}(x_n))
+\min_{\boldsymbol{w}} \sum_{k=1}^{K} c_k \sum_{n \in \mathcal{D}_k} \ell(y_n, f_{\boldsymbol{w}}(x_n))
 \]
 
 Điều này tương đương với việc mỗi mẫu thuộc lớp $k$ được nhân với hệ số $c_k$, hoặc có thể hiểu như việc lặp lại mẫu đó $c_k$ lần trong quá trình huấn luyện.
 
 \paragraph{Ảnh hưởng đến gradient}
 
-Gradient của hàm mất mát theo tham số $\mathbf{w}$ có dạng:
+Gradient của hàm mất mát theo tham số $\boldsymbol{w}$ có dạng:
 \[
-\nabla_{\mathbf{w}} E = - \sum_{n=1}^{N} \sum_{k=1}^{K} c_k \, t_{nk} \, \nabla_{\mathbf{w}} \log y_{nk}
+\nabla_{\boldsymbol{w}} E = - \sum_{n=1}^{N} \sum_{k=1}^{K} c_k \, t_{nk} \, \nabla_{\boldsymbol{w}} \log y_{nk}
 \]
 
 Trong trường hợp Logistic Regression, điều này dẫn đến:
 \[
-\nabla_{\mathbf{w}} E \propto \sum_{n=1}^{N} c_{y_n} (y_n - \hat{y}_n)\mathbf{x}_n
+\nabla_{\boldsymbol{w}} E \propto \sum_{n=1}^{N} c_{y_n} (y_n - \hat{y}_n)\boldsymbol{x}_n
 \]
 
 Cho thấy rằng:

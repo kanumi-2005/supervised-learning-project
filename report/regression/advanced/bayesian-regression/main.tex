@@ -4,48 +4,48 @@ Trong khi hồi quy tuyến tính truyền thống (OLS) tìm kiếm một bộ 
 
 \paragraph{Mô hình xác suất và Likelihood}
 
-Xét tập dữ liệu $\mathcal{D} = \{(\mathbf{x}_i, y_i)\}_{i=1}^n$ với $\mathbf{x}_i \in \mathbb{R}^d$. Giả định mối liên hệ tuyến tính bị nhiễu bởi một thành phần nhiễu trắng Gaussian:
+Xét tập dữ liệu $\mathcal{D} = \{(\boldsymbol{x}_i, y_i)\}_{i=1}^n$ với $\boldsymbol{x}_i \in \mathbb{R}^d$. Giả định mối liên hệ tuyến tính bị nhiễu bởi một thành phần nhiễu trắng Gaussian:
 \[
-y = \mathbf{w}^\top \mathbf{x} + \epsilon, \quad \epsilon \sim \mathcal{N}(0, \beta^{-1})
+y = \boldsymbol{w}^\top \boldsymbol{x} + \epsilon, \quad \epsilon \sim \mathcal{N}(0, \beta^{-1})
 \]
 Trong đó $\beta$ là độ chụm (precision) của nhiễu. Hàm hợp lý (likelihood) của toàn bộ tập dữ liệu được mô tả bởi phân phối chuẩn đa biến:
 \[
-p(\mathbf{y} \mid \mathbf{X}, \mathbf{w}, \beta) = \prod_{i=1}^n \mathcal{N}(y_i \mid \mathbf{w}^\top \mathbf{x}_i, \beta^{-1}) = \mathcal{N}(\mathbf{y} \mid \mathbf{X}\mathbf{w}, \beta^{-1}\mathbf{I})
+p(\boldsymbol{y} \mid \boldsymbol{X}, \boldsymbol{w}, \beta) = \prod_{i=1}^n \mathcal{N}(y_i \mid \boldsymbol{w}^\top \boldsymbol{x}_i, \beta^{-1}) = \mathcal{N}(\boldsymbol{y} \mid \boldsymbol{X}\boldsymbol{w}, \beta^{-1}\boldsymbol{I})
 \]
 
 \paragraph{Phân phối Tiền nghiệm (Prior) và Ý nghĩa của Sự điều chuẩn}
 
-Chúng ta đặt một phân phối tiền nghiệm Gaussian lên các tham số $\mathbf{w}$ để thể hiện niềm tin ban đầu về cấu trúc mô hình:
+Chúng ta đặt một phân phối tiền nghiệm Gaussian lên các tham số $\boldsymbol{w}$ để thể hiện niềm tin ban đầu về cấu trúc mô hình:
 \[
-p(\mathbf{w} \mid \alpha) = \mathcal{N}(\mathbf{w} \mid \mathbf{0}, \alpha^{-1}\mathbf{I})
+p(\boldsymbol{w} \mid \alpha) = \mathcal{N}(\boldsymbol{w} \mid \boldsymbol{0}, \alpha^{-1}\boldsymbol{I})
 \]
-Việc sử dụng kỳ vọng bằng $\mathbf{0}$ đóng vai trò như một cơ chế điều chuẩn (regularization) tự nhiên. Trong ngôn ngữ tối ưu hóa, việc tìm cực đại hậu nghiệm (MAP) với prior này tương đương chính xác với hồi quy Ridge ($L_2$ regularization), nơi $\alpha/\beta$ đóng vai trò là hệ số phạt.
+Việc sử dụng kỳ vọng bằng $\boldsymbol{0}$ đóng vai trò như một cơ chế điều chuẩn (regularization) tự nhiên. Trong ngôn ngữ tối ưu hóa, việc tìm cực đại hậu nghiệm (MAP) với prior này tương đương chính xác với hồi quy Ridge ($L_2$ regularization), nơi $\alpha/\beta$ đóng vai trò là hệ số phạt.
 
 \paragraph{Suy diễn Hậu nghiệm (Posterior Inference)}
 
 Nhờ tính liên hợp của phân phối Gaussian, phân phối hậu nghiệm — sự kết hợp giữa niềm tin tiền nghiệm và bằng chứng từ dữ liệu — cũng là một phân phối Gaussian:
 \[
-p(\mathbf{w} \mid \mathbf{y}, \mathbf{X}, \alpha, \beta) \propto p(\mathbf{y} \mid \mathbf{X}, \mathbf{w}, \beta) p(\mathbf{w} \mid \alpha) = \mathcal{N}(\mathbf{w} \mid \mathbf{m}_n, \mathbf{S}_n)
+p(\boldsymbol{w} \mid \boldsymbol{y}, \boldsymbol{X}, \alpha, \beta) \propto p(\boldsymbol{y} \mid \boldsymbol{X}, \boldsymbol{w}, \beta) p(\boldsymbol{w} \mid \alpha) = \mathcal{N}(\boldsymbol{w} \mid \boldsymbol{m}_n, \boldsymbol{S}_n)
 \]
 Các tham số của phân phối hậu nghiệm được xác định qua hệ phương trình:
 \[
-\mathbf{S}_n^{-1} = \alpha\mathbf{I} + \beta\mathbf{X}^\top\mathbf{X}, \quad \mathbf{m}_n = \beta\mathbf{S}_n\mathbf{X}^\top\mathbf{y}
+\boldsymbol{S}_n^{-1} = \alpha\boldsymbol{I} + \beta\boldsymbol{X}^\top\boldsymbol{X}, \quad \boldsymbol{m}_n = \beta\boldsymbol{S}_n\boldsymbol{X}^\top\boldsymbol{y}
 \]
-Ở đây, ma trận độ chụm hậu nghiệm $\mathbf{S}_n^{-1}$ là tổng của độ chụm tiền nghiệm và thông tin thu hồi từ dữ liệu.
+Ở đây, ma trận độ chụm hậu nghiệm $\boldsymbol{S}_n^{-1}$ là tổng của độ chụm tiền nghiệm và thông tin thu hồi từ dữ liệu.
 
 \paragraph{Phân phối Dự báo (Predictive Distribution)}
 
-Để dự báo nhãn $y^\ast$ cho một quan sát mới $\mathbf{x}^\ast$, thay vì chỉ sử dụng vector trung bình $\mathbf{m}_n$, ta tích phân trên toàn bộ không gian tham số (marginalization):
+Để dự báo nhãn $y^\ast$ cho một quan sát mới $\boldsymbol{x}^\ast$, thay vì chỉ sử dụng vector trung bình $\boldsymbol{m}_n$, ta tích phân trên toàn bộ không gian tham số (marginalization):
 \[
-p(y^\ast \mid \mathbf{x}^\ast, \mathcal{D}) = \int p(y^\ast \mid \mathbf{x}^\ast, \mathbf{w}) p(\mathbf{w} \mid \mathcal{D}) d\mathbf{w} = \mathcal{N}(y^\ast \mid \mathbf{m}_n^\top \mathbf{x}^\ast, \sigma_N^2(\mathbf{x}^\ast))
+p(y^\ast \mid \boldsymbol{x}^\ast, \mathcal{D}) = \int p(y^\ast \mid \boldsymbol{x}^\ast, \boldsymbol{w}) p(\boldsymbol{w} \mid \mathcal{D}) d\boldsymbol{w} = \mathcal{N}(y^\ast \mid \boldsymbol{m}_n^\top \boldsymbol{x}^\ast, \sigma_N^2(\boldsymbol{x}^\ast))
 \]
 Trong đó, phương sai dự báo được phân tách thành hai thành phần cốt lõi:
 \[
-\sigma_N^2(\mathbf{x}^\ast) = \underbrace{\frac{1}{\beta}}_{\text{Aleatoric}} + \underbrace{\mathbf{x}^{\ast\top}\mathbf{S}_n\mathbf{x}^\ast}_{\text{Epistemic}}
+\sigma_N^2(\boldsymbol{x}^\ast) = \underbrace{\frac{1}{\beta}}_{\text{Aleatoric}} + \underbrace{\boldsymbol{x}^{\ast\top}\boldsymbol{S}_n\boldsymbol{x}^\ast}_{\text{Epistemic}}
 \]
 \begin{itemize}
     \item \textbf{Aleatoric Uncertainty:} Nhiễu nội tại của dữ liệu, không thể giảm bớt bằng cách thêm dữ liệu huấn luyện.
-    \item \textbf{Epistemic Uncertainty:} Sự bất định về tham số mô hình. Thành phần này sẽ lớn tại những vùng không gian $\mathbf{x}^\ast$ thưa thớt dữ liệu huấn luyện và thu hẹp dần khi lượng dữ liệu tăng lên.
+    \item \textbf{Epistemic Uncertainty:} Sự bất định về tham số mô hình. Thành phần này sẽ lớn tại những vùng không gian $\boldsymbol{x}^\ast$ thưa thớt dữ liệu huấn luyện và thu hẹp dần khi lượng dữ liệu tăng lên.
 \end{itemize}
 
 \paragraph{Nhận xét bản chất}
@@ -78,14 +78,14 @@ Việc lựa chọn $\beta = 10.0$ tương ứng với giả định nhiễu qua
 
 \paragraph{Phân tích phân phối hậu nghiệm (Posterior Analysis)}
 
-Khác với Hồi quy Tuyến tính thông thường chỉ tìm điểm tối ưu (Point Estimation), BLR xác định toàn bộ phân phối xác suất của trọng số $\mathbf{w}$ dưới dạng Gaussian đa biến:
+Khác với Hồi quy Tuyến tính thông thường chỉ tìm điểm tối ưu (Point Estimation), BLR xác định toàn bộ phân phối xác suất của trọng số $\boldsymbol{w}$ dưới dạng Gaussian đa biến:
 \[
-p(\mathbf{w} \mid \mathbf{X}, \mathbf{y}) = \mathcal{N}(\mathbf{\mu}_N, \Sigma_N)
+p(\boldsymbol{w} \mid \boldsymbol{X}, \boldsymbol{y}) = \mathcal{N}(\boldsymbol{\mu}_N, \Sigma_N)
 \]
 
 Trong đó:
 \begin{itemize}
-    \item $\mathbf{\mu}_N \in \mathbb{R}^{9 \times 1}$: Vector kỳ vọng hậu nghiệm, đại diện cho bộ trọng số hội tụ sau khi quan sát dữ liệu.
+    \item $\boldsymbol{\mu}_N \in \mathbb{R}^{9 \times 1}$: Vector kỳ vọng hậu nghiệm, đại diện cho bộ trọng số hội tụ sau khi quan sát dữ liệu.
     \item $\Sigma_N \in \mathbb{R}^{9 \times 1}$: Ma trận hiệp phương sai, thể hiện độ bất định và mối tương quan giữa 9 đặc trưng đầu vào.
 \end{itemize}
 
@@ -93,7 +93,7 @@ Trong đó:
 
 Khả năng vượt trội của BLR nằm ở việc cung cấp phân phối dự đoán cho các điểm dữ liệu mới $x^\ast$:
 \[
-p(y^\ast \mid \mathbf{x}^\ast, \mathbf{X}, \mathbf{y}) = \mathcal{N}(\mathbf{\mu}_N^T \mathbf{x}^\ast, \sigma_N^2(\mathbf{x}^\ast))
+p(y^\ast \mid \boldsymbol{x}^\ast, \boldsymbol{X}, \boldsymbol{y}) = \mathcal{N}(\boldsymbol{\mu}_N^T \boldsymbol{x}^\ast, \sigma_N^2(\boldsymbol{x}^\ast))
 \]
 
 \begin{figure}[h]
